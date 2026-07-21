@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0667a408a20a6664ca8e4a78ea4d294d, type: 3}
+  m_Name: Control 2 Enemy Capital
+  m_EditorClassIdentifier: 
+  _Name: Control 2 Enemy Capitals
+  _Continent: 0
+  _Territory: 0
+  _Capital: 1
+  _City: 0
+  _RequiredContinents: 
+  _RequiredTerritories: 0
+  _RequiredCapitals: 2
+  _RequiredCities: 0
+  _OneTurn: 0
+  _Reward: {fileID: 11400000, guid: e100425fe8d1b6a47b24adebc0ae80b4, type: 2}
+  _Inactive: 1
