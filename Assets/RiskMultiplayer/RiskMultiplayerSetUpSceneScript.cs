@@ -24,7 +24,9 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
     public ArmyScriptableObject[] _Armies;
     public readonly SyncList<ArmySelection> _ArmyChoices = new SyncList<ArmySelection>();
 
-    private void Awake()
+    public RiskArmyColourSelector _ArmyColourSelector;
+
+    private void Start()
     {
         foreach (ArmyScriptableObject a in _Armies)
         {
@@ -38,6 +40,7 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
     public override void OnStartClient()
     {
         _Players.OnAdd += OnItemAdded;
+        _ArmyChoices.OnSet += OnArmyChoice;
     }
 
     void OnPlayersChanged(int old, int _new)
@@ -53,9 +56,6 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
 
     void OnItemAdded(int index)
     {
-        Debug.Log($"Element added at index {index} {_Players[index]}");
-        // _Players2.Add(_Players[index]);
-
         int diff = _Players.Count - _PlayersLocal.Count;
         for (int i = _PlayersLocal.Count; i < _Players.Count; i++)
         {
@@ -79,13 +79,27 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
             p.SetOtherTextInputs();
         }
     }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Command(requiresAuthority = false)]
+    void OnArmyChoice(int test, ArmySelection temp2)
     {
-        
+        _ArmyChoices.RemoveAt(test);
+        _ArmyChoices.Insert(test, temp2);
+
+        //foreach (RiskMultiplayerPlayerSetUpScript p in _Players)
+        //p.SetOtherColourButtons();
+
+        Test();
+
+
+        Debug.Log(_ArmyChoices[test]._Chosen);
     }
 
+    [ClientRpc]
+    void Test()
+    {
+        if (_ArmyColourSelector != null && _ArmyColourSelector._Requester != null)
+            _ArmyColourSelector._Requester.SetOtherColourButtons();
+    }
     // Update is called once per frame
     void Update()
     {
