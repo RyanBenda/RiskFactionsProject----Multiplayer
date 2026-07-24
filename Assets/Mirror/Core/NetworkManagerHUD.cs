@@ -24,7 +24,7 @@ namespace Mirror
             // If this width is changed, also change offsetX in GUIConsole::OnGUI
             int width = 300;
 
-            GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, width, 9999));
+            GUILayout.BeginArea(new Rect(Screen.width - 310 + offsetX, 40 + offsetY, width, 9999));
 
             if (!NetworkClient.isConnected && !NetworkServer.active)
                 StartButtons();
