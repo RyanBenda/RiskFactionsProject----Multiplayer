@@ -438,15 +438,23 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  showRoomGUI: 1
+  readyToBegin: 0
+  index: 0
   _PlayerName: 
   _PlayerColour: {r: 0, g: 0, b: 0, a: 0}
   _Parent: {fileID: 0}
+  _SetArmy: {fileID: 0}
   _SceneScript: {fileID: 0}
   _NameInputField: {fileID: 5833416433073948757}
   _ColourButton: {fileID: 6893898540431822943}
   _ColourSelectorPos: {fileID: 6671152434287475348}
   _ColourSelector: {fileID: 0}
+  _ColourIndex: 0
   temp: 0
+  _RiskFactionsPlayerPrefab: {fileID: 0}
+  _RiskFactionsPlayerScript: {fileID: 0}
+  _NM: {fileID: 0}
 --- !u!114 &9032788485779808856
 MonoBehaviour:
   m_ObjectHideFlags: 0

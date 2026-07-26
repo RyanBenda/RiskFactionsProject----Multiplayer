@@ -19,7 +19,7 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
     [SyncVar(hook = nameof(OnPlayersChanged))]
     public int _PlayerCount = 0;
 
-    public Transform _ScrollViewContent;
+    public NetworkIdentity _ScrollViewContent;
 
     public ArmyScriptableObject[] _Armies;
     public readonly SyncList<ArmySelection> _ArmyChoices = new SyncList<ArmySelection>();
@@ -28,12 +28,15 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
 
     private void Start()
     {
-        foreach (ArmyScriptableObject a in _Armies)
+        if (isServer)
         {
-            ArmySelection sel = new ArmySelection();
-            sel._Army = a;
-            sel._Chosen = false;
-            _ArmyChoices.Add(sel);
+            foreach (ArmyScriptableObject a in _Armies)
+            {
+                ArmySelection sel = new ArmySelection();
+                sel._Army = a;
+                sel._Chosen = false;
+                _ArmyChoices.Add(sel);
+            }
         }
     }
 
@@ -46,10 +49,10 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
     void OnPlayersChanged(int old, int _new)
     {
 
-        Debug.Log("Made it here");
+        //Debug.Log("Made it here");
         foreach (RiskMultiplayerPlayerSetUpScript p in _Players)
         {
-            p.transform.parent = _ScrollViewContent;
+            p.transform.parent = _ScrollViewContent.transform;
             p.transform.localScale = Vector3.one;
         }
     }
@@ -66,17 +69,24 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
             _PlayersLocal.Remove(_Players[index]);
             _PlayersLocal.Insert(0, _Players[index]);
 
-            _ScrollViewContent.DetachChildren();
+            _ScrollViewContent.transform.DetachChildren();
             foreach (RiskMultiplayerPlayerSetUpScript p in _PlayersLocal)
             {
-                p.transform.parent = _ScrollViewContent;
+                p.transform.parent = _ScrollViewContent.transform;
                 p.transform.localScale = Vector3.one;
             }
         }
 
-        foreach (RiskMultiplayerPlayerSetUpScript p in _PlayersLocal)
+        //NetworkConnection conn = NetworkClient.connection;
+        RiskFactionsRoomPlayer temp =  NetworkClient.connection.identity.gameObject.GetComponent<RiskFactionsRoomPlayer>();
+
+        for (int i = 1; i < _PlayersLocal.Count; i++)
         {
-            p.SetOtherTextInputs();
+            if (_PlayersLocal[i]._Owner != temp)
+            {
+                _PlayersLocal[i]._NameInputField.interactable = false;
+                _PlayersLocal[i]._ColourButton.interactable = false;
+            }
         }
     }
     [Command(requiresAuthority = false)]
@@ -88,18 +98,21 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
         //foreach (RiskMultiplayerPlayerSetUpScript p in _Players)
         //p.SetOtherColourButtons();
 
-        Test();
+        if (_ArmyColourSelector != null)
+            _ArmyColourSelector.OnEnable(); // Updates the colour buttons to be correct for host client
+        //Test();
 
 
-        Debug.Log(_ArmyChoices[test]._Chosen);
+        //Debug.Log(_ArmyChoices[test]._Chosen);
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     void Test()
     {
         if (_ArmyColourSelector != null && _ArmyColourSelector._Requester != null)
-            _ArmyColourSelector._Requester.SetOtherColourButtons();
-    }
+            _ArmyColourSelector._Requester.SetOtherColourButtons(); // Updates the colour buttons to be correct for host client
+    }*/
+
     // Update is called once per frame
     void Update()
     {

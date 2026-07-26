@@ -54,7 +54,5 @@ public class RiskArmyColourSelector : MonoBehaviour
             }
             ind++;
         }
-
-        Debug.Log("ran");
     }
 }
