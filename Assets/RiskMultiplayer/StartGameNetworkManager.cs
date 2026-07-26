@@ -7,57 +7,12 @@ public class StartGameNetworkManager : NetworkRoomManager
 {
     public static new StartGameNetworkManager singleton => NetworkManager.singleton as StartGameNetworkManager;
 
-
     public GameObject _RiskFactionsPlayerPrefab;
     public int val = 0;
-    //public RiskMultiplayerSetUpSceneScript _SceneScript;
 
     public RiskFactionGameSceneScript _RFSceneScript;
 
-    //public List<RiskFactionsPlayerScript> _Replacements = new List<RiskFactionsPlayerScript>();
-
-    
-
-    /*public override void OnServerReady(NetworkConnectionToClient conn)
-    {
-        base.OnServerReady(conn);
-        
-        if (SceneManager.GetActiveScene().name == "SampleScene")
-        {
-            //NetworkConnectionToClient c = conn;
-
-            //GameObject setup = c.identity.gameObject;
-
-            GameObject player = Instantiate(spawnPrefabs[0]);
-
-            //NetworkServer.ReplacePlayerForConnection(conn, player, ReplacePlayerOptions.KeepAuthority);
-
-
-
-
-            foreach (KeyValuePair<int, NetworkConnectionToClient> p in NetworkServer.connections)
-            {
-
-                Debug.Log(p.Value.identity.gameObject.name);
-                //Destroy(setup, 0.1f);
-            }
-        }
-
-    }*/
-
-    /*public override void OnServerSceneChanged(string sceneName)
-    {
-        
-        base.OnServerSceneChanged(sceneName);
-
-        if (sceneName == "SampleScene")
-        {
-            _RFSceneScript = FindObjectOfType<RiskFactionGameSceneScript>();
-            _RFSceneScript.Test();
-            
-        }
-    }*/
-
+    // Sets up the Actual Player Objects when loading to the actual game scene from the room
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
     {
         RiskFactionsPlayerScript playerScore = gamePlayer.GetComponent<RiskFactionsPlayerScript>();
@@ -81,24 +36,6 @@ public class StartGameNetworkManager : NetworkRoomManager
 
     public void StartGame()
     {
-        foreach (KeyValuePair<int, NetworkConnectionToClient> p in NetworkServer.connections)
-        {
-            p.Value.identity.gameObject.transform.parent = null;
-            DontDestroyOnLoad(p.Value.identity.gameObject);
-        }
-
-
         ServerChangeScene(GameplayScene);
-    }
-
-
-    public override void Update()
-    {
-        base.Update();
-
-        foreach (KeyValuePair<int, NetworkConnectionToClient> p in NetworkServer.connections)
-        {
-            //Debug.Log(p.Value.identity.gameObject.name);
-        }
     }
 }

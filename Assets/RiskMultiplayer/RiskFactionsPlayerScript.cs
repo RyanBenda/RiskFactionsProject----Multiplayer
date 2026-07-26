@@ -34,26 +34,4 @@ public class RiskFactionsPlayerScript : NetworkBehaviour
     {
         _PlayerColour = colour;
     }
-
-    /*public override void OnStartLocalPlayer()
-    {
-        if (SceneManager.GetActiveScene().name == "SampleScene")
-        {
-            Debug.Log("Hello");
-
-            _SceneScript = FindFirstObjectByType<RiskFactionGameSceneScript>();
-            CmdSetupPlayer();
-        }
-    }
-
-    [Command]
-    public void CmdSetupPlayer()
-    {
-        //Debug.Log("Ello2");
-        if (_SceneScript != null)
-        {
-            _SceneScript._Players.Add(this);
-            _SceneScript._PlayerCount++;
-        }
-    }*/
 }

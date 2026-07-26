@@ -19,7 +19,6 @@ public class RiskFactionsRoomPlayer : NetworkRoomPlayer
     [SyncVar]
     public ArmyScriptableObject _Army;
 
-    //RiskMultiplayerSetUpSceneScript sceneScript;
     public override void OnStartClient()
     {
         //Debug.Log($"OnStartClient {gameObject}");
@@ -38,7 +37,7 @@ public class RiskFactionsRoomPlayer : NetworkRoomPlayer
             CreateSetupObject(this);
     }
 
-    [Command]
+    [Command] //Creates the set up object in the Room scene so player can choose the Colour and Name they want
     void CreateSetupObject(RiskFactionsRoomPlayer p)
     {
         RiskMultiplayerSetUpSceneScript sceneScript = FindFirstObjectByType<RiskMultiplayerSetUpSceneScript>();
@@ -51,17 +50,13 @@ public class RiskFactionsRoomPlayer : NetworkRoomPlayer
     }
 
 
-
-    [ClientRpc]
+    [ClientRpc] //Updates the parent of the set up object and calls its localPlayerStart Function as that doesn't run cause it isn't owned by player
     void RpcParentUpdate(Transform obj, RiskMultiplayerSetUpSceneScript sceneScript)
     {
         obj.parent = sceneScript._ScrollViewContent.transform;
         RiskMultiplayerPlayerSetUpScript p = obj.GetComponent<RiskMultiplayerPlayerSetUpScript>();
         p.OnStartLocalPlayer();
-
     }
-
-
 
     public override void OnClientExitRoom()
     {

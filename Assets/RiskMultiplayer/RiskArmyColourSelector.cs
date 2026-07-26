@@ -12,6 +12,7 @@ public class RiskArmyColourSelector : MonoBehaviour
 
     public RiskMultiplayerPlayerSetUpScript _Requester;
 
+    // Sets up all the buttons on start this way I can add more Armies later if I want to
     private void Start()
     {
         int ind = 0;
@@ -36,7 +37,7 @@ public class RiskArmyColourSelector : MonoBehaviour
         }
     }
 
-    
+    // Updates all the Buttons to the correct interactable state
     public void OnEnable()
     {
         int ind = 0;

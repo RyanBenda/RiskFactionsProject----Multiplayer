@@ -48,8 +48,6 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
 
     void OnPlayersChanged(int old, int _new)
     {
-
-        //Debug.Log("Made it here");
         foreach (RiskMultiplayerPlayerSetUpScript p in _Players)
         {
             p.transform.parent = _ScrollViewContent.transform;
@@ -77,12 +75,11 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
             }
         }
 
-        //NetworkConnection conn = NetworkClient.connection;
-        RiskFactionsRoomPlayer temp =  NetworkClient.connection.identity.gameObject.GetComponent<RiskFactionsRoomPlayer>();
+        RiskFactionsRoomPlayer setupOwner =  NetworkClient.connection.identity.gameObject.GetComponent<RiskFactionsRoomPlayer>();
 
         for (int i = 1; i < _PlayersLocal.Count; i++)
         {
-            if (_PlayersLocal[i]._Owner != temp)
+            if (_PlayersLocal[i]._Owner != setupOwner)
             {
                 _PlayersLocal[i]._NameInputField.interactable = false;
                 _PlayersLocal[i]._ColourButton.interactable = false;
@@ -95,23 +92,9 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
         _ArmyChoices.RemoveAt(test);
         _ArmyChoices.Insert(test, temp2);
 
-        //foreach (RiskMultiplayerPlayerSetUpScript p in _Players)
-        //p.SetOtherColourButtons();
-
         if (_ArmyColourSelector != null)
             _ArmyColourSelector.OnEnable(); // Updates the colour buttons to be correct for host client
-        //Test();
-
-
-        //Debug.Log(_ArmyChoices[test]._Chosen);
     }
-
-    /*[ClientRpc]
-    void Test()
-    {
-        if (_ArmyColourSelector != null && _ArmyColourSelector._Requester != null)
-            _ArmyColourSelector._Requester.SetOtherColourButtons(); // Updates the colour buttons to be correct for host client
-    }*/
 
     // Update is called once per frame
     void Update()
