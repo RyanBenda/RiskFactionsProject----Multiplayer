@@ -20,7 +20,7 @@ public class CountryComponent : NetworkBehaviour
 
     [SyncVar(hook = nameof(OnTroopsChanged))]
     public int _TroopsCount = 1;
-    [SyncVar]
+    [SyncVar(hook = nameof(OnAddedTroopsChanged))]
     public int _AddedTroops = 0;
     public TextMeshProUGUI _TroopDisplay;
 
@@ -96,6 +96,30 @@ public class CountryComponent : NetworkBehaviour
 
         if (_HasProxy)
             _Proxy.UpdateDetails();
+
+        /*if (BoardComponent._BoardInstance != null)
+        {
+            if (BoardComponent._BoardInstance._NewTroops == 0)
+                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+            else
+            {
+                int temp = _TroopsCount + 1;
+                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString();
+            }
+
+            if (_AddedTroops == 0)
+                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+            else
+            {
+                int temp = _TroopsCount - 1;
+                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
+            }
+        }*/
+    }
+
+    void OnAddedTroopsChanged(int old, int _new)
+    {
+        
     }
 
     [Command(requiresAuthority = false)]
@@ -150,12 +174,7 @@ public class CountryComponent : NetworkBehaviour
                 {
                     if (this._CurColour == BoardComponent._BoardInstance._GameCanvas._CurrentArmyBanner.color)
                     {
-                        MainCameraComponent._MainCameraInstance._Tweening = true;
-                        MainCameraComponent._MainCameraInstance._AttackingCountry = this;
-                        _MouseHoverTracker = true;
-                        _Selected = true;
-                        _HoverObject.SetActive(true);
-                        MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpNewTroopsButtons());
+                        ServerCameraInstuctor("NewTroops", connectionToClient);
                     }
                     //return;
                 }
@@ -322,6 +341,9 @@ public class CountryComponent : NetworkBehaviour
             case "Capital":
                 CapitalPlacementCamera(client.identity.name);
                 break;
+            case "NewTroops":
+                NewTroopsPlacementCamera(client.identity.name);
+                break;
         }
         
     }
@@ -335,6 +357,17 @@ public class CountryComponent : NetworkBehaviour
         _Selected = true;
         _HoverObject.SetActive(true);
         MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpCapital(client));
+    }
+
+    [ClientRpc]
+    void NewTroopsPlacementCamera(string client)
+    {
+        MainCameraComponent._MainCameraInstance._Tweening = true;
+        MainCameraComponent._MainCameraInstance._AttackingCountry = this;
+        _MouseHoverTracker = true;
+        _Selected = true;
+        _HoverObject.SetActive(true);
+        MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpNewTroopsButtons(client));
     }
     void SetUpCapital(string client)
     {
@@ -370,45 +403,47 @@ public class CountryComponent : NetworkBehaviour
         }
     }
 
-    void SetUpNewTroopsButtons()
+    void SetUpNewTroopsButtons(string client)
     {
         MainCameraComponent._MainCameraInstance._Tweening = false;
-
-        BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
-        BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(this.transform.position.x - 75, this.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
-
-        foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._IncreaseButtonValue)
-            tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
-        foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._DecreaseButtonValue)
-            tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
-
-
-        if (BoardComponent._BoardInstance._NewTroops > 0)
+        if (NetworkClient.connection.identity.name == client)
         {
-            int temp = _TroopsCount + 1;
-            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString(); //MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour
-        }
-        if (_AddedTroops > 0)
-        {
-            int temp = _TroopsCount - 1;
-            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
-        }
+            BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
+            BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(this.transform.position.x - 75, this.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
 
-        //BoardComponent._BoardInstance._IncreaseButton.color = this._CurColour;
-        foreach (Image i in BoardComponent._BoardInstance._IncreaseButton)
-        {
-            i.color = this._CurColour;
-        }
-
-        //BoardComponent._BoardInstance._DecreaseButton.color = this._CurColour;
-        foreach (Image i in BoardComponent._BoardInstance._DecreaseButton)
-        {
-            i.color = this._CurColour;
-        }
+            foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._IncreaseButtonValue)
+                tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
+            foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._DecreaseButtonValue)
+                tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
 
 
-        BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(true);
-        BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(true);
+            if (BoardComponent._BoardInstance._NewTroops > 0)
+            {
+                int temp = _TroopsCount + 1;
+                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString(); //MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour
+            }
+            if (_AddedTroops > 0)
+            {
+                int temp = _TroopsCount - 1;
+                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
+            }
+
+            //BoardComponent._BoardInstance._IncreaseButton.color = this._CurColour;
+            foreach (Image i in BoardComponent._BoardInstance._IncreaseButton)
+            {
+                i.color = this._CurColour;
+            }
+
+            //BoardComponent._BoardInstance._DecreaseButton.color = this._CurColour;
+            foreach (Image i in BoardComponent._BoardInstance._DecreaseButton)
+            {
+                i.color = this._CurColour;
+            }
+
+
+            BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(true);
+            BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(true);
+        }
     }
 
     public void SetUpMoveTroopsButtons(CountryComponent givingCountry)

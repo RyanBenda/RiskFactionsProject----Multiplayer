@@ -4180,6 +4180,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 5592497}
@@ -5307,6 +5310,7 @@ MonoBehaviour:
   syncInterval: 0
   _PlayerCount: 0
   _Board: {fileID: 2049688036}
+  _ObjectiveManager: {fileID: 1593918448}
 --- !u!4 &206545560
 Transform:
   m_ObjectHideFlags: 0
@@ -14448,6 +14452,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 352077304}
@@ -18636,6 +18643,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 758976869}
@@ -33171,6 +33181,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 785103421}
@@ -37069,6 +37082,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 1129976182}
@@ -48672,6 +48688,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 1297434078}
@@ -50482,6 +50501,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 840188991}
@@ -50623,6 +50645,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb84e89e7da0b9748ac6219bac52dfa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Manager: {fileID: 1593918448}
   _Objective: {fileID: 0}
   _HoverObject: {fileID: 1967465878}
@@ -53142,6 +53167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930bf2a5f4e2d3c479f3f0c4474f9f12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _PossibleObjectives:
   - {fileID: 11400000, guid: 350df6fcb56fad54db48a70b3bd27368, type: 2}
   - {fileID: 11400000, guid: ee43785a41a0cec45bec93d1c4b18a80, type: 2}
@@ -53158,8 +53186,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2a86d4387c9fb8c489a46f58bafdf67e, type: 2}
   - {fileID: 11400000, guid: 6c3312165aea49343b774dbf849af8d9, type: 2}
   - {fileID: 11400000, guid: a7cc5583a836e274ca53d0b8cf12c885, type: 2}
-  _ActiveObjectives: []
-  _InactiveObjectives: []
   _Rewards:
   - {fileID: 11400000, guid: c05a25e5858b4544da0b896d3c77adbc, type: 2}
   - {fileID: 11400000, guid: f9ade370cef247244aea053a138ca866, type: 2}
@@ -57857,7 +57883,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1725160469
 RectTransform:
   m_ObjectHideFlags: 0

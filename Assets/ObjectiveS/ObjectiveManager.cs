@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Mirror;
 
-public class ObjectiveManager : MonoBehaviour
+public class ObjectiveManager : NetworkBehaviour
 {
     public static ObjectiveManager _ObjectiveManagerInstance;
 
     public List<ObjectiveScriptableObject> _PossibleObjectives = new List<ObjectiveScriptableObject>();
-    public List<ObjectiveScriptableObject> _ActiveObjectives = new List<ObjectiveScriptableObject>();
+    //public List<ObjectiveScriptableObject> _ActiveObjectives = new List<ObjectiveScriptableObject>();
+    public readonly SyncList<ObjectiveScriptableObject> _ActiveObjectives = new SyncList<ObjectiveScriptableObject>();
 
-    public List<ObjectiveScriptableObject> _InactiveObjectives = new List<ObjectiveScriptableObject>();
+    public readonly SyncList<ObjectiveScriptableObject> _InactiveObjectives = new SyncList<ObjectiveScriptableObject>();
+    //public List<ObjectiveScriptableObject> _InactiveObjectives = new List<ObjectiveScriptableObject>();
 
     public RewardScriptableObject[] _Rewards;
 
@@ -31,8 +34,12 @@ public class ObjectiveManager : MonoBehaviour
     void Start()
     {
         if (_ObjectiveManagerInstance == null)
-            _ObjectiveManagerInstance = this;
+            _ObjectiveManagerInstance = this;       
+    }
 
+    [Command(requiresAuthority = false)]
+    public void SetUpObjectives()
+    {
         List<ObjectiveScriptableObject> tempList = new List<ObjectiveScriptableObject>();
         foreach (ObjectiveScriptableObject obj in _PossibleObjectives)
             tempList.Add(obj);
@@ -88,6 +95,7 @@ public class ObjectiveManager : MonoBehaviour
         }
     }
 
+    [Command(requiresAuthority = false)]
     public void ObjectiveCheck()
     {
         foreach (ObjectiveScriptableObject o in _ActiveObjectives)

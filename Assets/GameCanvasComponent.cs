@@ -304,14 +304,18 @@ public class GameCanvasComponent : NetworkBehaviour
         if (!_DisplayActive && !ObjectiveManager._ObjectiveManagerInstance._DisplayActive)
         {
             _DisplayActive = true;
-            _LastState = _CurrentState;
-            _CurrentState = TurnStates.Suspend;
+            if (_LocalPlayer._IsTurn)
+            {
+                _LastState = _CurrentState;
+                _CurrentState = TurnStates.Suspend;
+            }
             _ArmyOrder.gameObject.SetActive(true);
         }
         else
         {
             _ArmyOrder.gameObject.SetActive(false);
-            _CurrentState = _LastState;
+            if (_LocalPlayer._IsTurn && _CurrentState != TurnStates.PlaceCapital)
+                _CurrentState = _LastState;
             _DisplayActive = false;
         }
     }
@@ -321,7 +325,14 @@ public class GameCanvasComponent : NetworkBehaviour
         _Warning.SetActive(false);
     }
 
+    [Command(requiresAuthority = false)]
     public void ProgressTurn()
+    {
+        RpcProgressTurn();
+    }
+
+    [ClientRpc]
+    public void RpcProgressTurn()
     {
         if (!MainCameraComponent._MainCameraInstance._Tweening)
         {
@@ -598,6 +609,9 @@ public class GameCanvasComponent : NetworkBehaviour
                         _ProgressButtonText.text = "Place Troops";
                         ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
                     }
+
+                    _NewTroopsIcon.gameObject.SetActive(true);
+
                     int stars = _CurArmy._TwoStars * 2;
                     stars += _CurArmy._OneStars;
 

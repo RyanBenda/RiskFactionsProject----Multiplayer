@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Mirror;
 
-public class ObjectiveDisplay : MonoBehaviour
+public class ObjectiveDisplay : NetworkBehaviour
 {
     public ObjectiveManager _Manager;
+    [SyncVar]
     public ObjectiveScriptableObject _Objective;
     public GameObject _HoverObject;
     public TextMeshProUGUI _Claimed;

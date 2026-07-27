@@ -10,6 +10,7 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
     public int _PlayerCount = 0;
 
     public BoardComponent _Board;
+    public ObjectiveManager _ObjectiveManager;
 
     public override void OnStartClient()
     {
@@ -29,6 +30,7 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
                 for (int i = 0; i < _PlayerCount; i++)
                     armies[i] = _Players[i]._Army;
 
+                _ObjectiveManager.SetUpObjectives();
                 _Board.BeginMatch(armies);
             }
 
