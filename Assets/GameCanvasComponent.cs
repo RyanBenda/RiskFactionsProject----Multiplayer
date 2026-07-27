@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using Mirror;
 
 public enum TurnStates
 {
@@ -23,18 +24,27 @@ public enum TurnStates
 [System.Serializable]
 public class ArmiesClass
 {
+    //[SyncVar]
     public ArmyScriptableObject _Army;
-
+    
+    //[SyncVar]
     public int _OneStars = 0;
+    //[SyncVar]
     public int _TwoStars = 0;
 
+    //[SyncVar]
     public bool _HasEarlyMove = false;
+    //[SyncVar]
     public bool _HasAdditionalMove = false;
+    //[SyncVar]
     public bool _HasAttackDie = false;
+    //[SyncVar]
     public bool _HasDefenceDie = false;
+    //[SyncVar]
     public bool _HasExtraTroops = false;
+    //[SyncVar]
     public bool _HasGuaranteedCard = false;
-
+    //[SyncVar]
     public bool _HasStarReward = false;
     public List<RewardScriptableObject> _Rewards = new List<RewardScriptableObject>();
     public List<RewardScriptableObject> _PossibleRewards = new List<RewardScriptableObject>();
@@ -46,8 +56,149 @@ public class ArmiesClass
     public List<CountryComponent> _ControlledCountries = new List<CountryComponent>();
 }
 
+public static class ArmiesClassSerializers
+{
+    // Write extension method
+    public static void WriteMyCustomData(this NetworkWriter writer, ArmiesClass data)
+    {
+        if (data == null)
+        {
+            writer.WriteBool(false);
+            return;
+        }
 
-public class GameCanvasComponent : MonoBehaviour
+        //writer.Write<ArmyScriptableObject>(data._Army);
+        writer.WriteInt(data._OneStars);
+        //writer.WriteInt(data._TwoStars);
+        //writer.WriteBool(data._HasEarlyMove);
+        //writer.WriteBool(data._HasAdditionalMove);
+        //writer.WriteBool(data._HasAttackDie);
+        //writer.WriteBool(data._HasDefenceDie);
+        //writer.WriteBool(data._HasExtraTroops);
+        //writer.WriteBool(data._HasGuaranteedCard);
+        //writer.WriteBool(data._HasStarReward);
+        //writer.WriteList<RewardScriptableObject>(data._Rewards);
+        //writer.WriteList<RewardScriptableObject>(data._PossibleRewards);
+        //writer.WriteBool(data._isDefeated);
+        //writer.WriteColor(data._TextColour);
+        //writer.Write<ArmyInfoComponent>(data._Info);
+        //writer.WriteList<CountryComponent>(data._ControlledCountries);
+    }
+
+    // Read extension method
+    public static ArmiesClass ReadMyCustomData(this NetworkReader reader)
+    {
+        if (!reader.ReadBool())
+        {
+            return null;
+        }
+
+        ArmiesClass data = new ArmiesClass();
+        data._Army = default;
+        data._OneStars = reader.ReadInt();
+        data._TwoStars = default;
+        data._HasEarlyMove = default;
+        data._HasAdditionalMove = default;
+        data._HasAttackDie = default;
+        data._HasDefenceDie = default;
+        data._HasExtraTroops = default;
+        data._HasGuaranteedCard = default;
+        data._HasStarReward = default;
+        data._Rewards = default;
+        data._PossibleRewards = default;
+        data._isDefeated = default;
+        data._TextColour = default;
+        data._Info = default;
+        data._ControlledCountries = default;
+
+        //data._ControlledCountries = reader.ReadList<CountryComponent>();
+        //data._Info = reader.Read<ArmyInfoComponent>();
+        //data._TextColour = reader.ReadColor();
+        //data._isDefeated = reader.ReadBool();
+        //data._PossibleRewards = reader.ReadList<RewardScriptableObject>();
+        //data._Rewards = reader.ReadList<RewardScriptableObject>();
+        //data._HasStarReward = reader.ReadBool();
+        //data._HasGuaranteedCard = reader.ReadBool();
+        //data._HasExtraTroops = reader.ReadBool();
+        //data._HasDefenceDie = reader.ReadBool();
+        //data._HasAttackDie = reader.ReadBool();
+        //data._HasAdditionalMove = reader.ReadBool();   
+        //data._HasEarlyMove = reader.ReadBool();
+        //data._TwoStars = reader.ReadInt();
+
+        //data._Army = reader.Read<ArmyScriptableObject>();
+        return data;
+    }
+}
+
+/*public static class MyArmyScriptableObjectExtensions
+{
+    public static void WriteMyType(this NetworkWriter writer, ArmyScriptableObject value)
+    {
+        if (value == null)
+        {
+            writer.WriteBool(false);
+            return;
+        }
+
+        /*if (value._ArmyName == null)
+            value._ArmyName = "";
+
+        writer.WriteString(value._ArmyName);
+        writer.WriteColor(value._ArmyColour);
+    }
+
+    public static ArmyScriptableObject ReadMyType(this NetworkReader reader)
+    {
+        if (!reader.ReadBool())
+        {
+            return null;
+        }
+
+        //ArmyScriptableObject data = new ArmyScriptableObject();
+        ArmyScriptableObject data = ScriptableObject.CreateInstance<ArmyScriptableObject>();   
+        data._ArmyColour = reader.ReadColor();
+        //Debug.Log(reader.ReadString());
+
+        string temp = reader.ReadString();
+
+        Debug.Log(temp);
+
+        if (temp != null)
+            data._ArmyName = reader.ReadString();
+        else
+            data._ArmyName = "";
+        return data;
+    }
+}*/
+[System.Serializable]
+public struct ArmiesClass2
+{
+    public ArmyScriptableObject _Army;
+
+    public int _OneStars;
+    public int _TwoStars;
+
+    public bool _HasEarlyMove;
+    public bool _HasAdditionalMove;
+    public bool _HasAttackDie;
+    public bool _HasDefenceDie;
+    public bool _HasExtraTroops;
+    public bool _HasGuaranteedCard;
+
+    public bool _HasStarReward;
+    public List<RewardScriptableObject> _Rewards;
+    public List<RewardScriptableObject> _PossibleRewards;
+
+    public bool _isDefeated;
+    public Color _TextColour;
+    //public ArmyInfoComponent _Info;
+
+    public List<CountryComponent> _ControlledCountries;
+}
+
+
+public class GameCanvasComponent : NetworkBehaviour
 {
     public static GameCanvasComponent _GameInstance;
 
@@ -57,9 +208,11 @@ public class GameCanvasComponent : MonoBehaviour
     public TextMeshProUGUI _ProgressButtonText;
     public TurnStates _CurrentState = TurnStates.CalculateTroops;
 
-    public List<ArmiesClass> _TurnOrder;
+    public readonly SyncList<ArmiesClass2> _TurnOrder = new SyncList<ArmiesClass2>();
+    //public List<ArmiesClass2> _TurnOrder = new List<ArmiesClass2>();
     int _TurnIndex = 0;
-    public ArmiesClass _CurArmy;
+    [SyncVar(hook = nameof(OnCurArmyChange))]
+    public ArmiesClass2 _CurArmy;
 
     public GameObject _NewTroopsIcon;
     public GameObject _RewardDisplay;
@@ -83,6 +236,8 @@ public class GameCanvasComponent : MonoBehaviour
     public GameObject _ArmyTabPrefab;
     public bool _DisplayActive = false;
     TurnStates _LastState;
+
+    public RiskFactionsPlayerScript _LocalPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -108,6 +263,40 @@ public class GameCanvasComponent : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha6))
             _CurArmy._OneStars--;
+    }
+
+    void OnCurArmyChange(ArmiesClass2 old, ArmiesClass2 _new)
+    {
+        if (_CurArmy._Army != null)
+        {
+            _CurrentArmyBanner.color = _CurArmy._Army._ArmyColour;
+
+            
+            RiskFactionsPlayerScript p = NetworkClient.connection.identity.GetComponent<RiskFactionsPlayerScript>();
+            
+            //Debug.Log(p._Army._ArmyName);
+            //Debug.Log(_CurArmy._Army._ArmyName);
+            
+            if (p._Army._ArmyName == _CurArmy._Army._ArmyName)
+            {
+                int stars = _CurArmy._TwoStars * 2;
+                stars += _CurArmy._OneStars;
+                _StarsDisplay.color = _CurArmy._TextColour;
+                _StarsDisplay.text = "Stars: " + stars.ToString();
+
+                p.CmdSetTurn(true);
+            }
+            else
+            {
+                int cards = _CurArmy._TwoStars;
+                cards += _CurArmy._OneStars;
+                _StarsDisplay.color = _CurArmy._TextColour;
+                _StarsDisplay.text = "Cards: " + cards.ToString();
+
+                p.CmdSetTurn(false);
+            }
+            
+        }
     }
 
     public void TurnOnOffDisplay()
@@ -146,7 +335,7 @@ public class GameCanvasComponent : MonoBehaviour
             {
                 if (BoardComponent._BoardInstance._NewTroops == 0)
                 {
-                    MainCameraComponent._MainCameraInstance.ResetCamera();
+                    MainCameraComponent._MainCameraInstance.CmdResetCamera();
 
                     for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
                     {
@@ -198,7 +387,7 @@ public class GameCanvasComponent : MonoBehaviour
             {
                 if (_HasAttacked)
                 {
-                    MainCameraComponent._MainCameraInstance.ResetCamera();
+                    MainCameraComponent._MainCameraInstance.CmdResetCamera();
 
                     _CurrentState = TurnStates.Move;
                     _ProgressButtonText.text = "Move";

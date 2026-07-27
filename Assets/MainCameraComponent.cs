@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Mirror;
 
-public class MainCameraComponent : MonoBehaviour
+public class MainCameraComponent : NetworkBehaviour
 {
     public static MainCameraComponent _MainCameraInstance;
 
@@ -31,7 +32,7 @@ public class MainCameraComponent : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (GameCanvasComponent._GameInstance._CurrentState != TurnStates.BattleMove && GameCanvasComponent._GameInstance._CurrentState != TurnStates.Move && GameCanvasComponent._GameInstance._CurrentState != TurnStates.AdditionalMove && GameCanvasComponent._GameInstance._CurrentState != TurnStates.EarlyMove && !BattleSystem._BattleSystemInstance._ActiveBattle)
-                ResetCamera();
+                CmdResetCamera();
             else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
             {
                 if (_AttackingCountry != null)
@@ -46,7 +47,7 @@ public class MainCameraComponent : MonoBehaviour
                 GameCanvasComponent._GameInstance.ProgressTurn();
             }
             else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
-                ResetCamera();
+                CmdResetCamera();
         }
 
     }
@@ -58,38 +59,45 @@ public class MainCameraComponent : MonoBehaviour
         BattleSystem._BattleSystemInstance.SetUpFight();
         BattleSystem._BattleSystemInstance.gameObject.SetActive(true);
     }
-
-    public void ResetCamera()
+    
+    [Command(requiresAuthority = false)]
+    public void CmdResetCamera()
     {
         if (!_Tweening && _AttackingCountry != null)
         {
-            _Tweening = true;
-
-            if (_DefendingCountry == null)
-            {
-                this.transform.DOMove(_StartingPos, 1).OnComplete(() => ResetSelected());
-                this.transform.DORotate(_StartingRot, 1);
-            }
-            else
-            {
-                
-                this.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => this._Tweening = false);
-                this.transform.DORotate(_StartingRot, 2);
-                
-
-                _DefendingCountry._Selected = false;
-                _DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);
-                _DefendingCountry._MouseHoverTracker = false;
-                _DefendingCountry = null;
-            }
-
-            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
-            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
-            BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(false);
-            BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(false);
-
-            BattleSystem._BattleSystemInstance.ResetFight();
+            RpcResetCamera();
         }
+    }
+
+    [ClientRpc]
+    void RpcResetCamera()
+    {
+        _Tweening = true;
+
+        if (_DefendingCountry == null)
+        {
+            this.transform.DOMove(_StartingPos, 1).OnComplete(() => ResetSelected());
+            this.transform.DORotate(_StartingRot, 1);
+        }
+        else
+        {
+
+            this.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => this._Tweening = false);
+            this.transform.DORotate(_StartingRot, 2);
+
+
+            _DefendingCountry._Selected = false;
+            _DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);
+            _DefendingCountry._MouseHoverTracker = false;
+            _DefendingCountry = null;
+        }
+
+        BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+        BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+        BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(false);
+        BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(false);
+
+        BattleSystem._BattleSystemInstance.ResetFight();
     }
 
     public void ResetSelected()

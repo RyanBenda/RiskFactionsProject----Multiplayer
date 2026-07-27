@@ -15,12 +15,19 @@ public class StartGameNetworkManager : NetworkRoomManager
     // Sets up the Actual Player Objects when loading to the actual game scene from the room
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
     {
-        RiskFactionsPlayerScript playerScore = gamePlayer.GetComponent<RiskFactionsPlayerScript>();
+        RiskFactionsPlayerScript riskPlayer = gamePlayer.GetComponent<RiskFactionsPlayerScript>();
         RiskFactionsRoomPlayer rp = roomPlayer.GetComponent<RiskFactionsRoomPlayer>();
-        playerScore.index = rp.index;
-        playerScore._PlayerName = rp._ArmyName;
-        playerScore._PlayerColour = rp._ArmyColor;
-        playerScore._Army = rp._Army;
+        riskPlayer.index = rp.index;
+        riskPlayer._PlayerName = rp._ArmyName;
+        riskPlayer._PlayerColour = rp._ArmyColor;
+        riskPlayer._Army = rp._Army;
+        _RFSceneScript = FindFirstObjectByType<RiskFactionGameSceneScript>();
+        riskPlayer._SceneScript = _RFSceneScript;
+        NetworkServer.ReplacePlayerForConnection(conn, gamePlayer, ReplacePlayerOptions.KeepAuthority);
+        _RFSceneScript._Players.Add(riskPlayer);
+        _RFSceneScript._PlayerCount++;
+        //_RFSceneScript._Board._GameCanvas._LocalPlayer = riskPlayer;
+
         return true;
     }
 

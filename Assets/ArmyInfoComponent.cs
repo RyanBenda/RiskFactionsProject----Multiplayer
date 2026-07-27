@@ -6,7 +6,7 @@ using TMPro;
 
 public class ArmyInfoComponent : MonoBehaviour
 {
-    public ArmiesClass _Army;
+    public ArmiesClass2 _Army;
     public Image _Image;
     public TextMeshProUGUI _Name;
     public TextMeshProUGUI _Defeated;

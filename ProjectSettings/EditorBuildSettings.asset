@@ -5,40 +5,43 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Mirror/Examples/Basic/Scenes/MirrorBasic.unity
-    guid: b30904751905d3f4dacde62ac85ec7c2
   - enabled: 1
-    path: Assets/MirrorTest/MirrorTest.unity
-    guid: 768cc7fc21d43f9478fc97e6b074505f
-  - enabled: 1
-    path: Assets/MirrorTest/Menu.unity
-    guid: e7aea8b267951a84a81a495b50feac56
-  - enabled: 1
-    path: Assets/MirrorTest/GameList.unity
-    guid: 2380bca985fe42a4ab8ebad53e995fe1
-  - enabled: 1
-    path: Assets/MirrorTest/MirrorTest Other.unity
-    guid: fcd3fd6e0e8fb8c49ac9bdc36d516665
+    path: Assets/Scenes/MultiplayerRiskSetup.unity
+    guid: b899177befb0ff548b69adfc3a4ff7f9
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
+    path: Assets/Mirror/Examples/Basic/Scenes/MirrorBasic.unity
+    guid: b30904751905d3f4dacde62ac85ec7c2
+  - enabled: 0
+    path: Assets/MirrorTest/MirrorTest.unity
+    guid: 768cc7fc21d43f9478fc97e6b074505f
+  - enabled: 0
+    path: Assets/MirrorTest/Menu.unity
+    guid: e7aea8b267951a84a81a495b50feac56
+  - enabled: 0
+    path: Assets/MirrorTest/GameList.unity
+    guid: 2380bca985fe42a4ab8ebad53e995fe1
+  - enabled: 0
+    path: Assets/MirrorTest/MirrorTest Other.unity
+    guid: fcd3fd6e0e8fb8c49ac9bdc36d516665
+  - enabled: 0
     path: Assets/Mirror/Examples/CharacterSelection/MirrorCharacterSelectionPreScene.unity
     guid: 7d4f83306961f4c03ab43038a1801ab2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Mirror/Examples/CharacterSelection/MirrorCharacterSelectionNoCharacter.unity
     guid: a8a73128beb4248aca152ab0364c5abc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Mirror/Examples/CharacterSelection/MirrorCharacterSelection.unity
     guid: 9619a16fe963d4deb9b5821f4475c606
-  - enabled: 1
+  - enabled: 0
     path: Assets/Mirror/Examples/Room/Scenes/MirrorRoomOffline.unity
     guid: 9e6f14982412b2545a0911ebaaa46a23
-  - enabled: 1
+  - enabled: 0
     path: Assets/Mirror/Examples/Room/Scenes/MirrorRoomOnline.unity
     guid: d7a6763559b31854586c9e49916273ef
-  - enabled: 1
+  - enabled: 0
     path: Assets/Mirror/Examples/Room/Scenes/MirrorRoomGame.unity
     guid: 48478f4d522f96945b8396f376299d3a
   m_configObjects: {}

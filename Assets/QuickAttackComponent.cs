@@ -29,7 +29,7 @@ public class QuickAttackComponent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.Battle && !_ActiveBattle && MainCameraComponent._MainCameraInstance._AttackingCountry == null)
+        if (GameCanvasComponent._GameInstance != null && GameCanvasComponent._GameInstance._CurrentState == TurnStates.Battle && !_ActiveBattle && MainCameraComponent._MainCameraInstance._AttackingCountry == null)
         {
             if (Input.GetMouseButton(0) && MainCameraComponent._MainCameraInstance._HoveredCountry != null && _step1 == false && MainCameraComponent._MainCameraInstance._HoveredCountry._TroopsCount > 1)
             {
@@ -220,14 +220,14 @@ public class QuickAttackComponent : MonoBehaviour
         bool battleOver = false;
         if (_DefendingCountry._TroopsCount <= 0)
         {
-            ArmiesClass defArmy = _DefendingCountry._OccupyingArmy;
+            ArmiesClass2 defArmy = _DefendingCountry._OccupyingArmy;
 
             defArmy._ControlledCountries.Remove(_DefendingCountry);
             if (defArmy._ControlledCountries.Count == 0)
             {
                 defArmy._isDefeated = true;
-                defArmy._Info._Defeated.color = _AttackingCountry._CurColour;
-                defArmy._Info._Defeated.gameObject.SetActive(true);
+                //defArmy._Info._Defeated.color = _AttackingCountry._CurColour;
+                //defArmy._Info._Defeated.gameObject.SetActive(true);
 
                 GameCanvasComponent._GameInstance._CurArmy._OneStars += defArmy._OneStars;
                 GameCanvasComponent._GameInstance._CurArmy._TwoStars += defArmy._TwoStars;

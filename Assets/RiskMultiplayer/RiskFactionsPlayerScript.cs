@@ -8,6 +8,7 @@ public class RiskFactionsPlayerScript : NetworkBehaviour
     public int index = -1;
 
     public RiskFactionGameSceneScript _SceneScript;
+    GameCanvasComponent _GameCanvas;
 
     [SyncVar(hook = nameof(OnNameChanged))]
     public string _PlayerName;
@@ -17,6 +18,9 @@ public class RiskFactionsPlayerScript : NetworkBehaviour
 
     [SyncVar]
     public ArmyScriptableObject _Army;
+
+    [SyncVar]
+    public bool _IsTurn;
 
     void OnNameChanged(string old, string _new)
     {
@@ -33,5 +37,22 @@ public class RiskFactionsPlayerScript : NetworkBehaviour
     public void CmdChangePlayerColour(Color colour)
     {
         _PlayerColour = colour;
+    }
+
+    [Command]
+    public void CmdSetTurn(bool isTurn)
+    {
+        _IsTurn = isTurn;
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+
+        _GameCanvas = FindFirstObjectByType<GameCanvasComponent>();
+
+        //GameCanvasComponent._GameInstance._LocalPlayer = this;
+
+        _GameCanvas._LocalPlayer = this;
     }
 }

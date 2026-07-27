@@ -100,7 +100,7 @@ public class ObjectiveManager : MonoBehaviour
                     {
                         for (int i = 0; i < BoardComponent._BoardInstance._Continents.Length; i++)
                         {
-                            if (BoardComponent._BoardInstance._Continents[i]._ControllingArmy == GameCanvasComponent._GameInstance._CurArmy && _Can1TurnContinent[i] == true)
+                            if (BoardComponent._BoardInstance._Continents[i]._ControllingArmy._Army == GameCanvasComponent._GameInstance._CurArmy._Army && _Can1TurnContinent[i] == true)
                             {
                                 GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
                                 GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
@@ -119,7 +119,7 @@ public class ObjectiveManager : MonoBehaviour
                             int temp = 0;
                             foreach (ContinentComponent c in BoardComponent._BoardInstance._Continents)
                             {
-                                if (c._ControllingArmy == GameCanvasComponent._GameInstance._CurArmy)
+                                if (c._ControllingArmy._Army == GameCanvasComponent._GameInstance._CurArmy._Army)
                                     temp++;
 
                                 if (temp >= 2)
@@ -135,7 +135,7 @@ public class ObjectiveManager : MonoBehaviour
                         }
                         else
                         {
-                            if (BoardComponent._BoardInstance._Continents[o._RequiredContinents[0]]._ControllingArmy == GameCanvasComponent._GameInstance._CurArmy)
+                            if (BoardComponent._BoardInstance._Continents[o._RequiredContinents[0]]._ControllingArmy._Army == GameCanvasComponent._GameInstance._CurArmy._Army)
                             {
                                 GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
                                 GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);

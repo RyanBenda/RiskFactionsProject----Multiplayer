@@ -20,7 +20,7 @@ public class RewardScriptableObject : ScriptableObject
     public int _Index = 0;
 
 
-    public void DetermineReward(ArmiesClass Army)
+    public void DetermineReward(ArmiesClass2 Army)
     {
         if (_Airfield == true)
         {

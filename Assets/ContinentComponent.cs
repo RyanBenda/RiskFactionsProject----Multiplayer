@@ -6,7 +6,7 @@ public class ContinentComponent : MonoBehaviour
 {
     public CountryComponent[] _Countries;
 
-    public ArmiesClass _ControllingArmy;
+    public ArmiesClass2 _ControllingArmy;
 
     public int _TroopValue = 4;
 
@@ -26,6 +26,6 @@ public class ContinentComponent : MonoBehaviour
         if (fullcontrol)
             _ControllingArmy = GameCanvasComponent._GameInstance._CurArmy;
         else
-            _ControllingArmy = null;
+            _ControllingArmy = default;
     }
 }

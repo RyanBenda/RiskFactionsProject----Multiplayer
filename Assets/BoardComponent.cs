@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Mirror;
 
-public class BoardComponent : MonoBehaviour
+public class BoardComponent : NetworkBehaviour
 {
     public static BoardComponent _BoardInstance;
 
@@ -25,18 +26,22 @@ public class BoardComponent : MonoBehaviour
 
     public List<CountryComponent> _Airfields = new List<CountryComponent>();
 
+    //public readonly SyncList<CountryComponent> tempCountries = new SyncList<CountryComponent>();
+
     private void Start()
     {
         if (_BoardInstance == null)
             _BoardInstance = this;
-
-        int armyIndex = Random.Range(0, _Armies.Length);
+    }
+    public void BeginMatch(ArmyScriptableObject[] armies)
+    {
+        int armyIndex = Random.Range(0, armies.Length);
 
         int temp = armyIndex;
-        for (int i = 0; i < _Armies.Length; i++)
+        for (int i = 0; i < armies.Length; i++)
         {
-            ArmiesClass army = new ArmiesClass();
-            army._Army = _Armies[armyIndex];
+            ArmiesClass2 army = new ArmiesClass2();
+            army._Army = armies[armyIndex];
             /*army._Stars = 0;
             army._HasEarlyMove = false;
             army._HasAdditionalMove = false;
@@ -59,7 +64,8 @@ public class BoardComponent : MonoBehaviour
                     army._TwoStars++;
             }
 
-            _GameCanvas._TurnOrder.Add(army);
+            army._ControlledCountries = new List<CountryComponent>();
+            
             GameObject a = Instantiate(_GameCanvas._ArmyTabPrefab, _GameCanvas._ArmyOrder.content);
             ArmyInfoComponent aic = a.GetComponent<ArmyInfoComponent>();
             aic._Army = army;
@@ -70,13 +76,16 @@ public class BoardComponent : MonoBehaviour
 
             if (sum < 1)
                 army._TextColour = Color.white;
+            else
+                army._TextColour = Color.black;
             
             aic._Name.color = army._TextColour;
 
-            army._Info = aic;
+            //army._Info = aic;
+            _GameCanvas._TurnOrder.Add(army);
 
             armyIndex++;
-            if (armyIndex == _Armies.Length)
+            if (armyIndex == armies.Length)
                 armyIndex = 0;
         }
         armyIndex = temp;
@@ -105,10 +114,10 @@ public class BoardComponent : MonoBehaviour
         {
             int index = Random.Range(0, tempCountries.Count);
 
-            tempCountries[index]._CurColour = _Armies[armyIndex]._ArmyColour;
+            tempCountries[index]._CurColour = armies[armyIndex]._ArmyColour;
             for (int j = 0; j < tempCountries[index]._CountryColour.Length; j++)
             {
-                tempCountries[index]._CountryColour[j].color = _Armies[armyIndex]._ArmyColour;
+                tempCountries[index]._CountryColour[j].color = armies[armyIndex]._ArmyColour;
             }
 
             for (int j = 0; j < _GameCanvas._TurnOrder.Count; j++)
@@ -117,6 +126,7 @@ public class BoardComponent : MonoBehaviour
                 {
                     _GameCanvas._TurnOrder[j]._ControlledCountries.Add(tempCountries[index]);
                     tempCountries[index]._OccupyingArmy = _GameCanvas._TurnOrder[j];
+                    //tempCountries[index].SetOccupier(j);
 
                     tempCountries[index]._TroopDisplay.color = _GameCanvas._TurnOrder[j]._TextColour;
                     tempCountries[index]._CityDisplay.color = _GameCanvas._TurnOrder[j]._TextColour;
@@ -133,7 +143,7 @@ public class BoardComponent : MonoBehaviour
 
             tempCountries.RemoveAt(index);
             armyIndex++;
-            if (armyIndex == _Armies.Length)
+            if (armyIndex == armies.Length)
                 armyIndex = 0;
         }
 
@@ -173,10 +183,10 @@ public class BoardComponent : MonoBehaviour
 
         foreach (ContinentComponent c in _Continents)
         {
-            c._ControllingArmy = null;
-            foreach (ArmiesClass a in _GameCanvas._TurnOrder)
+            c._ControllingArmy = default;
+            foreach (ArmiesClass2 a in _GameCanvas._TurnOrder)
             {
-                if (c._ControllingArmy == null)
+                if (c._ControllingArmy._Army == default)
                 {
                     _GameCanvas._CurArmy = a;
                     c.CheckCountries(_GameCanvas._CurArmy._Army._ArmyColour);
@@ -184,18 +194,19 @@ public class BoardComponent : MonoBehaviour
             }
         }
 
+        
+
         _GameCanvas._CurrentArmyBanner.color = _GameCanvas._TurnOrder[0]._Army._ArmyColour;
         _GameCanvas._CurArmy = _GameCanvas._TurnOrder[0];
 
 
-        _IncreaseButton[1].gameObject.SetActive(false);
-        _DecreaseButton[1].gameObject.SetActive(false);
+        HideMinMaXButtons();
 
-        int stars = _GameCanvas._CurArmy._TwoStars * 2;
+        /*int stars = _GameCanvas._CurArmy._TwoStars * 2;
         stars += _GameCanvas._CurArmy._OneStars;
 
         _GameCanvas._StarsDisplay.color = _GameCanvas._CurArmy._TextColour;
-        _GameCanvas._StarsDisplay.text = "Stars: " + stars.ToString();
+        _GameCanvas._StarsDisplay.text = "Stars: " + stars.ToString();*/
 
         /*CalculateNewTroops(0);
 
@@ -206,6 +217,13 @@ public class BoardComponent : MonoBehaviour
             else
                 _GameCanvas.ProgressTurn();
         }*/
+    }
+
+    [ClientRpc]
+    void HideMinMaXButtons()
+    {
+        _IncreaseButton[1].gameObject.SetActive(false);
+        _DecreaseButton[1].gameObject.SetActive(false);
     }
 
     private void Update()
@@ -262,7 +280,7 @@ public class BoardComponent : MonoBehaviour
 
         for (int i = 0; i < _Continents.Length; i++)
         {
-            if (_GameCanvas._TurnOrder[index] == _Continents[i]._ControllingArmy)
+            if (_GameCanvas._TurnOrder[index]._Army == _Continents[i]._ControllingArmy._Army)
                 troopPointsFloor += _Continents[i]._TroopValue;
         }
 
@@ -387,13 +405,11 @@ public class BoardComponent : MonoBehaviour
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceCapital)
         {
-            MainCameraComponent._MainCameraInstance._AttackingCountry._IsCapital = true;
-            MainCameraComponent._MainCameraInstance._AttackingCountry._CapitalColour = MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour;
-            MainCameraComponent._MainCameraInstance._AttackingCountry._CaptialDisplay.gameObject.SetActive(true);
+            MainCameraComponent._MainCameraInstance._AttackingCountry.CmdSetCapital(MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour);
 
             //MainCameraComponent._MainCameraInstance.ResetSelected();
             GameCanvasComponent._GameInstance.ProgressTurn();
-            MainCameraComponent._MainCameraInstance.ResetCamera();
+            MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceAirfield)
         {
@@ -406,7 +422,7 @@ public class BoardComponent : MonoBehaviour
             ResetAirfield();
 
             GameCanvasComponent._GameInstance.ProgressTurn();
-            MainCameraComponent._MainCameraInstance.ResetCamera();
+            MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
     }
 
@@ -529,12 +545,12 @@ public class BoardComponent : MonoBehaviour
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceCapital)
         {
             //MainCameraComponent._MainCameraInstance.ResetSelected();
-            MainCameraComponent._MainCameraInstance.ResetCamera();
+            MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceAirfield)
         {
             //MainCameraComponent._MainCameraInstance.ResetSelected();
-            MainCameraComponent._MainCameraInstance.ResetCamera();
+            MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
     }
 
