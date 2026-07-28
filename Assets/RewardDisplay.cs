@@ -94,7 +94,7 @@ public class RewardDisplay : MonoBehaviour
         else
         {
             this.gameObject.SetActive(false);
-            GameCanvasComponent._GameInstance.ProgressTurn();
+            GameCanvasComponent._GameInstance.CmdProgressTurn();
         }
 
     }

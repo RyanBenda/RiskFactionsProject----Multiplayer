@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using Mirror;
 
-public class BattleSystem : MonoBehaviour
+public class BattleSystem : NetworkBehaviour
 {
     public static BattleSystem _BattleSystemInstance;
 
@@ -22,8 +23,8 @@ public class BattleSystem : MonoBehaviour
 
     public Button _RollButton;
 
-    CountryComponent _AttackingCountry;
-    CountryComponent _DefendingCountry;
+    public CountryComponent _AttackingCountry;
+    public CountryComponent _DefendingCountry;
     bool _AttackingCountryOnLeft = true;
 
     public bool _ActiveBattle = false;
@@ -31,21 +32,30 @@ public class BattleSystem : MonoBehaviour
 
     public RewardScriptableObject _CardReward;
 
+    public Button _DiceButton;
     public TextMeshProUGUI _DiceButtonText;
+    [SyncVar(hook = nameof(OnDiceIndexChanged))]
     int _DiceIndex = 3;
     // Start is called before the first frame update
     void Start()
     {
-        if (_BattleSystemInstance == null)
-            _BattleSystemInstance = this;
+        //SetUpInstance();
 
-        this.gameObject.SetActive(false);
     }
 
     private void OnEnable()
     {
+        /*if (_BattleSystemInstance == null)
+            _BattleSystemInstance = this;*/
+
         if (GameCanvasComponent._GameInstance != null)
             GameCanvasComponent._GameInstance._ProgressButton.gameObject.SetActive(false);
+    }
+
+    public void SetUpInstance()
+    {
+        if (_BattleSystemInstance == null)
+            _BattleSystemInstance = this;
     }
 
     // Update is called once per frame
@@ -84,6 +94,19 @@ public class BattleSystem : MonoBehaviour
             _DiceIndex = 1;
             _DiceButtonText.text = "1";
         }
+
+        //Debug.Log(GameCanvasComponent._GameInstance);
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+        {
+            _RollButton.gameObject.SetActive(true);
+            _DiceButton.interactable = true;
+        }
+        else
+        {
+            _RollButton.gameObject.SetActive(false);
+            _DiceButton.interactable = false;
+        }
+
 
         /*Vector3 temp = MainCameraComponent._MainCameraInstance.transform.position - _AttackingCountry.transform.position;
 
@@ -136,16 +159,19 @@ public class BattleSystem : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
+    [ClientRpc]
     private void ResetDice()
     {
         for (int i = 0; i < _LeftDice.Length; i++)
         {
+            _LeftDice[i]._Roll = -1;
             _LeftDice[i]._RollText.text = "";
             _LeftDice[i].gameObject.SetActive(false);
         }
 
         for (int i = 0; i < _RightDice.Length; i++)
         {
+            _RightDice[i]._Roll = -1;
             _RightDice[i]._RollText.text = "";
             _RightDice[i].gameObject.SetActive(false);
         }
@@ -154,15 +180,23 @@ public class BattleSystem : MonoBehaviour
         _DefenceAirfield.SetActive(false);
     }
 
-    public void RollDice()
+    [Command(requiresAuthority = false)]
+    public void CmdRollDice()
     {
+        //RpcRollDice(CalculateRoll(_AttackingCountry, true), CalculateRoll(_DefendingCountry, false));
         if (!_ActiveBattle)
         {
-            _BattleCoroutine = DoBattle();
+            _BattleCoroutine = DoBattle(/*AdiceRolls, DdiceRolls*/);
             StartCoroutine(_BattleCoroutine);
 
             GameCanvasComponent._GameInstance._HasAttacked = true;
         }
+    }
+
+    [ClientRpc]
+    void RpcRollDice(List<int> AdiceRolls, List<int> DdiceRolls)
+    {
+        
     }
 
     /*DiceComponent[] GetDiceArray(bool isAttacker)
@@ -183,47 +217,73 @@ public class BattleSystem : MonoBehaviour
         }    
     }*/
 
-    public void ChangeDice()
+    [Command(requiresAuthority = false)]
+    public void CMDChangeDice()
     {
-        if (_DiceIndex == 1)
+        Debug.Log(_AttackingCountry);
+        if (_AttackingCountry != null)
         {
-            if (_AttackingCountry._TroopsCount > 2)
+            if (_DiceIndex == 1)
             {
-                _DiceIndex = 2;
-                _DiceButtonText.text = "2";
+                if (_AttackingCountry._TroopsCount > 2)
+                {
+                    _DiceIndex = 2;
+                    _DiceButtonText.text = "2";
+                }
+                else
+                {
+                    _DiceIndex = 4;
+                    _DiceButtonText.text = ">";
+                }
             }
-            else
+            else if (_DiceIndex == 2)
+            {
+                if (_AttackingCountry._TroopsCount > 3)
+                {
+                    _DiceIndex = 3;
+                    _DiceButtonText.text = "3";
+                }
+                else
+                {
+                    _DiceIndex = 4;
+                    _DiceButtonText.text = ">";
+                }
+            }
+            else if (_DiceIndex == 3)
             {
                 _DiceIndex = 4;
                 _DiceButtonText.text = ">";
             }
-        }
-        else if (_DiceIndex == 2)
-        {
-            if (_AttackingCountry._TroopsCount > 3)
+            else if (_DiceIndex == 4)
             {
-                _DiceIndex = 3;
-                _DiceButtonText.text = "3";
+                _DiceIndex = 1;
+                _DiceButtonText.text = "1";
             }
-            else
-            {
-                _DiceIndex = 4;
-                _DiceButtonText.text = ">";
-            }
-        }
-        else if (_DiceIndex == 3)
-        {
-            _DiceIndex = 4;
-            _DiceButtonText.text = ">";
-        }
-        else if (_DiceIndex == 4)
-        {
-            _DiceIndex = 1;
-            _DiceButtonText.text = "1";
         }
     }
 
-    IEnumerator DoBattle()
+    void OnDiceIndexChanged(int old, int _new)
+    {
+        if (_DiceIndex == 1)
+        {
+            _DiceButtonText.text = "1";
+        }
+        else if (_DiceIndex == 2)
+        {
+            _DiceButtonText.text = "2";
+        }
+        else if (_DiceIndex == 3)
+        {
+            _DiceButtonText.text = "3";
+        }
+        else if (_DiceIndex == 4)
+        {
+            _DiceButtonText.text = ">";
+        }
+    }
+    
+    
+    IEnumerator DoBattle(/*List<int> AdiceRolls, List<int> DdiceRolls*/)
     {
         _ActiveBattle = true;
 
@@ -245,6 +305,8 @@ public class BattleSystem : MonoBehaviour
 
             _LeftDice[i]._RollText.text = diceRolls[i].ToString();
             _LeftDice[i].gameObject.SetActive(true);
+
+
 
             /*attackersDice[i]._Roll = diceRolls[i];
             attackersDice[i]._RollText.text = diceRolls[i].ToString();
@@ -278,6 +340,8 @@ public class BattleSystem : MonoBehaviour
 
             _RightDice[i]._RollText.text = diceRolls[i].ToString();
             _RightDice[i].gameObject.SetActive(true);
+
+
 
             /*defendersDice[i]._Roll = diceRolls[i];
             defendersDice[i]._RollText.text = diceRolls[i].ToString();
@@ -320,7 +384,7 @@ public class BattleSystem : MonoBehaviour
         {
             if (_RightDice[i]._Roll >= _LeftDice[i]._Roll)
             {
-                _RightDice[i]._DiceArrow.gameObject.SetActive(true);
+                _RightDice[i].SetArrowActive(true);
                 atkTroopsLost++;
 
                 if (_RightDice.Length >= 2)
@@ -331,7 +395,7 @@ public class BattleSystem : MonoBehaviour
             }
             else
             {
-                _LeftDice[i]._DiceArrow.gameObject.SetActive(true);
+                _LeftDice[i].SetArrowActive(true);
                 defTroopsLost++;
 
                 if (_LeftDice.Length >= 2)
@@ -344,14 +408,6 @@ public class BattleSystem : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(2f);
 
-        for (int i = 0; i < 4; i++)
-        {
-            _LeftDice[i]._DiceArrow.gameObject.SetActive(false);
-            _RightDice[i]._DiceArrow.gameObject.SetActive(false);
-        }
-
-        ResetDice();
-
         _AttackingCountry._TroopsCount -= atkTroopsLost;
         if (_AttackingCountry._TroopsCount <= 0)
         {
@@ -359,6 +415,17 @@ public class BattleSystem : MonoBehaviour
         }
 
         _DefendingCountry._TroopsCount -= defTroopsLost;
+
+
+        for (int i = 0; i < 4; i++)
+        {
+            _LeftDice[i].SetArrowActive(false);
+            _RightDice[i].SetArrowActive(false);
+        }
+
+        ResetDice();
+
+
 
         bool battleWon = false;
         if (_DefendingCountry._TroopsCount <= 0)
@@ -377,42 +444,33 @@ public class BattleSystem : MonoBehaviour
                 }    
             }*/
 
-            ArmiesClass2 defArmy = _DefendingCountry._OccupyingArmy;
+            //ArmiesClass2 defArmy = _DefendingCountry._OccupyingArmy;
 
-            defArmy._ControlledCountries.Remove(_DefendingCountry);
-            if (defArmy._ControlledCountries.Count == 0)
+            //defArmy._ControlledCountries.Remove(_DefendingCountry);
+            if (_DefendingCountry._OccupyingArmy._ControlledCountries.Count == 1)
             {
-                defArmy._isDefeated = true;
-                //defArmy._Info._Defeated.color = _AttackingCountry._CurColour;
-                //defArmy._Info._Defeated.gameObject.SetActive(true);
+                _DefendingCountry._OccupyingArmy._isDefeated = true;
+                _DefendingCountry._OccupyingArmy._Info._Defeated.color = _AttackingCountry._CurColour;
+                _DefendingCountry._OccupyingArmy._Info._Defeated.gameObject.SetActive(true);
 
-                GameCanvasComponent._GameInstance._CurArmy._OneStars += defArmy._OneStars;
-                GameCanvasComponent._GameInstance._CurArmy._TwoStars += defArmy._TwoStars;
+                GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
+                GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
 
                 int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
                 stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
 
                 GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
             }
+            _DefendingCountry._OccupyingArmy._ControlledCountries.Remove(_DefendingCountry);
+            //EndOfFightRpc("battlewon", true);
 
-            GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Add(_DefendingCountry);
+            //GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Add(_DefendingCountry);
             _DefendingCountry._CurColour = _AttackingCountry._CurColour;
-            _DefendingCountry._OccupyingArmy = _AttackingCountry._OccupyingArmy;
+            //_DefendingCountry._OccupyingArmy = _AttackingCountry._OccupyingArmy;
+            _DefendingCountry.ChangedOwner();
 
-            
-            if (_DefendingCountry._IsCapital)
-            {
-                if (_DefendingCountry._CurColour == _DefendingCountry._CapitalColour)
-                {
-                    
-                    _DefendingCountry._CaptialDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
-                    
-                }
-                else
-                    _DefendingCountry._CaptialDisplay.color = _DefendingCountry._CapitalColour;
-            }
-            _DefendingCountry._CityDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
-            _DefendingCountry._TroopDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
+
+            UpdateTextColours(_DefendingCountry);
 
 
 
@@ -467,10 +525,10 @@ public class BattleSystem : MonoBehaviour
             //_AttackingCountry._TroopDisplay.text = _AttackingCountry._TroopsCount.ToString();
             //_DefendingCountry._TroopDisplay.text = _DefendingCountry._TroopsCount.ToString();
 
-            MainCameraComponent._MainCameraInstance._Tweening = true;
+            //MainCameraComponent._MainCameraInstance._Tweening = true;
 
 
-            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+            /*MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
             MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
 
             MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
@@ -499,7 +557,8 @@ public class BattleSystem : MonoBehaviour
                 ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
             }
 
-            ResetFight();
+            ResetFight();*/
+            EndOfFightRpc("1", battleWon);
         }
         else if (_AttackingCountry._TroopsCount <= 4 && battleWon)
         {
@@ -512,7 +571,7 @@ public class BattleSystem : MonoBehaviour
             _AttackingCountry._TroopDisplay.text = _AttackingCountry._TroopsCount.ToString();
             _DefendingCountry._TroopDisplay.text = _DefendingCountry._TroopsCount.ToString();
 
-            if (_DefendingCountry._HasProxy)
+            /*if (_DefendingCountry._HasProxy)
                 _DefendingCountry._Proxy.UpdateDetails();
 
             if (_AttackingCountry._HasProxy)
@@ -546,12 +605,15 @@ public class BattleSystem : MonoBehaviour
 
             ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
 
-            ResetFight();
+            ResetFight();*/
+
+            EndOfFightRpc("<4", battleWon);
         }
         else if (_AttackingCountry._TroopsCount > 4 && battleWon)
         {
             _RollButton.gameObject.SetActive(false);
-            MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
+            //MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
+            
 
             _AttackingCountry._TroopsCount -= 3;
 
@@ -560,23 +622,22 @@ public class BattleSystem : MonoBehaviour
             _AttackingCountry._TroopDisplay.text = _AttackingCountry._TroopsCount.ToString();
             _DefendingCountry._TroopDisplay.text = _DefendingCountry._TroopsCount.ToString();
 
-            if (_DefendingCountry._HasProxy)
-                _DefendingCountry._Proxy.UpdateDetails();
+            EndOfFightRpc("rotate", false);
 
-            if (_AttackingCountry._HasProxy)
-                _AttackingCountry._Proxy.UpdateDetails();
+            
 
             yield return new WaitForSeconds(1);
 
             GameCanvasComponent._GameInstance._CurrentState = TurnStates.BattleMove;
 
-            _DefendingCountry.SetUpMoveTroopsButtons(_AttackingCountry);
-            GameCanvasComponent._GameInstance._ProgressButton.gameObject.SetActive(true);
+            /*_DefendingCountry.SetUpMoveTroopsButtons(_AttackingCountry);
+            GameCanvasComponent._GameInstance._ProgressButton.gameObject.SetActive(true);*/
+            EndOfFightRpc("battlemove", false);
 
             while (GameCanvasComponent._GameInstance._CurrentState != TurnStates.Battle)
                 yield return null;
 
-            MainCameraComponent._MainCameraInstance._Tweening = true;
+            /*MainCameraComponent._MainCameraInstance._Tweening = true;
 
             BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
             BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
@@ -609,13 +670,15 @@ public class BattleSystem : MonoBehaviour
             MainCameraComponent._MainCameraInstance._DefendingCountry = null;
 
             _RollButton.gameObject.SetActive(true);
-            ResetFight();
+            ResetFight();*/
+
+            EndOfFightRpc(">4", battleWon);
         }
 
         _ActiveBattle = false;
 
         if (_DiceIndex == 4 && !battleWon)
-            RollDice();
+            CmdRollDice();
         else if (!battleWon && _DiceIndex == 3 && _AttackingCountry._TroopsCount < 4)
         {
             if (_AttackingCountry._TroopsCount == 3)
@@ -704,5 +767,182 @@ public class BattleSystem : MonoBehaviour
         }
 
         return templist;
+    }
+
+    [ClientRpc]
+
+    void UpdateTextColours(CountryComponent def)
+    {
+        Debug.Log("called");
+
+        if (def._IsCapital)
+        {
+            if (def._CurColour == def._CapitalColour)
+            {
+
+                def._CaptialDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
+
+            }
+            else
+                def._CaptialDisplay.color = def._CapitalColour;
+        }
+        def._CityDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
+        def._TroopDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
+    }
+
+    [ClientRpc]
+
+    void EndOfFightRpc(string info, bool battleWon)
+    {
+        if (info == "battlewon")
+        {
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._ControlledCountries.Count == 1)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._isDefeated = true;
+                MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._Info._Defeated.color = _AttackingCountry._CurColour;
+                MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._Info._Defeated.gameObject.SetActive(true);
+
+                /*if (isServer) // hopefully this should avoid getting the same stars twice but will need to test this at some point
+                {
+                    GameCanvasComponent._GameInstance._CurArmy._OneStars += MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._OneStars;
+                    GameCanvasComponent._GameInstance._CurArmy._TwoStars += MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TwoStars;
+                }*/
+
+                int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
+                stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
+
+                GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
+            }
+            MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._ControlledCountries.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
+        }
+        else if (info == "1")
+        {
+            MainCameraComponent._MainCameraInstance._Tweening = true;
+
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+            MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
+
+            MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
+            MainCameraComponent._MainCameraInstance._DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);
+            MainCameraComponent._MainCameraInstance._DefendingCountry._MouseHoverTracker = false;
+
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._Selected = false;
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._HoverObject.SetActive(_DefendingCountry._Proxy._MouseHoverTracker);
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._MouseHoverTracker = false;
+            }
+
+            MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+
+            if (battleWon)
+            {
+                if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
+                {
+                    GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
+                    GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
+                    GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
+                    GameCanvasComponent._GameInstance.PlayRewardEffect();
+                }
+
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            }
+
+            ResetFight();
+        }
+        else if (info == "<4")
+        {
+            if (_DefendingCountry._HasProxy)
+                _DefendingCountry._Proxy.UpdateDetails();
+
+            if (_AttackingCountry._HasProxy)
+                _AttackingCountry._Proxy.UpdateDetails();
+
+            MainCameraComponent._MainCameraInstance._Tweening = true;
+
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+            MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
+
+            MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
+            MainCameraComponent._MainCameraInstance._DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);
+            MainCameraComponent._MainCameraInstance._DefendingCountry._MouseHoverTracker = false;
+
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._Selected = false;
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._HoverObject.SetActive(_DefendingCountry._Proxy._MouseHoverTracker);
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._MouseHoverTracker = false;
+            }
+
+            MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+
+            if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
+            {
+                GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
+                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
+                GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
+                GameCanvasComponent._GameInstance.PlayRewardEffect();
+            }
+
+            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+
+            ResetFight();
+        }
+        else if (info == "rotate")
+        {
+            MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
+
+            if (_DefendingCountry._HasProxy)
+                _DefendingCountry._Proxy.UpdateDetails();
+
+            if (_AttackingCountry._HasProxy)
+                _AttackingCountry._Proxy.UpdateDetails();
+        }
+        else if (info == "battlemove")
+        {
+            GameCanvasComponent._GameInstance._CurrentState = TurnStates.BattleMove;
+
+            if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+                _DefendingCountry.SetUpMoveTroopsButtons(_AttackingCountry);
+            GameCanvasComponent._GameInstance._ProgressButton.gameObject.SetActive(true);
+        }
+        else if (info == ">4")
+        {
+            MainCameraComponent._MainCameraInstance._Tweening = true;
+
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+            BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(false);
+            BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(false);
+
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+
+            if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
+            {
+                GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
+                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
+                GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
+                GameCanvasComponent._GameInstance.PlayRewardEffect();
+            }
+
+            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+
+            MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
+            MainCameraComponent._MainCameraInstance._DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);
+            MainCameraComponent._MainCameraInstance._DefendingCountry._MouseHoverTracker = false;
+
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._Selected = false;
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._HoverObject.SetActive(_DefendingCountry._Proxy._MouseHoverTracker);
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._MouseHoverTracker = false;
+            }
+
+            MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+
+            _RollButton.gameObject.SetActive(true);
+            ResetFight();
+        }
+
     }
 }

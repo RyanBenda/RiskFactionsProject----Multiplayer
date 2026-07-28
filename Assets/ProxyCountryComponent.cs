@@ -4,8 +4,8 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
-
-public class ProxyCountryComponent : MonoBehaviour
+using Mirror;
+public class ProxyCountryComponent : NetworkBehaviour
 {
     public CountryComponent _AttackerCountry;
     public CountryComponent _ActualCountry;
@@ -53,6 +53,7 @@ public class ProxyCountryComponent : MonoBehaviour
         }
     }
 
+    //[ClientRpc]
     public void UpdateDetails()
     {
         _TroopDisplay.text = _ActualCountry._TroopDisplay.text;

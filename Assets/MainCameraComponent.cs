@@ -27,28 +27,56 @@ public class MainCameraComponent : NetworkBehaviour
         _StartingRot = transform.eulerAngles;
     }
 
+    /*[Command(requiresAuthority = false)]
+    void CmdSetCountry(bool isAttacking)
+    {
+        if (isAttacking)
+            RpcSetCounty(_AttackingCountry, isAttacking);
+        else
+            RpcSetCounty(_DefendingCountry, isAttacking);
+    }
+
+    [ClientRpc]
+
+    void RpcSetCounty(CountryComponent c, bool isAttacking)
+    {
+        if (isAttacking)
+            _AttackingCountry = c;
+        else
+            _DefendingCountry = c;
+    }*/
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (GameCanvasComponent._GameInstance._LocalPlayer != null && GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
-            if (GameCanvasComponent._GameInstance._CurrentState != TurnStates.BattleMove && GameCanvasComponent._GameInstance._CurrentState != TurnStates.Move && GameCanvasComponent._GameInstance._CurrentState != TurnStates.AdditionalMove && GameCanvasComponent._GameInstance._CurrentState != TurnStates.EarlyMove && !BattleSystem._BattleSystemInstance._ActiveBattle)
-                CmdResetCamera();
-            else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (_AttackingCountry != null)
-                    ResetTroopMove();   
+                if (GameCanvasComponent._GameInstance._CurrentState != TurnStates.BattleMove && GameCanvasComponent._GameInstance._CurrentState != TurnStates.Move && GameCanvasComponent._GameInstance._CurrentState != TurnStates.AdditionalMove && GameCanvasComponent._GameInstance._CurrentState != TurnStates.EarlyMove && !BattleSystem._BattleSystemInstance._ActiveBattle)
+                    CmdResetCamera();
+                else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
+                {
+                    if (_AttackingCountry != null)
+                        ResetTroopMove();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
+                {
+                    GameCanvasComponent._GameInstance.CmdProgressTurn();
+                }
+                else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
+                    CmdResetCamera();
             }
         }
-        
-        if (Input.GetKeyDown(KeyCode.Return))
+        /*if (isServer)
         {
-            if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
+            if (Input.GetKey(KeyCode.H))
             {
-                GameCanvasComponent._GameInstance.ProgressTurn();
+                CmdSetCountry(true);
             }
-            else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
-                CmdResetCamera();
-        }
+        }*/
 
     }
 
@@ -74,6 +102,8 @@ public class MainCameraComponent : NetworkBehaviour
     {
         _Tweening = true;
 
+        //Debug.Log(BattleSystem._BattleSystemInstance);
+
         if (_DefendingCountry == null)
         {
             this.transform.DOMove(_StartingPos, 1).OnComplete(() => ResetSelected());
@@ -97,7 +127,8 @@ public class MainCameraComponent : NetworkBehaviour
         BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(false);
         BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(false);
 
-        BattleSystem._BattleSystemInstance.ResetFight();
+        if (BattleSystem._BattleSystemInstance != null)
+            BattleSystem._BattleSystemInstance.ResetFight();
     }
 
     public void ResetSelected()

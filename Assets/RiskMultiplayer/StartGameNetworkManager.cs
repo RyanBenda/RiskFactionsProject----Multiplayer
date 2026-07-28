@@ -26,6 +26,8 @@ public class StartGameNetworkManager : NetworkRoomManager
         NetworkServer.ReplacePlayerForConnection(conn, gamePlayer, ReplacePlayerOptions.KeepAuthority);
         _RFSceneScript._Players.Add(riskPlayer);
         _RFSceneScript._PlayerCount++;
+
+        Debug.Log("ran");
         //_RFSceneScript._Board._GameCanvas._LocalPlayer = riskPlayer;
 
         return true;

@@ -13,14 +13,14 @@ public class CountryComponent : NetworkBehaviour
     public bool _NewOccupier = false;
 
     public GameObject _HoverObject;
-    [SyncVar]
+    [SyncVar(hook = nameof(OnSelectedChanged))]
     public bool _Selected = false;
-    [SyncVar]
+    //[SyncVar]
     public bool _MouseHoverTracker = false;
 
     [SyncVar(hook = nameof(OnTroopsChanged))]
     public int _TroopsCount = 1;
-    [SyncVar(hook = nameof(OnAddedTroopsChanged))]
+    [SyncVar/*(hook = nameof(OnAddedTroopsChanged))*/]
     public int _AddedTroops = 0;
     public TextMeshProUGUI _TroopDisplay;
 
@@ -48,7 +48,7 @@ public class CountryComponent : NetworkBehaviour
     public bool _BeenChecked = false;
 
     public TextMeshProUGUI _AirfieldDisplay;
-    [SyncVar]
+    [SyncVar(hook = nameof(OnAirfieldChanged))]
     public bool _HasAirfield = false;
     [SyncVar]
     public bool _HasAirfieldEffect;
@@ -81,7 +81,16 @@ public class CountryComponent : NetworkBehaviour
 
         _TroopDisplay.color = _OccupyingArmy._TextColour;
         _CityDisplay.color = _OccupyingArmy._TextColour;
-        _CaptialDisplay.color = _OccupyingArmy._TextColour;
+
+        if (_CurColour == _CapitalColour)
+        {
+            _CaptialDisplay.color = _OccupyingArmy._TextColour;
+        }
+        else if (_CapitalColour != Color.clear)
+            _CaptialDisplay.color = _CapitalColour;
+        else
+            _CaptialDisplay.color = _OccupyingArmy._TextColour;
+        //_CaptialDisplay.color = _OccupyingArmy._TextColour;
 
         if (_HasProxy)
             _Proxy._TroopDisplay.color = _OccupyingArmy._TextColour;
@@ -117,9 +126,12 @@ public class CountryComponent : NetworkBehaviour
         }*/
     }
 
-    void OnAddedTroopsChanged(int old, int _new)
+    void OnSelectedChanged(bool old, bool _new)
     {
-        
+        if (!_Selected && MainCameraComponent._MainCameraInstance._HoveredCountry != this)
+        {
+            _HoverObject.SetActive(false);
+        }
     }
 
     [Command(requiresAuthority = false)]
@@ -133,6 +145,24 @@ public class CountryComponent : NetworkBehaviour
     void OnGivenCapital(bool old, bool _new)
     {
         _CaptialDisplay.gameObject.SetActive(true);
+    }
+
+    void OnAirfieldChanged(bool old, bool _new)
+    {
+        _AirfieldDisplay.gameObject.SetActive(_HasAirfield);
+        if (!_HasAirfield)
+            BoardComponent._BoardInstance._Airfields.Remove(this);
+    }
+
+    [ClientRpc]
+    public void ChangedOwner()
+    {
+        //_OccupyingArmy._ControlledCountries.Remove(this);
+        //EndOfFightRpc("battlewon", true);
+
+        GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Add(this);
+        //_CurColour = GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour;
+        _OccupyingArmy = GameCanvasComponent._GameInstance._CurArmy;
     }
 
     public void UpdateTroops()
@@ -174,7 +204,7 @@ public class CountryComponent : NetworkBehaviour
                 {
                     if (this._CurColour == BoardComponent._BoardInstance._GameCanvas._CurrentArmyBanner.color)
                     {
-                        ServerCameraInstuctor("NewTroops", connectionToClient);
+                        ServerCameraInstructor("NewTroops", connectionToClient);
                     }
                     //return;
                 }
@@ -185,12 +215,14 @@ public class CountryComponent : NetworkBehaviour
                 {
                     if (this._CurColour == BoardComponent._BoardInstance._GameCanvas._CurrentArmyBanner.color && !_QuickAttacking)
                     {
-                        MainCameraComponent._MainCameraInstance._Tweening = true;
+                        /*MainCameraComponent._MainCameraInstance._Tweening = true;
                         MainCameraComponent._MainCameraInstance._AttackingCountry = this;
                         _MouseHoverTracker = true;
                         _Selected = true;
                         _HoverObject.SetActive(true);
-                        MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+                        MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);*/
+
+                        ServerCameraInstructor("Attacking", connectionToClient);
                     }
                     return;
                 }
@@ -199,7 +231,7 @@ public class CountryComponent : NetworkBehaviour
 
                 if (!MainCameraComponent._MainCameraInstance._Tweening && MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._DefendingCountry == null && MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour != this._CurColour && MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount > 1)
                 {
-                    bool neighouringCountry = false;
+                    /*bool neighouringCountry = false;
                     int index = -1;
                     for (int i = 0; i < MainCameraComponent._MainCameraInstance._AttackingCountry._NeighbouringCountries.Length; i++)
                     {
@@ -246,11 +278,14 @@ public class CountryComponent : NetworkBehaviour
                             MainCameraComponent._MainCameraInstance.transform.DOMove(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[index].position, 1.5f).OnComplete(() => MainCameraComponent._MainCameraInstance.ActivateBattleSystem());
                             MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[index].eulerAngles, 1.5f);
                         }
-                    }
+
+
+                    }*/
+                    ServerCameraInstructor("Attacking", connectionToClient);
                 }
                 else if (!MainCameraComponent._MainCameraInstance._Tweening && MainCameraComponent._MainCameraInstance._DefendingCountry == null && MainCameraComponent._MainCameraInstance._AttackingCountry != this && MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour == this._CurColour)
                 {
-                    MainCameraComponent._MainCameraInstance._AttackingCountry._Selected = false;
+                    /*MainCameraComponent._MainCameraInstance._AttackingCountry._Selected = false;
                     MainCameraComponent._MainCameraInstance._AttackingCountry._HoverObject.SetActive(MainCameraComponent._MainCameraInstance._AttackingCountry._MouseHoverTracker);
                     MainCameraComponent._MainCameraInstance._AttackingCountry._MouseHoverTracker = false;
 
@@ -259,8 +294,9 @@ public class CountryComponent : NetworkBehaviour
                     _MouseHoverTracker = true;
                     _Selected = true;
                     _HoverObject.SetActive(true);
-                    MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+                    MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);*/
 
+                    ServerCameraInstructor("Moving", connectionToClient);
                     //return;
                 }
             }
@@ -271,11 +307,8 @@ public class CountryComponent : NetworkBehaviour
                     if (this._CurColour == BoardComponent._BoardInstance._GameCanvas._CurrentArmyBanner.color)
                     {
 
-                        MainCameraComponent._MainCameraInstance._AttackingCountry = this;
-                        _MouseHoverTracker = true;
-                        _Selected = true;
-                        _HoverObject.SetActive(true);
 
+                        ServerCameraInstructor("MoveState", connectionToClient);
                     }
                     return;
                 }
@@ -284,12 +317,8 @@ public class CountryComponent : NetworkBehaviour
                 {
                     if (BoardComponent._BoardInstance.CheckCountriesConnection(MainCameraComponent._MainCameraInstance._AttackingCountry, this))
                     {
-                        MainCameraComponent._MainCameraInstance._DefendingCountry = this;
-                        _MouseHoverTracker = true;
-                        _Selected = true;
-                        _HoverObject.SetActive(true);
-
-                        SetUpMoveTroopsButtons(MainCameraComponent._MainCameraInstance._AttackingCountry);
+                        
+                        ServerCameraInstructor("MoveState", connectionToClient);
 
                     }
                 }
@@ -306,7 +335,7 @@ public class CountryComponent : NetworkBehaviour
                         _Selected = true;
                         _HoverObject.SetActive(true);
                         MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpCapital());*/
-                        ServerCameraInstuctor("Capital", connectionToClient);
+                        ServerCameraInstructor("Capital", connectionToClient);
                     }
                     //return;
                 }
@@ -323,7 +352,7 @@ public class CountryComponent : NetworkBehaviour
                         _Selected = true;
                         _HoverObject.SetActive(true);
                         MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpCapital());*/
-                        ServerCameraInstuctor("Capital", connectionToClient);
+                        ServerCameraInstructor("Capital", connectionToClient);
                     }
                     //return;
                 }
@@ -332,7 +361,7 @@ public class CountryComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void ServerCameraInstuctor(string instruction, NetworkConnectionToClient client)
+    void ServerCameraInstructor(string instruction, NetworkConnectionToClient client)
     {
         //Debug.Log(client.identity.name);
 
@@ -344,6 +373,17 @@ public class CountryComponent : NetworkBehaviour
             case "NewTroops":
                 NewTroopsPlacementCamera(client.identity.name);
                 break;
+            case "Attacking":
+                AttackingCamera();
+                break;
+            case "Moving":
+                MovingCamera();
+                break;
+            case "MoveState":
+                MovingTroops();
+                break;
+
+
         }
         
     }
@@ -353,7 +393,8 @@ public class CountryComponent : NetworkBehaviour
     {
         MainCameraComponent._MainCameraInstance._Tweening = true;
         MainCameraComponent._MainCameraInstance._AttackingCountry = this;
-        _MouseHoverTracker = true;
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+            _MouseHoverTracker = true;
         _Selected = true;
         _HoverObject.SetActive(true);
         MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpCapital(client));
@@ -364,16 +405,123 @@ public class CountryComponent : NetworkBehaviour
     {
         MainCameraComponent._MainCameraInstance._Tweening = true;
         MainCameraComponent._MainCameraInstance._AttackingCountry = this;
-        _MouseHoverTracker = true;
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+            _MouseHoverTracker = true;
         _Selected = true;
         _HoverObject.SetActive(true);
         MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpNewTroopsButtons(client));
+    }
+    [ClientRpc]
+    void MovingCamera()
+    {
+        MainCameraComponent._MainCameraInstance._AttackingCountry._Selected = false;
+        MainCameraComponent._MainCameraInstance._AttackingCountry._HoverObject.SetActive(MainCameraComponent._MainCameraInstance._AttackingCountry._MouseHoverTracker);
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+            MainCameraComponent._MainCameraInstance._AttackingCountry._MouseHoverTracker = false;
+
+        MainCameraComponent._MainCameraInstance._Tweening = true;
+        MainCameraComponent._MainCameraInstance._AttackingCountry = this;
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+            _MouseHoverTracker = true;
+        _Selected = true;
+        _HoverObject.SetActive(true);
+        MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+    }
+
+    [ClientRpc]
+    void AttackingCamera()
+    {
+        if (MainCameraComponent._MainCameraInstance._AttackingCountry == null)
+        {
+            MainCameraComponent._MainCameraInstance._Tweening = true;
+            MainCameraComponent._MainCameraInstance._AttackingCountry = this;
+            if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+                _MouseHoverTracker = true;
+            _Selected = true;
+            _HoverObject.SetActive(true);
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+        }
+        else
+        {
+            bool neighouringCountry = false;
+            int index = -1;
+            for (int i = 0; i < MainCameraComponent._MainCameraInstance._AttackingCountry._NeighbouringCountries.Length; i++)
+            {
+                if (this == MainCameraComponent._MainCameraInstance._AttackingCountry._NeighbouringCountries[i])
+                {
+                    neighouringCountry = true;
+                    index = i;
+                }
+            }
+
+            if (neighouringCountry)
+            {
+                MainCameraComponent._MainCameraInstance._Tweening = true;
+                MainCameraComponent._MainCameraInstance._DefendingCountry = this;
+                if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+                    _MouseHoverTracker = true;
+                _Selected = true;
+                _HoverObject.SetActive(true);
+
+                if (index >= MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions.Length)
+                {
+                    float pox = MainCameraComponent._MainCameraInstance._AttackingCountry.transform.position.x + ((this.transform.position.x - MainCameraComponent._MainCameraInstance._AttackingCountry.transform.position.x) / 2);
+                    float poy = MainCameraComponent._MainCameraInstance._AttackingCountry.transform.position.y + ((this.transform.position.y - MainCameraComponent._MainCameraInstance._AttackingCountry.transform.position.y) / 2);
+
+                    //MainCameraComponent._MainCameraInstance.transform.rotation = new Quaternion(MainCameraComponent._MainCameraInstance.transform.rotation.x, MainCameraComponent._MainCameraInstance.transform.rotation.y, Vector3.Angle(MainCameraComponent._MainCameraInstance._AttackingCountry.transform.position, MainCameraComponent._MainCameraInstance._DefendingCountry.transform.position), MainCameraComponent._MainCameraInstance.transform.rotation.w);
+
+                    Vector3 targetDir = MainCameraComponent._MainCameraInstance._DefendingCountry.transform.position - MainCameraComponent._MainCameraInstance._AttackingCountry.transform.position;
+
+                    //Debug.Log(Vector3.Angle(targetDir, MainCameraComponent._MainCameraInstance._AttackingCountry.transform.right));
+
+                    Vector3 newRot;
+
+                    if (MainCameraComponent._MainCameraInstance._DefendingCountry.transform.position.y > +MainCameraComponent._MainCameraInstance._AttackingCountry.transform.position.y)
+                        newRot = new Vector3(MainCameraComponent._MainCameraInstance.transform.eulerAngles.x, MainCameraComponent._MainCameraInstance.transform.eulerAngles.y, Vector3.Angle(targetDir, MainCameraComponent._MainCameraInstance._AttackingCountry.transform.right));
+                    else
+                        newRot = new Vector3(MainCameraComponent._MainCameraInstance.transform.eulerAngles.x, MainCameraComponent._MainCameraInstance.transform.eulerAngles.y, -Vector3.Angle(targetDir, MainCameraComponent._MainCameraInstance._AttackingCountry.transform.right));
+
+
+                    //Debug.Log("Reached");
+                    MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(pox, poy, -350), 1.5f).OnComplete(() => MainCameraComponent._MainCameraInstance.ActivateBattleSystem());
+                    MainCameraComponent._MainCameraInstance.transform.DORotate(newRot, 1.5f);
+                }
+                else
+                {
+                    MainCameraComponent._MainCameraInstance.transform.DOMove(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[index].position, 1.5f).OnComplete(() => MainCameraComponent._MainCameraInstance.ActivateBattleSystem());
+                    MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[index].eulerAngles, 1.5f);
+                }
+            }
+        }
+    }
+
+    [ClientRpc]
+    void MovingTroops()
+    {
+        if (MainCameraComponent._MainCameraInstance._AttackingCountry == null)
+        {
+            MainCameraComponent._MainCameraInstance._AttackingCountry = this;
+            if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+                _MouseHoverTracker = true;
+            _Selected = true;
+            _HoverObject.SetActive(true);
+        }
+        else
+        {
+            MainCameraComponent._MainCameraInstance._DefendingCountry = this;
+            if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+                _MouseHoverTracker = true;
+            _Selected = true;
+            _HoverObject.SetActive(true);
+
+            SetUpMoveTroopsButtons(MainCameraComponent._MainCameraInstance._AttackingCountry);
+        }
     }
     void SetUpCapital(string client)
     {
         MainCameraComponent._MainCameraInstance._Tweening = false;
 
-        if (NetworkClient.connection.identity.name == client)
+        if (/*NetworkClient.connection.identity.name == client*/GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
             BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
             BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(this.transform.position.x - 75, this.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
@@ -406,7 +554,7 @@ public class CountryComponent : NetworkBehaviour
     void SetUpNewTroopsButtons(string client)
     {
         MainCameraComponent._MainCameraInstance._Tweening = false;
-        if (NetworkClient.connection.identity.name == client)
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn/*NetworkClient.connection.identity.name == client*/)
         {
             BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
             BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(this.transform.position.x - 75, this.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
@@ -448,55 +596,58 @@ public class CountryComponent : NetworkBehaviour
 
     public void SetUpMoveTroopsButtons(CountryComponent givingCountry)
     {
-        if (!_HasProxy)
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
-            BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
-            BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(this.transform.position.x - 75, this.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
-        }
-        else
-        {
-            if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove && MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._AttackingCountry == _Proxy._AttackerCountry)
-            {
-                BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(_Proxy.transform.position.x + 75, _Proxy.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
-                BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(_Proxy.transform.position.x - 75, _Proxy.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
-            }
-            else
+            if (!_HasProxy)
             {
                 BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
                 BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(this.transform.position.x - 75, this.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
             }
+            else
+            {
+                if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove && MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._AttackingCountry == _Proxy._AttackerCountry)
+                {
+                    BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(_Proxy.transform.position.x + 75, _Proxy.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
+                    BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(_Proxy.transform.position.x - 75, _Proxy.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
+                }
+                else
+                {
+                    BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);
+                    BoardComponent._BoardInstance._DecreaseButton[0].transform.position = new Vector3(this.transform.position.x - 75, this.transform.position.y, BoardComponent._BoardInstance._DecreaseButton[0].transform.position.z);
+                }
+            }
+
+            foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._IncreaseButtonValue)
+                tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
+            foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._DecreaseButtonValue)
+                tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
+
+            if (givingCountry._TroopsCount > 1)
+            {
+                int temp = _TroopsCount + 1;
+                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString();
+            }
+            if (_AddedTroops > 0)
+            {
+                int temp = _TroopsCount - 1;
+                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
+            }
+
+            foreach (Image i in BoardComponent._BoardInstance._IncreaseButton)
+            {
+                i.color = this._CurColour;
+            }
+            //BoardComponent._BoardInstance._IncreaseButton.color = this._CurColour;
+
+            foreach (Image i in BoardComponent._BoardInstance._DecreaseButton)
+            {
+                i.color = this._CurColour;
+            }
+
+            //BoardComponent._BoardInstance._DecreaseButton.color = this._CurColour;
+
+            BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(true);
+            BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(true);
         }
-
-        foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._IncreaseButtonValue)
-            tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
-        foreach (TextMeshProUGUI tmp in BoardComponent._BoardInstance._DecreaseButtonValue)
-            tmp.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
-
-        if (givingCountry._TroopsCount > 1)
-        {
-            int temp = _TroopsCount + 1;
-            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString();
-        }
-        if (_AddedTroops > 0)
-        {
-            int temp = _TroopsCount - 1;
-            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
-        }
-
-        foreach (Image i in BoardComponent._BoardInstance._IncreaseButton)
-        {
-            i.color = this._CurColour;
-        }
-        //BoardComponent._BoardInstance._IncreaseButton.color = this._CurColour;
-
-        foreach (Image i in BoardComponent._BoardInstance._DecreaseButton)
-        {
-            i.color = this._CurColour;
-        }
-
-        //BoardComponent._BoardInstance._DecreaseButton.color = this._CurColour;
-
-        BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(true);
-        BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(true);
     }
 }

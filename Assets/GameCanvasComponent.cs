@@ -192,7 +192,7 @@ public struct ArmiesClass2
 
     public bool _isDefeated;
     public Color _TextColour;
-    //public ArmyInfoComponent _Info;
+    public ArmyInfoComponent _Info;
 
     public List<CountryComponent> _ControlledCountries;
 }
@@ -229,6 +229,7 @@ public class GameCanvasComponent : NetworkBehaviour
 
     public bool _PlaceAirfield = false;
 
+    [SyncVar]
     public bool _HasAttacked = false;
     public GameObject _Warning;
 
@@ -325,14 +326,20 @@ public class GameCanvasComponent : NetworkBehaviour
         _Warning.SetActive(false);
     }
 
+    public void ProgressTurn() // For Progress Turn Button to make sure players can't click it if isn't their turn
+    {
+        if (_LocalPlayer._IsTurn)
+            CmdProgressTurn();
+    }
+
     [Command(requiresAuthority = false)]
-    public void ProgressTurn()
+    public void CmdProgressTurn() // Command so the server can call the Rpc
     {
         RpcProgressTurn();
     }
 
     [ClientRpc]
-    public void RpcProgressTurn()
+    public void RpcProgressTurn() //Rpc that means it runs on every client but can only be activated by the client who's turn it is
     {
         if (!MainCameraComponent._MainCameraInstance._Tweening)
         {
@@ -545,8 +552,11 @@ public class GameCanvasComponent : NetworkBehaviour
                     _ProgressButtonText.text = "Reward";
                 }
             }
-            else if (_CurrentState == TurnStates.Reward && _RewardDisplay.activeSelf == false)
+            else if (_CurrentState == TurnStates.Reward && _RewardDisplay.activeSelf == false || _CurrentState == TurnStates.Reward && !_LocalPlayer._IsTurn)
             {
+                if (!_LocalPlayer._IsTurn)
+                    _RewardDisplay.SetActive(false);
+
                 if (!_PlaceAirfield)
                 {
                     _CurArmy._HasStarReward = false;

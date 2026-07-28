@@ -535,6 +535,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1685796740}
@@ -834,6 +835,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 967603940}
@@ -1750,6 +1752,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403825fff169cee418d3af6ecafdf498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Countries:
   - {fileID: 501049988}
   - {fileID: 162511517}
@@ -1773,6 +1778,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _TroopValue: 5
   _ContinentOrder: 2
@@ -3441,6 +3447,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403825fff169cee418d3af6ecafdf498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Countries:
   - {fileID: 1765234514}
   - {fileID: 1841579568}
@@ -3466,6 +3475,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _TroopValue: 5
   _ContinentOrder: 0
@@ -3651,6 +3661,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 1324377532}
   _RollText: {fileID: 649742932}
   _Roll: 0
@@ -4421,6 +4434,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 341163959}
@@ -5310,6 +5324,7 @@ MonoBehaviour:
   syncInterval: 0
   _PlayerCount: 0
   _Board: {fileID: 2049688036}
+  _BattleSystem: {fileID: 711129938}
   _ObjectiveManager: {fileID: 1593918448}
 --- !u!4 &206545560
 Transform:
@@ -5515,6 +5530,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 519345480}
@@ -5738,6 +5754,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1822256628}
@@ -8145,6 +8162,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 535425427}
@@ -8519,6 +8537,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 990619740}
@@ -9964,6 +9983,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cc5c0f7df949f40a65e00fa76e17c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _AttackerCountry: {fileID: 1013285713}
   _ActualCountry: {fileID: 1841579568}
   _HoverObject: {fileID: 1545536680}
@@ -10299,6 +10321,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 2096238498}
@@ -11294,6 +11317,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 864568457}
@@ -11576,6 +11600,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 43661054}
@@ -13307,6 +13332,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 455004141}
@@ -13590,6 +13616,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1763068323}
@@ -14298,6 +14325,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 94896272}
   _RollText: {fileID: 1837310253}
   _Roll: 0
@@ -15253,6 +15283,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1745123649}
@@ -16461,6 +16492,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403825fff169cee418d3af6ecafdf498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Countries:
   - {fileID: 1136040153}
   - {fileID: 445086797}
@@ -16481,6 +16515,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _TroopValue: 2
   _ContinentOrder: 1
@@ -17231,6 +17266,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 651715401}
@@ -17669,6 +17705,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 127350720}
@@ -19629,6 +19666,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 222233996}
@@ -20005,6 +20043,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1248999837}
@@ -22019,6 +22058,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1612836166}
@@ -22366,6 +22406,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 884990215}
   _RollText: {fileID: 289930554}
   _Roll: 0
@@ -23060,6 +23103,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 1801853733}
   _RollText: {fileID: 2039234119}
   _Roll: 0
@@ -25303,6 +25349,7 @@ GameObject:
   - component: {fileID: 711129935}
   - component: {fileID: 711129934}
   - component: {fileID: 711129938}
+  - component: {fileID: 711129939}
   m_Layer: 5
   m_Name: BattleCanvas
   m_TagString: Untagged
@@ -25416,6 +25463,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861bf0c44d1ec704cacb998d67887c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _LeftArmy: {fileID: 1404483331}
   _LeftText: {fileID: 1822783041}
   _RightArmy: {fileID: 665489790}
@@ -25433,9 +25483,29 @@ MonoBehaviour:
   _AttackAirfield: {fileID: 1348801369}
   _DefenceAirfield: {fileID: 410945360}
   _RollButton: {fileID: 961828692}
+  _AttackingCountry: {fileID: 0}
+  _DefendingCountry: {fileID: 0}
   _ActiveBattle: 0
   _CardReward: {fileID: 11400000, guid: 935292c6ed08f0b4eab5be261292ebd8, type: 2}
+  _DiceButton: {fileID: 1204397069}
   _DiceButtonText: {fileID: 332491630}
+--- !u!114 &711129939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711129933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 3687289640
+  _assetId: 0
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &719128512
 GameObject:
   m_ObjectHideFlags: 0
@@ -26609,6 +26679,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1390528337}
@@ -29414,6 +29485,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 93973666}
@@ -34394,6 +34466,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 228747605}
@@ -34568,7 +34641,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 711129938}
         m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
-        m_MethodName: RollDice
+        m_MethodName: CmdRollDice
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -36111,6 +36184,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 327410644}
@@ -36956,6 +37030,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1698880640}
@@ -37595,6 +37670,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1657011153}
@@ -38164,6 +38240,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 567846153}
@@ -39763,6 +39840,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 179859506}
@@ -41117,6 +41195,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 40634073}
@@ -41319,6 +41398,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 1909859193}
   _RollText: {fileID: 307865155}
   _Roll: 0
@@ -41570,6 +41652,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1305574830}
@@ -41688,7 +41771,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 711129938}
         m_TargetAssemblyTypeName: BattleSystem, Assembly-CSharp
-        m_MethodName: ChangeDice
+        m_MethodName: CMDChangeDice
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -43574,6 +43657,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 404021687}
   _RollText: {fileID: 1042372791}
   _Roll: 0
@@ -43825,6 +43911,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 838791428}
@@ -44609,6 +44696,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1748737629}
@@ -47556,6 +47644,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1624523080}
@@ -49085,6 +49174,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403825fff169cee418d3af6ecafdf498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Countries:
   - {fileID: 1627684643}
   - {fileID: 510148549}
@@ -49113,6 +49205,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _TroopValue: 7
   _ContinentOrder: 4
@@ -49642,6 +49735,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1104714248}
@@ -49941,6 +50035,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1316184955}
@@ -50375,6 +50470,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 725624966}
@@ -51425,6 +51521,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403825fff169cee418d3af6ecafdf498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Countries:
   - {fileID: 222116029}
   - {fileID: 2121302723}
@@ -51447,6 +51546,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _TroopValue: 3
   _ContinentOrder: 3
@@ -53140,6 +53240,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewTroopsIcon: {fileID: 1725160468}
   _RewardDisplay: {fileID: 1059072585}
@@ -54800,6 +54901,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 240012292}
@@ -56732,6 +56834,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1392811674}
@@ -57320,6 +57423,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 291922672}
@@ -57618,6 +57722,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 174726945}
@@ -59101,6 +59206,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1296205091}
@@ -59439,6 +59545,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cc5c0f7df949f40a65e00fa76e17c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _AttackerCountry: {fileID: 1841579568}
   _ActualCountry: {fileID: 1013285713}
   _HoverObject: {fileID: 1777121419}
@@ -60585,6 +60694,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1692691834}
@@ -61790,6 +61900,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1121392094}
@@ -62419,6 +62530,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1922996139}
@@ -62621,6 +62733,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 1353678229}
   _RollText: {fileID: 37675231}
   _Roll: 0
@@ -63083,6 +63198,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 369904086}
@@ -63176,6 +63292,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 403825fff169cee418d3af6ecafdf498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Countries:
   - {fileID: 2003333804}
   - {fileID: 568201045}
@@ -63196,6 +63315,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _TroopValue: 2
   _ContinentOrder: 5
@@ -64442,6 +64562,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 417654227}
@@ -68001,6 +68122,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 1926588903}
@@ -68236,7 +68358,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -69221,6 +69343,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4055d685efeb6947adf72ab4706bb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _DiceArrow: {fileID: 525819028}
   _RollText: {fileID: 224068066}
   _Roll: 0
@@ -69732,6 +69857,7 @@ MonoBehaviour:
   - {fileID: 1452750988}
   - {fileID: 1871956247}
   _GameCanvas: {fileID: 1593918447}
+  _BattleSystem: {fileID: 711129938}
   _NewTroopsCount: {fileID: 108619181}
   _NewTroops: 0
   _IncreaseButton:
@@ -71403,6 +71529,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 238699528}
@@ -71900,6 +72027,7 @@ MonoBehaviour:
     _PossibleRewards: []
     _isDefeated: 0
     _TextColour: {r: 0, g: 0, b: 0, a: 1}
+    _Info: {fileID: 0}
     _ControlledCountries: []
   _NewOccupier: 0
   _HoverObject: {fileID: 719128512}

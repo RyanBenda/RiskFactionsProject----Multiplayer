@@ -10,6 +10,7 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
     public int _PlayerCount = 0;
 
     public BoardComponent _Board;
+    public BattleSystem _BattleSystem;
     public ObjectiveManager _ObjectiveManager;
 
     public override void OnStartClient()
@@ -19,10 +20,15 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
 
     void OnPlayersChanged(int old, int _new)
     {
+        Debug.Log(_PlayerCount);
+        Debug.Log(NetworkServer.connections.Count);
+
         if (_PlayerCount == NetworkServer.connections.Count)
         {
-            Debug.Log(_PlayerCount);
-            Debug.Log("All Ready");
+            //Debug.Log(_PlayerCount);
+            //Debug.Log("All Ready");
+
+            //_BattleSystem.gameObject.SetActive(false);
 
             if (isServer)
             {

@@ -14,6 +14,7 @@ public class BoardComponent : NetworkBehaviour
     public ContinentComponent[] _Continents;
 
     public GameCanvasComponent _GameCanvas;
+    public BattleSystem _BattleSystem;
     public TextMeshProUGUI _NewTroopsCount;
     [SyncVar(hook = nameof(OnNewTroopsChanged))]
     public int _NewTroops = 0;
@@ -209,6 +210,7 @@ public class BoardComponent : NetworkBehaviour
 
 
         HideMinMaXButtons();
+        HideBattle();
 
         /*int stars = _GameCanvas._CurArmy._TwoStars * 2;
         stars += _GameCanvas._CurArmy._OneStars;
@@ -232,6 +234,14 @@ public class BoardComponent : NetworkBehaviour
     {
         _IncreaseButton[1].gameObject.SetActive(false);
         _DecreaseButton[1].gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    void HideBattle()
+    {
+        _BattleSystem.SetUpInstance();
+
+        _BattleSystem.gameObject.SetActive(false);
     }
 
     [Command(requiresAuthority = false)]
@@ -267,6 +277,7 @@ public class BoardComponent : NetworkBehaviour
 
     }
 
+    [ClientRpc]
     public void ResetAirfield()
     {
         foreach (CountryComponent c in _Airfields)
@@ -358,22 +369,24 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount += _NewTroops;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-            if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
+            /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
             {
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = Color.magenta;
                 _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
             }
 
             if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
 
             _NewTroops = 0;
             _NewTroopsCount.text = "0";
 
-            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+            /*BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
 
             int temp2 = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount - 1;
-            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();*/
+
+            MaxTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, false);
         }
         else //GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove
         {
@@ -383,7 +396,7 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount += MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount - 1;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
 
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
+                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
                 {
                     MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.magenta;
                     if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
@@ -392,22 +405,66 @@ public class BoardComponent : NetworkBehaviour
                 }
 
                 if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
+                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();*/
 
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount = 1;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = "1";
 
-                if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
                     MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
 
                 BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
 
                 int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount - 1;
-                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();
+                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();*/
+
+                MaxTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount, true);
             }
         }
     }
-    
+
+    [ClientRpc]
+    void MaxTroopsButtonsValueUpdate(int troopCount, bool isMove)
+    {
+        if (!isMove)
+        {
+            if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
+            {
+                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = Color.magenta;
+                _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            }
+
+            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+
+            int temp2 = troopCount - 1;
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();
+        }
+        else
+        {
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.magenta;
+                if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = Color.magenta;
+                _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._DefendingCountry);
+            }
+
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
+
+            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+
+            int temp2 = troopCount - 1;
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();
+        }
+    }
+
     [Command(requiresAuthority = false)]
     public void AddTroops()
     {
@@ -417,14 +474,14 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount++;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-            if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
+            /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
             {
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = Color.magenta;
                 _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
             }
 
             if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
 
             _NewTroops--;
             _NewTroopsCount.text = _NewTroops.ToString();
@@ -447,7 +504,7 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry.CmdSetCapital(MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour);
 
             //MainCameraComponent._MainCameraInstance.ResetSelected();
-            GameCanvasComponent._GameInstance.ProgressTurn();
+            GameCanvasComponent._GameInstance.CmdProgressTurn();
             MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceAirfield)
@@ -460,7 +517,7 @@ public class BoardComponent : NetworkBehaviour
 
             ResetAirfield();
 
-            GameCanvasComponent._GameInstance.ProgressTurn();
+            GameCanvasComponent._GameInstance.CmdProgressTurn();
             MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
     }
@@ -468,8 +525,19 @@ public class BoardComponent : NetworkBehaviour
     [ClientRpc]
     void AddTroopsButtonsValueUpdate(int newtroops, int troopCount)
     {
+        if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
+        {
+            MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = Color.magenta;
+            _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
+        }
+
+        if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+            MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+
         if (newtroops == 0)
+        {
             BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+        }
         else
         {
             int temp = troopCount + 1;
@@ -491,19 +559,21 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount -= temp;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-            _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            /*_TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
 
             if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
 
             _NewTroops += temp;
             _NewTroopsCount.text = _NewTroops.ToString();
 
-            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+            /*BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
 
             int temp2 = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount + 1;
-            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
+
+            MinTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, false);
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
         {
@@ -516,12 +586,12 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
 
                 _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
                 {
                     MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
                     MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
                 }
-                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
+                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;*/
 
                 
                     
@@ -529,13 +599,14 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount += temp;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-                if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
                     MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
 
                 BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
 
                 int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
-                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
+                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
+                MinTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, true);
             }
         }
         /*else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove)
@@ -567,6 +638,43 @@ public class BoardComponent : NetworkBehaviour
         }*/
     }
 
+    [ClientRpc]
+    void MinTroopsButtonsValueUpdate(int troopCount, bool isMove)
+    {
+        if (!isMove)
+        {
+
+
+            _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
+
+            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+
+            int temp2 = troopCount + 1;
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
+        }
+        else
+        {
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
+            }
+            MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
+
+            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+
+            int temp2 = troopCount + 1;
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
+        }
+    }
+
     [Command(requiresAuthority = false)]
     public void SubtractTroops()
     {
@@ -575,14 +683,14 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops--;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount--;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
-            if (MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops == 0)
+            /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops == 0)
             {
                 _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
             }
 
             if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
 
             _NewTroops++;
             _NewTroopsCount.text = _NewTroops.ToString();
@@ -615,8 +723,14 @@ public class BoardComponent : NetworkBehaviour
     [ClientRpc]
     void SubtractTroopsButtonsValueUpdate(int addedTroops, int troopCount)
     {
+
         if (addedTroops == 0)
+        {
             BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+
+            _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
+        }
         else
         {
             int temp = troopCount - 1;
@@ -625,8 +739,12 @@ public class BoardComponent : NetworkBehaviour
 
         int temp2 = troopCount + 1;
         BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
+
+        if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+            MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
     }
 
+    [Command(requiresAuthority = false)]
     public void MoveTroopsTo()
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
@@ -637,7 +755,7 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount++;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
 
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
+                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
                 {
                     MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.magenta;
                     if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
@@ -646,12 +764,12 @@ public class BoardComponent : NetworkBehaviour
                 }
 
                 if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
+                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();*/
 
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount--;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-                if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
                     MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
 
                 if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount == 1)
@@ -663,11 +781,43 @@ public class BoardComponent : NetworkBehaviour
                 }
 
                 int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount - 1;
-                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();
+                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();*/
+
+                MoveTroopsToButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount);
             }
         }
     }
 
+    [ClientRpc]
+    void MoveTroopsToButtonsValueUpdate(int troopCountA, int troopCountD)
+    {
+        if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
+        {
+            MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.magenta;
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = Color.magenta;
+            _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._DefendingCountry);
+        }
+
+        if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+            MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
+
+        if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+            MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+
+        if (troopCountA == 1)
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
+        else
+        {
+            int temp = troopCountD + 1;
+            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString();
+        }
+
+        int temp2 = troopCountD - 1;
+        BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();
+    }
+
+    [Command(requiresAuthority = false)]
     public void MoveTroopsBack()
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
@@ -677,7 +827,7 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops--;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount--;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops == 0)
+                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops == 0)
                 {
                     _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
                     if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
@@ -686,12 +836,12 @@ public class BoardComponent : NetworkBehaviour
                 }
 
                 if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
+                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();*/
 
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount++;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-                if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
                     MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
 
                 if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops == 0)
@@ -703,7 +853,9 @@ public class BoardComponent : NetworkBehaviour
                 }
 
                 int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
-                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
+                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
+
+                MoveTroopsBackButtonsValueUpdate(MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops, MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount);
             }
         }
         /*else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove)
@@ -742,6 +894,35 @@ public class BoardComponent : NetworkBehaviour
                 BoardComponent._BoardInstance._IncreaseButtonValue.text = temp2.ToString();
             }
         }*/
+    }
+
+    [ClientRpc]
+    void MoveTroopsBackButtonsValueUpdate(int addedTroops, int troopCount)
+    {
+        if (addedTroops == 0)
+        {
+            _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
+            if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+                MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
+            MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
+        }
+
+        if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
+            MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
+
+        if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
+            MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
+
+        if (addedTroops == 0)
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
+        else
+        {
+            int temp = troopCount - 1;
+            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
+        }
+
+        int temp2 = troopCount + 1;
+        BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
     }
 
     public bool CheckCountriesConnection(CountryComponent Provider, CountryComponent Reciever)

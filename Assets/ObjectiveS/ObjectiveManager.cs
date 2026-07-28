@@ -24,10 +24,12 @@ public class ObjectiveManager : NetworkBehaviour
 
     TurnStates _LastState;
 
-
+    [SyncVar]
     public bool[] _Can1TurnContinent = new bool[6];
+    [SyncVar]
     public int _TakenOverTerritories = 0;
     //public int _TakenOverCapitals = 0;
+    [SyncVar]
     public int _TakenOverCities = 0;
 
     // Start is called before the first frame update
