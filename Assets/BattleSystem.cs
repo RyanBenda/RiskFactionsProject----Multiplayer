@@ -456,6 +456,23 @@ public class BattleSystem : NetworkBehaviour
                 GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
                 GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
 
+
+                for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
+                {
+                    if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+                    {
+                        GameCanvasComponent._GameInstance._TurnOrder[i] = GameCanvasComponent._GameInstance._CurArmy;
+                    }
+                    else if(GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == _DefendingCountry._OccupyingArmy._Army._ArmyName)
+                    {
+                        ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
+                        a._isDefeated = true;
+
+                        GameCanvasComponent._GameInstance._TurnOrder[i] = a;
+                    }  
+                }
+
+
                 int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
                 stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
 

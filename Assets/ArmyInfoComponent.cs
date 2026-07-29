@@ -27,8 +27,11 @@ public class ArmyInfoComponent : NetworkBehaviour
         _Image.color = army._Army._ArmyColour;
         _Name.text = army._Army._ArmyName;
         _Name.color = army._TextColour;
+
+
     }
 
+    
     // Update is called once per frame
     void Update()
     {

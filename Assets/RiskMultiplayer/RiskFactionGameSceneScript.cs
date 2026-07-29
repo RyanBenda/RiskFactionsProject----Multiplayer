@@ -20,8 +20,8 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
 
     void OnPlayersChanged(int old, int _new)
     {
-        Debug.Log(_PlayerCount);
-        Debug.Log(NetworkServer.connections.Count);
+        //Debug.Log(_PlayerCount);
+        //Debug.Log(NetworkServer.connections.Count);
 
         if (_PlayerCount == NetworkServer.connections.Count)
         {

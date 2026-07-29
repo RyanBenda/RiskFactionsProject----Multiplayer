@@ -20,24 +20,24 @@ public class RewardScriptableObject : ScriptableObject
     public int _Index = 0;
 
 
-    public void DetermineReward(ArmiesClass2 Army)
+    public void DetermineReward(/*ArmiesClass2 Army*/)
     {
         if (_Airfield == true)
         {
             GameCanvasComponent._GameInstance._PlaceAirfield = true;
         }
         else if (_EarlyMove)
-            Army._HasEarlyMove = true;
+            GameCanvasComponent._GameInstance._CurArmy._HasEarlyMove = true;
         else if (_AdditionalMove)
-            Army._HasAdditionalMove = true;
+            GameCanvasComponent._GameInstance._CurArmy._HasAdditionalMove = true;
         else if (_AttackDie)
-            Army._HasAttackDie = true;
+            GameCanvasComponent._GameInstance._CurArmy._HasAttackDie = true;
         else if (_DefenceDie)
-            Army._HasDefenceDie = true;
+            GameCanvasComponent._GameInstance._CurArmy._HasDefenceDie = true;
         else if (_ExtraTroops)
-            Army._HasExtraTroops = true;
+            GameCanvasComponent._GameInstance._CurArmy._HasExtraTroops = true;
         else if (_GuaranteedCard)
-            Army._HasGuaranteedCard = true;
+            GameCanvasComponent._GameInstance._CurArmy._HasGuaranteedCard = true;
         
     }
     public int DetermineRewardCard(/*ArmiesClass Army*/)

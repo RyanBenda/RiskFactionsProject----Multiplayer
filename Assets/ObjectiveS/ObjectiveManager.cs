@@ -112,9 +112,7 @@ public class ObjectiveManager : NetworkBehaviour
                         {
                             if (BoardComponent._BoardInstance._Continents[i]._ControllingArmy._Army == GameCanvasComponent._GameInstance._CurArmy._Army && _Can1TurnContinent[i] == true)
                             {
-                                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                                GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                                GameCanvasComponent._GameInstance.PlayRewardEffect();
+                                AddReward(o);
                                 _InactiveObjectives.Add(o);
                                 o._Inactive = true;
                                 break;
@@ -134,9 +132,7 @@ public class ObjectiveManager : NetworkBehaviour
 
                                 if (temp >= 2)
                                 {
-                                    GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                                    GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                                    GameCanvasComponent._GameInstance.PlayRewardEffect();
+                                    AddReward(o);
                                     _InactiveObjectives.Add(o);
                                     o._Inactive = true;
                                     break;
@@ -147,9 +143,7 @@ public class ObjectiveManager : NetworkBehaviour
                         {
                             if (BoardComponent._BoardInstance._Continents[o._RequiredContinents[0]]._ControllingArmy._Army == GameCanvasComponent._GameInstance._CurArmy._Army)
                             {
-                                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                                GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                                GameCanvasComponent._GameInstance.PlayRewardEffect();
+                                AddReward(o);
                                 _InactiveObjectives.Add(o);
                                 o._Inactive = true;
                             }
@@ -162,9 +156,7 @@ public class ObjectiveManager : NetworkBehaviour
                     {
                         if (_TakenOverTerritories == o._RequiredTerritories)
                         {
-                            GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                            GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                            GameCanvasComponent._GameInstance.PlayRewardEffect();
+                            AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
                         }
@@ -173,9 +165,7 @@ public class ObjectiveManager : NetworkBehaviour
                     {
                         if (GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Count >= o._RequiredTerritories)
                         {
-                            GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                            GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                            GameCanvasComponent._GameInstance.PlayRewardEffect();
+                            AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
                         }
@@ -193,9 +183,7 @@ public class ObjectiveManager : NetworkBehaviour
 
                     if (temp >= o._RequiredCapitals)
                     {
-                        GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                        GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                        GameCanvasComponent._GameInstance.PlayRewardEffect();
+                        AddReward(o);
                         _InactiveObjectives.Add(o);
                         o._Inactive = true;
                     }
@@ -206,9 +194,7 @@ public class ObjectiveManager : NetworkBehaviour
                     {
                         if (_TakenOverCities == o._RequiredCities)
                         {
-                            GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                            GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                            GameCanvasComponent._GameInstance.PlayRewardEffect();
+                            AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
                         }
@@ -225,9 +211,7 @@ public class ObjectiveManager : NetworkBehaviour
 
                         if (temp >= o._RequiredCities)
                         {
-                            GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
-                            GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
-                            GameCanvasComponent._GameInstance.PlayRewardEffect();
+                            AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
                         }
@@ -235,5 +219,14 @@ public class ObjectiveManager : NetworkBehaviour
                 }
             }
         }
+    }
+
+    [ClientRpc]
+    void AddReward(ObjectiveScriptableObject o)
+    {
+        GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
+        GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
+        GameCanvasComponent._GameInstance.PlayRewardEffect();
+        o._Inactive = true;
     }
 }

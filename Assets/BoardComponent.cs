@@ -87,10 +87,10 @@ public class BoardComponent : NetworkBehaviour
 
             CmdCreateArmyOrderObject(army);
 
-            
 
+            //Debug.Log(_GameCanvas._ArmyOrder.content.transform.childCount);
 
-            //army._Info = aic;
+            //army._Info = _GameCanvas._ArmyOrder.transform.GetChild(armyIndex).GetComponent<ArmyInfoComponent>();
             _GameCanvas._TurnOrder.Add(army);
 
             armyIndex++;
@@ -211,7 +211,7 @@ public class BoardComponent : NetworkBehaviour
 
         HideMinMaXButtons();
         HideBattle();
-
+        //_GameCanvas.SetInfo();
         /*int stars = _GameCanvas._CurArmy._TwoStars * 2;
         stars += _GameCanvas._CurArmy._OneStars;
 

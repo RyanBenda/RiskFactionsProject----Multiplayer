@@ -47,7 +47,7 @@ public class MainCameraComponent : NetworkBehaviour
     }*/
     public void Update()
     {
-        if (GameCanvasComponent._GameInstance._LocalPlayer != null && GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+        if (GameCanvasComponent._GameInstance != null && GameCanvasComponent._GameInstance._LocalPlayer != null && GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
