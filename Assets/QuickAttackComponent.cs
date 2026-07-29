@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Mirror;
 
-public class QuickAttackComponent : MonoBehaviour
+public class QuickAttackComponent : NetworkBehaviour
 {
-    public Transform _Arrow;
+    public QuickAttackArrow _Arrow;
     public Transform _Body;
     bool _step1 = false;
 
@@ -24,6 +25,18 @@ public class QuickAttackComponent : MonoBehaviour
     void Start()
     {
         
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdArrowPos(Vector3 pos)
+    {
+        ArrowPos(pos);
+    }
+
+    [ClientRpc]
+    void ArrowPos(Vector3 pos)
+    {
+        _Arrow.transform.position = pos;
     }
 
     // Update is called once per frame
@@ -54,13 +67,15 @@ public class QuickAttackComponent : MonoBehaviour
                     _AttackingCountry._TroopDisplay.transform.parent = BoardComponent._BoardInstance.transform;
                    
 
-                    _Arrow.position = _AttackingCountry.transform.position;
+                    _Arrow.transform.position = _AttackingCountry.transform.position;
                     _Arrow.gameObject.SetActive(true);
                     _step1 = true;
 
-                    _Body.position = _Arrow.position;
+                    //_Arrow.SetArrowAuthority();
+
+                    _Body.position = _Arrow.transform.position;
                     _Body.gameObject.SetActive(true);
-                    _ArrowStart = _Arrow.position;
+                    _ArrowStart = _Arrow.transform.position;
 
                     _AttackingCountry._QuickAttacking = true;
                 }
@@ -125,37 +140,41 @@ public class QuickAttackComponent : MonoBehaviour
                     }
                 }
 
-                _Arrow.position = _ArrowStart;
+                _Arrow.transform.position = _ArrowStart;
                 if (_DefendingCountry == null)
                 {
                     Vector3 mouseScreenPos = Input.mousePosition;
 
                     mouseScreenPos.z = -Camera.main.transform.position.z;
 
-                    _Arrow.LookAt(Camera.main.ScreenToWorldPoint(mouseScreenPos));
+                    _Arrow.transform.LookAt(Camera.main.ScreenToWorldPoint(mouseScreenPos));
 
-                    if (_Arrow.position != Camera.main.ScreenToWorldPoint(mouseScreenPos))
-                        _Arrow.right = _Arrow.forward;
+                    if (_Arrow.transform.position != Camera.main.ScreenToWorldPoint(mouseScreenPos))
+                        _Arrow.transform.right = _Arrow.transform.forward;
 
-                    _Body.up = _Arrow.right;
-                    _Arrow.position = Camera.main.ScreenToWorldPoint(mouseScreenPos) - (_Arrow.right * 50);
+                    _Body.up = _Arrow.transform.right;
+                    _Arrow.transform.position = Camera.main.ScreenToWorldPoint(mouseScreenPos) - (_Arrow.transform.right * 50);
+                    CmdArrowPos(_Arrow.transform.position);
                 }
                 else
                 {
-                    _Arrow.LookAt(_DefendingCountry.transform.position);
+                    _Arrow.transform.LookAt(_DefendingCountry.transform.position);
 
-                    _Arrow.right = _Arrow.forward;
-                    _Body.up = _Arrow.right;
+                    _Arrow.transform.right = _Arrow.transform.forward;
+                    _Body.up = _Arrow.transform.right;
 
-                    _Arrow.position = _DefendingCountry.transform.position - (_Arrow.right * 50);
+                    _Arrow.transform.position = _DefendingCountry.transform.position - (_Arrow.transform.right * 50);
                 }
 
-                _Body.position = _ArrowStart + ((_Arrow.position - _ArrowStart) / 2);
+                _Body.position = _ArrowStart + ((_Arrow.transform.position - _ArrowStart) / 2);
 
-                _Body.localScale = new Vector3(1, Vector3.Distance(_Body.position, _Arrow.position) / 50, 1);
+                _Body.localScale = new Vector3(1, Vector3.Distance(_Body.position, _Arrow.transform.position) / 50, 1);
             }
         }
     }
+
+   
+
 
     IEnumerator DoBattle()
     {

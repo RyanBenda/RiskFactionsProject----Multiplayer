@@ -331,8 +331,22 @@ public class BoardComponent : NetworkBehaviour
                 troopPointsFloor += _Continents[i]._TroopValue;
         }
 
-        if (_GameCanvas._TurnOrder[index]._HasExtraTroops)
+        bool hasExtraTroops = false;
+
+        foreach (RewardScriptableObject r in _GameCanvas._TurnOrder[index]._Rewards)
+        {
+            if (r._ExtraTroops)
+            {
+                hasExtraTroops = true;
+                break;
+            }
+        }
+
+        if (hasExtraTroops)
+        {
+            Debug.Log("EXTRA TROOPS");
             troopPointsFloor += 2;
+        }
 
         _NewTroops = (int)troopPointsFloor;
 
@@ -606,7 +620,7 @@ public class BoardComponent : NetworkBehaviour
 
                 int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
                 BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
-                MinTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, true);
+                MinTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount, true);
             }
         }
         /*else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove)

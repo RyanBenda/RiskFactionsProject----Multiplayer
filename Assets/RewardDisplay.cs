@@ -45,7 +45,8 @@ public class RewardDisplay : NetworkBehaviour
 
             if (GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._Airfield == true)
             {
-                GameCanvasComponent._GameInstance._PlaceAirfield = true;
+                //GameCanvasComponent._GameInstance._PlaceAirfield = true;
+                PlacingAirfield();
             }
             else if (GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._EarlyMove)
                 GameCanvasComponent._GameInstance._CurArmy._HasEarlyMove = true;
@@ -112,6 +113,8 @@ public class RewardDisplay : NetworkBehaviour
             }
             else
             {
+                GameCanvasComponent._GameInstance._CurArmy._TwoStars++;
+
                 for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
                 {
                     if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
@@ -154,5 +157,11 @@ public class RewardDisplay : NetworkBehaviour
     {
         this.gameObject.SetActive(false);
         _StarDisplay.DoCardReveal(val);
+    }
+
+    [ClientRpc]
+    void PlacingAirfield()
+    {
+        GameCanvasComponent._GameInstance._PlaceAirfield = true;
     }
 }

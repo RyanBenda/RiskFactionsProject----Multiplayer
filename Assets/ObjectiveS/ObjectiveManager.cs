@@ -61,14 +61,14 @@ public class ObjectiveManager : NetworkBehaviour
 
     public void TurnOnOffDisplay()
     {
-        if (!_DisplayActive && !GameCanvasComponent._GameInstance._DisplayActive)
+        if (!_DisplayActive && !GameCanvasComponent._GameInstance._DisplayActive && !BattleSystem._BattleSystemInstance.gameObject.activeSelf)
         {
             _DisplayActive = true;
             _LastState = GameCanvasComponent._GameInstance._CurrentState;
             GameCanvasComponent._GameInstance._CurrentState = TurnStates.Suspend;
             _ObjectiveDisplay.SetActive(true);
         }
-        else
+        else if (!BattleSystem._BattleSystemInstance.gameObject.activeSelf)
         {
             foreach (ObjectiveDisplay obj in _Displayers)
             {

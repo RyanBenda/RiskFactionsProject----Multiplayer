@@ -3667,6 +3667,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 1324377532}
   _RollText: {fileID: 649742932}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &138074194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14467,6 +14468,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 94896272}
   _RollText: {fileID: 1837310253}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &424395016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19461,6 +19463,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a061917a22ba1a45b0cc5c0b0d908f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _StarCount: {fileID: 2076482045}
   _TradeOptions:
   - {fileID: 1839308974}
@@ -22549,6 +22554,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 884990215}
   _RollText: {fileID: 289930554}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &630713809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23246,6 +23252,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 1801853733}
   _RollText: {fileID: 2039234119}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &649658239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34976,7 +34983,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e984316fd808ef4099c198dc29563a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Arrow: {fileID: 1750290339}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _Arrow: {fileID: 1750290343}
   _Body: {fileID: 413696366}
   _timerval: 0.25
 --- !u!114 &963194231
@@ -41545,6 +41555,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 1909859193}
   _RollText: {fileID: 307865155}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &1197009741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43804,6 +43815,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 404021687}
   _RollText: {fileID: 1042372791}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &1273786655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59018,6 +59030,8 @@ GameObject:
   - component: {fileID: 1750290339}
   - component: {fileID: 1750290341}
   - component: {fileID: 1750290340}
+  - component: {fileID: 1750290342}
+  - component: {fileID: 1750290343}
   m_Layer: 5
   m_Name: Arrow
   m_TagString: Untagged
@@ -59082,6 +59096,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1750290338}
   m_CullTransparentMesh: 1
+--- !u!114 &1750290342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750290338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 1750290339}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  useFixedUpdate: 0
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
+--- !u!114 &1750290343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750290338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0b3d1b884a109644b7de8b4219728bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &1752226805
 GameObject:
   m_ObjectHideFlags: 0
@@ -63016,6 +63079,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 1353678229}
   _RollText: {fileID: 37675231}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &1860764692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69627,6 +69691,7 @@ MonoBehaviour:
   _DiceArrow: {fileID: 525819028}
   _RollText: {fileID: 224068066}
   _Roll: 0
+  _Airfield: 0
 --- !u!114 &2040917384
 MonoBehaviour:
   m_ObjectHideFlags: 0

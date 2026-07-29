@@ -49,6 +49,6 @@ public class StarsAdditionComponent : MonoBehaviour
         _Card.color = new Color(1, 1, 1, 0);
         _StarText.color = new Color(0, 0, 0, 0);
         _CardText.color = new Color(0, 0, 0, 0);
-        GameCanvasComponent._GameInstance.ProgressTurn();
+        GameCanvasComponent._GameInstance.CmdProgressTurn();
     }
 }

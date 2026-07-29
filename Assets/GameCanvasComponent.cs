@@ -227,6 +227,7 @@ public class GameCanvasComponent : NetworkBehaviour
     public IEnumerator _RewardCoroutine;
     bool _Active = false;
 
+    //[SyncVar]
     public bool _PlaceAirfield = false;
 
     [SyncVar]
@@ -305,7 +306,7 @@ public class GameCanvasComponent : NetworkBehaviour
 
     public void TurnOnOffDisplay()
     {
-        if (!_DisplayActive && !ObjectiveManager._ObjectiveManagerInstance._DisplayActive)
+        if (!_DisplayActive && !ObjectiveManager._ObjectiveManagerInstance._DisplayActive && !BattleSystem._BattleSystemInstance.gameObject.activeSelf)
         {
             _DisplayActive = true;
             if (_LocalPlayer._IsTurn)
@@ -315,7 +316,7 @@ public class GameCanvasComponent : NetworkBehaviour
             }
             _ArmyOrder.gameObject.SetActive(true);
         }
-        else
+        else if (!BattleSystem._BattleSystemInstance.gameObject.activeSelf)
         {
             _ArmyOrder.gameObject.SetActive(false);
             if (_LocalPlayer._IsTurn && _CurrentState != TurnStates.PlaceCapital)
@@ -331,7 +332,7 @@ public class GameCanvasComponent : NetworkBehaviour
 
     public void ProgressTurn() // For Progress Turn Button to make sure players can't click it if isn't their turn
     {
-        if (_LocalPlayer._IsTurn)
+        if (_LocalPlayer._IsTurn && _CurrentState != TurnStates.Reward)
             CmdProgressTurn();
     }
 
@@ -470,7 +471,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        _StarTrade.gameObject.SetActive(true);
+                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                            _StarTrade.gameObject.SetActive(true);
                         _CurrentState = TurnStates.CalculateTroops;
                         _ProgressButtonText.text = "Calculate Troops";
                     }
@@ -546,7 +548,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        _StarTrade.gameObject.SetActive(true);
+                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                            _StarTrade.gameObject.SetActive(true);
                         _CurrentState = TurnStates.CalculateTroops;
                         _ProgressButtonText.text = "Calculate Troops";
                     }
@@ -579,10 +582,10 @@ public class GameCanvasComponent : NetworkBehaviour
                     _ProgressButtonText.text = "Reward";
                 }
             }
-            else if (_CurrentState == TurnStates.Reward && _RewardDisplay.activeSelf == false || _CurrentState == TurnStates.Reward && !_LocalPlayer._IsTurn)
+            else if (_CurrentState == TurnStates.Reward/* && _RewardDisplay.activeSelf == false || _CurrentState == TurnStates.Reward && !_LocalPlayer._IsTurn*/)
             {
-                if (!_LocalPlayer._IsTurn)
-                    _RewardDisplay.SetActive(false);
+                //if (!_LocalPlayer._IsTurn)
+                _RewardDisplay.SetActive(false);
 
                 if (!_PlaceAirfield)
                 {
@@ -597,7 +600,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        _StarTrade.gameObject.SetActive(true);
+                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                            _StarTrade.gameObject.SetActive(true);
                         _CurrentState = TurnStates.CalculateTroops;
                         _ProgressButtonText.text = "Calculate Troops";
                     }
@@ -648,7 +652,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        _StarTrade.gameObject.SetActive(true);
+                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                            _StarTrade.gameObject.SetActive(true);
                         _CurrentState = TurnStates.CalculateTroops;
                         _ProgressButtonText.text = "Calculate Troops";
                     }
@@ -717,7 +722,8 @@ public class GameCanvasComponent : NetworkBehaviour
                 _NewTroopsIcon.SetActive(true);
                 if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                 {
-                    _StarTrade.gameObject.SetActive(true);
+                    if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                        _StarTrade.gameObject.SetActive(true);
                     _CurrentState = TurnStates.CalculateTroops;
                     _ProgressButtonText.text = "Calculate Troops";
                 }

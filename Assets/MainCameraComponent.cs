@@ -56,7 +56,7 @@ public class MainCameraComponent : NetworkBehaviour
                 else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
                 {
                     if (_AttackingCountry != null)
-                        ResetTroopMove();
+                        CmdResetTroopMove();
                 }
             }
 
@@ -166,6 +166,13 @@ public class MainCameraComponent : NetworkBehaviour
         _Tweening = false;
     }
 
+    [Command(requiresAuthority = false)]
+    void CmdResetTroopMove()
+    {
+        ResetTroopMove();
+    }
+
+    [ClientRpc]
     void ResetTroopMove()
     {
         if (_DefendingCountry != null)

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Mirror;
 
-public class StarTradeComponent : MonoBehaviour
+public class StarTradeComponent : NetworkBehaviour
 {
     public TextMeshProUGUI _StarCount;
 
@@ -26,6 +27,7 @@ public class StarTradeComponent : MonoBehaviour
             stars += 2;
         }
 
+        //if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         _StarCount.text = "Star Count: "+ stars;
 
         bool temp = false;
@@ -60,7 +62,8 @@ public class StarTradeComponent : MonoBehaviour
         int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
         stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
 
-        GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+            GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
     }
 
     private void Update()
@@ -71,6 +74,7 @@ public class StarTradeComponent : MonoBehaviour
         }
     }
 
+    [Command(requiresAuthority = false)]
     public void TradeIn(int value)
     {
 
@@ -119,10 +123,43 @@ public class StarTradeComponent : MonoBehaviour
             value -= 1;
         }
 
+        for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
+        {
+            if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+            {
+                GameCanvasComponent._GameInstance._TurnOrder[i] = GameCanvasComponent._GameInstance._CurArmy;
+            }
+        }
+
         BoardComponent._BoardInstance._NewTroops += newTroops;
 
         BoardComponent._BoardInstance._NewTroopsCount.text = BoardComponent._BoardInstance._NewTroops.ToString();
 
-        GameCanvasComponent._GameInstance.ProgressTurn();
+        UpdateCardText(GameCanvasComponent._GameInstance._CurArmy._OneStars, GameCanvasComponent._GameInstance._CurArmy._TwoStars);
+        GameCanvasComponent._GameInstance.CmdProgressTurn();
+    }
+
+    [ClientRpc]
+
+    void UpdateCardText(int oneStar, int twoStar)
+    {
+
+        if (GameCanvasComponent._GameInstance._LocalPlayer._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+        {
+            GameCanvasComponent._GameInstance._CurArmy._OneStars = oneStar;
+            GameCanvasComponent._GameInstance._CurArmy._OneStars = twoStar;
+
+            int stars = twoStar * 2;
+            stars += oneStar;
+            GameCanvasComponent._GameInstance._StarsDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
+            GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
+        }
+        else
+        {
+            int cards = twoStar;
+            cards += oneStar;
+            GameCanvasComponent._GameInstance._StarsDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
+            GameCanvasComponent._GameInstance._StarsDisplay.text = "Cards: " + cards.ToString();
+        }
     }
 }

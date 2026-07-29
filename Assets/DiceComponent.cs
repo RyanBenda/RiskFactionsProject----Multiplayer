@@ -11,14 +11,19 @@ public class DiceComponent : NetworkBehaviour
     public TextMeshProUGUI _RollText;
     [SyncVar(hook = nameof(OnRollChanged))]
     public int _Roll = 0;
-
+    public bool _Airfield = false;
 
     void OnRollChanged(int old, int _new)
     {
         if (_Roll != -1)
         {
-            _RollText.text = _Roll.ToString();
+            if (!_Airfield)
+                _RollText.text = _Roll.ToString();
+            else
+                _RollText.text = (_Roll - 1).ToString();
             gameObject.SetActive(true);
+
+            _Airfield = false;
         }
     }
 

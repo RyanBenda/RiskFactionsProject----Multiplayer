@@ -194,9 +194,14 @@ public class BattleSystem : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcRollDice(List<int> AdiceRolls, List<int> DdiceRolls)
+    void RpcAirfieldDieEffect(bool atk, DiceComponent die)
     {
-        
+        //die._Roll -= 1;
+        die._Airfield = true;
+        if (atk)
+            _AttackAirfield.gameObject.SetActive(true);
+        else
+            _DefenceAirfield.gameObject.SetActive(true);
     }
 
     /*DiceComponent[] GetDiceArray(bool isAttacker)
@@ -299,6 +304,7 @@ public class BattleSystem : NetworkBehaviour
             {
                 _LeftDice[i]._Roll = diceRolls[i] + 1;
                 _AttackAirfield.gameObject.SetActive(true);
+                RpcAirfieldDieEffect(true, _LeftDice[i]);
             }
             else
                 _LeftDice[i]._Roll = diceRolls[i];
@@ -334,6 +340,7 @@ public class BattleSystem : NetworkBehaviour
             {
                 _RightDice[i]._Roll = diceRolls[i] + 1;
                 _DefenceAirfield.gameObject.SetActive(true);
+                RpcAirfieldDieEffect(false, _RightDice[i]);
             }
             else
                 _RightDice[i]._Roll = diceRolls[i];
@@ -751,12 +758,31 @@ public class BattleSystem : NetworkBehaviour
                 temp = 2;
         }
 
+        bool hasAtkDie = false;
+        bool hasDefDie = false;
+
+        for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
+        {
+            if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == country._OccupyingArmy._Army._ArmyName)
+            {
+                foreach (RewardScriptableObject r in GameCanvasComponent._GameInstance._TurnOrder[i]._Rewards)
+                {
+                    if (r._AttackDie)   
+                        hasAtkDie = true;
+                    else if (r._DefenceDie)
+                        hasDefDie = true;
+                }
+                break;
+            }
+        }
+
+
         // if AttackingCountry has Attack Die temp += 1;
-        if (attacker && country._OccupyingArmy._HasAttackDie)
+        if (attacker && hasAtkDie)
         {
             temp += 1;
         }
-        else if (!attacker && country._OccupyingArmy._HasDefenceDie)
+        else if (!attacker && hasDefDie)
         {
             temp += 1;
         }
