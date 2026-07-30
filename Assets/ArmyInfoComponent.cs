@@ -12,6 +12,9 @@ public class ArmyInfoComponent : NetworkBehaviour
     public TextMeshProUGUI _Name;
     public TextMeshProUGUI _Defeated;
     public NetworkIdentity _NetworkIdentity;
+
+    [SyncVar(hook = nameof(OnDefeated))]
+    public bool _IsDefeated = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +34,21 @@ public class ArmyInfoComponent : NetworkBehaviour
 
     }
 
+    [Command(requiresAuthority = false)]
+    public void SetDefeated()
+    {
+        _IsDefeated = true;
+    }
+
+    void OnDefeated(bool old, bool _new)
+    {
+        if (_IsDefeated)
+        {
+            _Defeated.color = GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour;
+            _Defeated.gameObject.SetActive(true);
+
+        }
+    }
     
     // Update is called once per frame
     void Update()

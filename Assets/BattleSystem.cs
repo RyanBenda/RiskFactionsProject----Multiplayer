@@ -457,8 +457,7 @@ public class BattleSystem : NetworkBehaviour
             if (_DefendingCountry._OccupyingArmy._ControlledCountries.Count == 1)
             {
                 _DefendingCountry._OccupyingArmy._isDefeated = true;
-                _DefendingCountry._OccupyingArmy._Info._Defeated.color = _AttackingCountry._CurColour;
-                _DefendingCountry._OccupyingArmy._Info._Defeated.gameObject.SetActive(true);
+                
 
                 GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
                 GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
@@ -474,16 +473,16 @@ public class BattleSystem : NetworkBehaviour
                     {
                         ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
                         a._isDefeated = true;
+                        a._Info.SetDefeated();
+                        a._Info._Defeated.color = _AttackingCountry._CurColour;
+                        a._Info._Defeated.gameObject.SetActive(true);
 
                         GameCanvasComponent._GameInstance._TurnOrder[i] = a;
                     }  
                 }
 
 
-                int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
-                stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
-
-                GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
+                UpdateStarsText(GameCanvasComponent._GameInstance._CurArmy._TwoStars, GameCanvasComponent._GameInstance._CurArmy._OneStars);
             }
             _DefendingCountry._OccupyingArmy._ControlledCountries.Remove(_DefendingCountry);
             //EndOfFightRpc("battlewon", true);
@@ -834,10 +833,27 @@ public class BattleSystem : NetworkBehaviour
     }
 
     [ClientRpc]
+    void UpdateStarsText(int two, int one)
+    {
+        if (GameCanvasComponent._GameInstance._LocalPlayer._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+        {
+            int stars = two * 2;
+            stars += one;
+            GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
+        }
+        else
+        {
+            int cards = two;
+            cards += one;
+            GameCanvasComponent._GameInstance._StarsDisplay.text = "Cards: " + cards.ToString();
+        }
+    }
+
+    [ClientRpc]
 
     void EndOfFightRpc(string info, bool battleWon)
     {
-        if (info == "battlewon")
+        /*if (info == "battlewon")
         {
             if (MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._ControlledCountries.Count == 1)
             {
@@ -849,7 +865,7 @@ public class BattleSystem : NetworkBehaviour
                 {
                     GameCanvasComponent._GameInstance._CurArmy._OneStars += MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._OneStars;
                     GameCanvasComponent._GameInstance._CurArmy._TwoStars += MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TwoStars;
-                }*/
+                }
 
                 int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
                 stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
@@ -857,8 +873,8 @@ public class BattleSystem : NetworkBehaviour
                 GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
             }
             MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._ControlledCountries.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
-        }
-        else if (info == "1")
+        }*/
+        if (info == "1")
         {
             MainCameraComponent._MainCameraInstance._Tweening = true;
 

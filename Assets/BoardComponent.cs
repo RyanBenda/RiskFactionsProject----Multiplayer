@@ -53,6 +53,7 @@ public class BoardComponent : NetworkBehaviour
             army._ControlledCountries = new List<CountryComponent>();*/
             float cardcount = -0.1f + (0.5f * (i + 1));
             int cardcountint = Mathf.FloorToInt(cardcount);
+            cardcountint = 5;
 
             for (int j = 0; j < cardcountint; j++)
             {

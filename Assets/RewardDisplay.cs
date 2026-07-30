@@ -150,6 +150,8 @@ public class RewardDisplay : NetworkBehaviour
             temp.transform.parent = null;
             Destroy(temp);
         }
+
+        this.gameObject.SetActive(false);
     }
 
     [ClientRpc]

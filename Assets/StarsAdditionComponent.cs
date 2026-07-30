@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using Mirror;
 
-public class StarsAdditionComponent : MonoBehaviour
+public class StarsAdditionComponent : NetworkBehaviour
 {
     public Image _Card;
     public TextMeshProUGUI _StarText;
@@ -49,6 +50,7 @@ public class StarsAdditionComponent : MonoBehaviour
         _Card.color = new Color(1, 1, 1, 0);
         _StarText.color = new Color(0, 0, 0, 0);
         _CardText.color = new Color(0, 0, 0, 0);
-        GameCanvasComponent._GameInstance.CmdProgressTurn();
+        if (isServer)
+            GameCanvasComponent._GameInstance.CmdProgressTurn();
     }
 }

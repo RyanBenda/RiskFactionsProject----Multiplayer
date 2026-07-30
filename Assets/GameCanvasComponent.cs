@@ -582,7 +582,7 @@ public class GameCanvasComponent : NetworkBehaviour
                     _ProgressButtonText.text = "Reward";
                 }
             }
-            else if (_CurrentState == TurnStates.Reward/* && _RewardDisplay.activeSelf == false || _CurrentState == TurnStates.Reward && !_LocalPlayer._IsTurn*/)
+            else if (_CurrentState == TurnStates.Reward/* && _RewardDisplay.activeSelf == false*/)
             {
                 //if (!_LocalPlayer._IsTurn)
                 _RewardDisplay.SetActive(false);
@@ -598,10 +598,19 @@ public class GameCanvasComponent : NetworkBehaviour
                     ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
                     _NewTroopsIcon.SetActive(true);
+                    Debug.Log(_CurArmy._OneStars);
+                    Debug.Log(_CurArmy._TwoStars);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
+                        Debug.Log("got here");
+                        Debug.Log(_LocalPlayer._Army._ArmyName);
+                        Debug.Log(_CurArmy._Army._ArmyName);
+                        Debug.Log(_TurnOrder[_TurnIndex]._Army._ArmyName);
                         if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                        {
+                            Debug.Log("Made it");
                             _StarTrade.gameObject.SetActive(true);
+                        }
                         _CurrentState = TurnStates.CalculateTroops;
                         _ProgressButtonText.text = "Calculate Troops";
                     }
