@@ -241,6 +241,9 @@ public class GameCanvasComponent : NetworkBehaviour
 
     public RiskFactionsPlayerScript _LocalPlayer;
 
+    [SyncVar]
+    public int _RewardCount = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -467,7 +470,7 @@ public class GameCanvasComponent : NetworkBehaviour
                     _CurrentState = TurnStates.AdditionalMove;
                     _ProgressButtonText.text = "Additional Move";
                 }
-                else if (_CurArmy._PossibleRewards.Count == 0 && !_CurArmy._HasGuaranteedCard)
+                else if (_RewardCount == 0 && !_CurArmy._HasGuaranteedCard)
                 {
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
@@ -478,19 +481,23 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                        /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                             _StarTrade.gameObject.SetActive(true);
                         _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";
+                        _ProgressButtonText.text = "Calculate Troops";*/
+
+                        CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        _CurrentState = TurnStates.PlaceTroops;
+                        /*_CurrentState = TurnStates.PlaceTroops;
                         _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
+
+                        CmdNewTurn(TurnStates.PlaceTroops);
                     }
 
-                    if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                     {
                         int stars = _CurArmy._TwoStars * 2;
                         stars += _CurArmy._OneStars;
@@ -503,10 +510,10 @@ public class GameCanvasComponent : NetworkBehaviour
                         cards += _CurArmy._OneStars;
                         _StarsDisplay.color = _CurArmy._TextColour;
                         _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }
+                    }*/
 
                 }
-                else if (_CurArmy._PossibleRewards.Count == 0 && _CurArmy._HasGuaranteedCard)
+                else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
                 {
                     if (isServer)
                         SetStars();
@@ -535,7 +542,7 @@ public class GameCanvasComponent : NetworkBehaviour
 
                 MainCameraComponent._MainCameraInstance.ResetSelected();
 
-                if (_CurArmy._PossibleRewards.Count == 0 && !_CurArmy._HasGuaranteedCard)
+                if (_RewardCount == 0 && !_CurArmy._HasGuaranteedCard)
                 {
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
@@ -546,19 +553,23 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                        /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                             _StarTrade.gameObject.SetActive(true);
                         _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";
+                        _ProgressButtonText.text = "Calculate Troops";*/
+
+                        CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        _CurrentState = TurnStates.PlaceTroops;
+                        /*_CurrentState = TurnStates.PlaceTroops;
                         _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
+
+                        CmdNewTurn(TurnStates.PlaceTroops);
                     }
 
-                    if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                     {
                         int stars = _CurArmy._TwoStars * 2;
                         stars += _CurArmy._OneStars;
@@ -571,9 +582,9 @@ public class GameCanvasComponent : NetworkBehaviour
                         cards += _CurArmy._OneStars;
                         _StarsDisplay.color = _CurArmy._TextColour;
                         _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }
+                    }*/
                 }
-                else if (_CurArmy._PossibleRewards.Count == 0 && _CurArmy._HasGuaranteedCard)
+                else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
                 {
                     if (isServer)
                         SetStars();
@@ -608,7 +619,7 @@ public class GameCanvasComponent : NetworkBehaviour
                     Debug.Log(_CurArmy._TwoStars);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        Debug.Log("got here");
+                        /*Debug.Log("got here");
                         Debug.Log(_LocalPlayer._Army._ArmyName);
                         Debug.Log(_CurArmy._Army._ArmyName);
                         Debug.Log(_TurnOrder[_TurnIndex]._Army._ArmyName);
@@ -618,16 +629,19 @@ public class GameCanvasComponent : NetworkBehaviour
                             _StarTrade.gameObject.SetActive(true);
                         }
                         _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";
+                        _ProgressButtonText.text = "Calculate Troops";*/
+
+                        CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        _CurrentState = TurnStates.PlaceTroops;
+                        /*_CurrentState = TurnStates.PlaceTroops;
                         _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
+                        CmdNewTurn(TurnStates.PlaceTroops);
                     }
 
-                    if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                     {
                         int stars = _CurArmy._TwoStars * 2;
                         stars += _CurArmy._OneStars;
@@ -640,7 +654,7 @@ public class GameCanvasComponent : NetworkBehaviour
                         cards += _CurArmy._OneStars;
                         _StarsDisplay.color = _CurArmy._TextColour;
                         _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }
+                    }*/
                 }
                 else
                 {
@@ -668,19 +682,23 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                        /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                             _StarTrade.gameObject.SetActive(true);
                         _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";
+                        _ProgressButtonText.text = "Calculate Troops";*/
+
+                        CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        _CurrentState = TurnStates.PlaceTroops;
+                        /*_CurrentState = TurnStates.PlaceTroops;
                         _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
+
+                        CmdNewTurn(TurnStates.PlaceTroops);
                     }
 
-                    _NewTroopsIcon.gameObject.SetActive(true);
+                    /*_NewTroopsIcon.gameObject.SetActive(true);
 
                     if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                     {
@@ -695,7 +713,7 @@ public class GameCanvasComponent : NetworkBehaviour
                         cards += _CurArmy._OneStars;
                         _StarsDisplay.color = _CurArmy._TextColour;
                         _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }
+                    }*/
 
                     BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(true);
                     BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(true);
@@ -739,19 +757,23 @@ public class GameCanvasComponent : NetworkBehaviour
                 _NewTroopsIcon.SetActive(true);
                 if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                 {
-                    if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                         _StarTrade.gameObject.SetActive(true);
                     _CurrentState = TurnStates.CalculateTroops;
-                    _ProgressButtonText.text = "Calculate Troops";
+                    _ProgressButtonText.text = "Calculate Troops";*/
+
+                    CmdNewTurn(TurnStates.CalculateTroops);
                 }
                 else
                 {
-                    _CurrentState = TurnStates.PlaceTroops;
+                    /*_CurrentState = TurnStates.PlaceTroops;
                     _ProgressButtonText.text = "Place Troops";
-                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
+
+                    CmdNewTurn(TurnStates.PlaceTroops);
                 }
 
-                if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+                /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
                 {
                     int stars = _CurArmy._TwoStars * 2;
                     stars += _CurArmy._OneStars;
@@ -764,7 +786,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     cards += _CurArmy._OneStars;
                     _StarsDisplay.color = _CurArmy._TextColour;
                     _StarsDisplay.text = "Cards: " + cards.ToString();
-                }
+                }*/
+
             }
         }
     }
@@ -843,6 +866,68 @@ public class GameCanvasComponent : NetworkBehaviour
     void DisplayCard(int val)
     {
         _StarDisplay.DoCardReveal(val);
+    }
+
+    [Command(requiresAuthority =false)]
+    public void IncreaseRewardCount()
+    {
+        GameCanvasComponent._GameInstance._RewardCount++;
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdNewTurn(TurnStates state)
+    {
+        _RewardCount = 0;
+
+        RpcNewTurn(state, _TurnIndex);
+    }
+
+    [ClientRpc]
+    void RpcNewTurn(TurnStates state, int index)
+    {
+        _CurrentState = state;
+        _TurnIndex = index;
+
+        _RewardDisplay.SetActive(false);
+
+        for (int i = 0; i < _RewardDisplay.transform.childCount;)
+        {
+            GameObject temp = _RewardDisplay.transform.GetChild(i).gameObject;
+            temp.transform.parent = null;
+            Destroy(temp);
+        }
+
+        BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
+        _NewTroopsIcon.SetActive(true);
+
+        if (_CurrentState == TurnStates.CalculateTroops)
+        {
+            if (_LocalPlayer._Army._ArmyName == _TurnOrder[_TurnIndex]._Army._ArmyName)
+                _StarTrade.gameObject.SetActive(true);
+
+            _ProgressButtonText.text = "Calculate Troops";
+        }
+        else if (_CurrentState == TurnStates.PlaceTroops)
+        {
+            if (isServer)
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            _ProgressButtonText.text = "Place Troops";
+        }
+
+        if (_LocalPlayer._Army._ArmyName == _TurnOrder[_TurnIndex]._Army._ArmyName)
+        {
+            int stars = _CurArmy._TwoStars * 2;
+            stars += _CurArmy._OneStars;
+            _StarsDisplay.color = _CurArmy._TextColour;
+            _StarsDisplay.text = "Stars: " + stars.ToString();
+        }
+        else
+        {
+            int cards = _CurArmy._TwoStars;
+            cards += _CurArmy._OneStars;
+            _StarsDisplay.color = _CurArmy._TextColour;
+            _StarsDisplay.text = "Cards: " + cards.ToString();
+        }
     }
 
     public void AddRewardAffect()

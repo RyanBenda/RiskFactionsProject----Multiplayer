@@ -124,6 +124,8 @@ public class ObjectiveManager : NetworkBehaviour
                                 AddReward(o);
                                 _InactiveObjectives.Add(o);
                                 o._Inactive = true;
+
+                                GameCanvasComponent._GameInstance._RewardCount++;
                                 break;
                             }
 
@@ -144,6 +146,8 @@ public class ObjectiveManager : NetworkBehaviour
                                     AddReward(o);
                                     _InactiveObjectives.Add(o);
                                     o._Inactive = true;
+
+                                    GameCanvasComponent._GameInstance._RewardCount++;
                                     break;
                                 }
                             }
@@ -155,6 +159,8 @@ public class ObjectiveManager : NetworkBehaviour
                                 AddReward(o);
                                 _InactiveObjectives.Add(o);
                                 o._Inactive = true;
+
+                                GameCanvasComponent._GameInstance._RewardCount++;
                             }
                         }
                     }
@@ -168,6 +174,8 @@ public class ObjectiveManager : NetworkBehaviour
                             AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
+
+                            GameCanvasComponent._GameInstance._RewardCount++;
                         }
                     }
                     else
@@ -177,6 +185,8 @@ public class ObjectiveManager : NetworkBehaviour
                             AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
+
+                            GameCanvasComponent._GameInstance._RewardCount++;
                         }
                     }
                 }
@@ -195,6 +205,8 @@ public class ObjectiveManager : NetworkBehaviour
                         AddReward(o);
                         _InactiveObjectives.Add(o);
                         o._Inactive = true;
+
+                        GameCanvasComponent._GameInstance._RewardCount++;
                     }
                 }
                 else if (o._City)
@@ -206,6 +218,8 @@ public class ObjectiveManager : NetworkBehaviour
                             AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
+
+                            GameCanvasComponent._GameInstance._RewardCount++;
                         }
                     }
                     else
@@ -225,6 +239,8 @@ public class ObjectiveManager : NetworkBehaviour
                             AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
+
+                            GameCanvasComponent._GameInstance._RewardCount++;
                         }
                     }
                 }

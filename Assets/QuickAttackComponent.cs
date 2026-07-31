@@ -615,6 +615,7 @@ public class QuickAttackComponent : NetworkBehaviour
                 {
                     GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
                     GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(BattleSystem._BattleSystemInstance._CardReward);
+                    GameCanvasComponent._GameInstance.IncreaseRewardCount();
                     GameCanvasComponent._GameInstance._RewardEffectList.Add(BattleSystem._BattleSystemInstance._CardReward);
                     GameCanvasComponent._GameInstance.PlayRewardEffect();
                 }
@@ -646,6 +647,7 @@ public class QuickAttackComponent : NetworkBehaviour
             {
                 GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
                 GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(BattleSystem._BattleSystemInstance._CardReward);
+                GameCanvasComponent._GameInstance.IncreaseRewardCount();
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(BattleSystem._BattleSystemInstance._CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
@@ -683,6 +685,7 @@ public class QuickAttackComponent : NetworkBehaviour
             {
                 GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
                 GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(BattleSystem._BattleSystemInstance._CardReward);
+                GameCanvasComponent._GameInstance.IncreaseRewardCount();
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(BattleSystem._BattleSystemInstance._CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }

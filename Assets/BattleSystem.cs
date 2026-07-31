@@ -930,6 +930,7 @@ public class BattleSystem : NetworkBehaviour
                 {
                     GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
                     GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
+                    GameCanvasComponent._GameInstance.IncreaseRewardCount();
                     GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
                     GameCanvasComponent._GameInstance.PlayRewardEffect();
                 }
@@ -970,6 +971,7 @@ public class BattleSystem : NetworkBehaviour
             {
                 GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
                 GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
+                GameCanvasComponent._GameInstance.IncreaseRewardCount();
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
@@ -1011,6 +1013,7 @@ public class BattleSystem : NetworkBehaviour
             {
                 GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
                 GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
+                GameCanvasComponent._GameInstance.IncreaseRewardCount();
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }

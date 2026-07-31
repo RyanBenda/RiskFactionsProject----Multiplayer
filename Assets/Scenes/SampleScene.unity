@@ -53545,6 +53545,7 @@ MonoBehaviour:
   _ArmyTabPrefab: {fileID: 4847157223184943045, guid: a87a717ddee5a0e4298ae5f4cc3c1852, type: 3}
   _DisplayActive: 0
   _LocalPlayer: {fileID: 0}
+  _RewardCount: 0
 --- !u!114 &1593918448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53562,13 +53563,20 @@ MonoBehaviour:
   syncInterval: 0
   _PossibleObjectives:
   - {fileID: 11400000, guid: 350df6fcb56fad54db48a70b3bd27368, type: 2}
-  - {fileID: 11400000, guid: 8b1057f4901463843a7afb96332037f1, type: 2}
-  - {fileID: 11400000, guid: b520c1e353602cd4a82d2aa88bae7bb2, type: 2}
-  - {fileID: 11400000, guid: 6a8c77ca2842caa478a2bed2154b497f, type: 2}
   - {fileID: 11400000, guid: 69016621e4e0025408b8de75f71a6915, type: 2}
   - {fileID: 11400000, guid: 2a86d4387c9fb8c489a46f58bafdf67e, type: 2}
   - {fileID: 11400000, guid: 6c3312165aea49343b774dbf849af8d9, type: 2}
+  - {fileID: 11400000, guid: 8b1057f4901463843a7afb96332037f1, type: 2}
+  - {fileID: 11400000, guid: 850c23c233e0e25408b8c3fbcc6f4522, type: 2}
+  - {fileID: 11400000, guid: 6a8c77ca2842caa478a2bed2154b497f, type: 2}
+  - {fileID: 11400000, guid: dd9da7b9c99f5a34da3a545111809d27, type: 2}
+  - {fileID: 11400000, guid: 7ff58c56fee57ad4fa8bf3a000caaf30, type: 2}
+  - {fileID: 11400000, guid: 62d22b1c30ab1854cbb55d9290298e46, type: 2}
+  - {fileID: 11400000, guid: ccc451b6f7b89b44d80bfa2db5302b12, type: 2}
+  - {fileID: 11400000, guid: 1ec4831372f4c2d42a708e4e807c9e72, type: 2}
+  - {fileID: 11400000, guid: ee43785a41a0cec45bec93d1c4b18a80, type: 2}
   - {fileID: 11400000, guid: a7cc5583a836e274ca53d0b8cf12c885, type: 2}
+  - {fileID: 11400000, guid: b520c1e353602cd4a82d2aa88bae7bb2, type: 2}
   _Rewards:
   - {fileID: 11400000, guid: c05a25e5858b4544da0b896d3c77adbc, type: 2}
   - {fileID: 11400000, guid: f9ade370cef247244aea053a138ca866, type: 2}
