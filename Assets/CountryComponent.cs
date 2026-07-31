@@ -160,7 +160,18 @@ public class CountryComponent : NetworkBehaviour
         //_OccupyingArmy._ControlledCountries.Remove(this);
         //EndOfFightRpc("battlewon", true);
 
-        GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Add(this);
+        bool alreadyAdded = false;
+        foreach (CountryComponent c in GameCanvasComponent._GameInstance._CurArmy._ControlledCountries)
+        {
+            if (c == this)
+            {
+                alreadyAdded = true;
+                break;
+            }
+        }
+
+        if (!alreadyAdded)
+            GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Add(this);
         //_CurColour = GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour;
         _OccupyingArmy = GameCanvasComponent._GameInstance._CurArmy;
     }

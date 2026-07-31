@@ -81,6 +81,7 @@ public class ObjectiveManager : NetworkBehaviour
         }
     }
 
+    [Command(requiresAuthority = false)]
     public void ResetManager()
     {
         for (int i = 0; i < _Can1TurnContinent.Length; i++)
@@ -95,6 +96,14 @@ public class ObjectiveManager : NetworkBehaviour
         {
             _Can1TurnContinent[c._Continent._ContinentOrder] = false;
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void UpdateTakenOverVals(CountryComponent c)
+    {
+        _TakenOverTerritories++;
+        if (c._HasCity)
+            _TakenOverCities++;
     }
 
     [Command(requiresAuthority = false)]
@@ -206,7 +215,9 @@ public class ObjectiveManager : NetworkBehaviour
                         for (int i = 0; i < GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Count; i++)
                         {
                             if (GameCanvasComponent._GameInstance._CurArmy._ControlledCountries[i]._HasCity)
+                            {
                                 temp++;
+                            }
                         }
 
                         if (temp >= o._RequiredCities)
@@ -224,6 +235,7 @@ public class ObjectiveManager : NetworkBehaviour
     [ClientRpc]
     void AddReward(ObjectiveScriptableObject o)
     {
+        Debug.Log(GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName);
         GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
         GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
         GameCanvasComponent._GameInstance.PlayRewardEffect();

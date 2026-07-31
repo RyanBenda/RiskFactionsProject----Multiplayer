@@ -22,4 +22,5 @@ MonoBehaviour:
   _RequiredCapitals: 0
   _RequiredCities: 8
   _OneTurn: 0
-  _Reward: {fileID: 0}
+  _Reward: {fileID: 11400000, guid: 5102b6dac9cd26f47aba1fedc629c49c, type: 2}
+  _Inactive: 1

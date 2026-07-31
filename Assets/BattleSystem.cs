@@ -459,30 +459,27 @@ public class BattleSystem : NetworkBehaviour
                 _DefendingCountry._OccupyingArmy._isDefeated = true;
                 
 
-                GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
-                GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
+                //GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
+                //GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
 
 
                 for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
                 {
-                    if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+                    /*if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
                     {
                         GameCanvasComponent._GameInstance._TurnOrder[i] = GameCanvasComponent._GameInstance._CurArmy;
                     }
-                    else if(GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == _DefendingCountry._OccupyingArmy._Army._ArmyName)
+                    else*/ 
+                    if(GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == _DefendingCountry._OccupyingArmy._Army._ArmyName)
                     {
-                        ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
-                        a._isDefeated = true;
-                        a._Info.SetDefeated();
-                        a._Info._Defeated.color = _AttackingCountry._CurColour;
-                        a._Info._Defeated.gameObject.SetActive(true);
-
-                        GameCanvasComponent._GameInstance._TurnOrder[i] = a;
+                        TransferStars(i);
+                        SetArmyDefeated(i);
+                        break;
                     }  
                 }
 
 
-                UpdateStarsText(GameCanvasComponent._GameInstance._CurArmy._TwoStars, GameCanvasComponent._GameInstance._CurArmy._OneStars);
+                //UpdateStarsText(GameCanvasComponent._GameInstance._CurArmy._TwoStars, GameCanvasComponent._GameInstance._CurArmy._OneStars);
             }
             _DefendingCountry._OccupyingArmy._ControlledCountries.Remove(_DefendingCountry);
             //EndOfFightRpc("battlewon", true);
@@ -509,9 +506,7 @@ public class BattleSystem : NetworkBehaviour
 
             _DefendingCountry._Continent.CheckCountries(_DefendingCountry._CurColour);
 
-            ObjectiveManager._ObjectiveManagerInstance._TakenOverTerritories++;
-            if (_DefendingCountry._HasCity)
-                ObjectiveManager._ObjectiveManagerInstance._TakenOverCities++;
+            ObjectiveManager._ObjectiveManagerInstance.UpdateTakenOverVals(_DefendingCountry);
 
             if (_DefendingCountry._HasAirfield)
             {
@@ -833,8 +828,12 @@ public class BattleSystem : NetworkBehaviour
     }
 
     [ClientRpc]
-    void UpdateStarsText(int two, int one)
+    public void UpdateStarsText(int two, int one)
     {
+        GameCanvasComponent._GameInstance._CurArmy._OneStars = one;
+        GameCanvasComponent._GameInstance._CurArmy._TwoStars = two;
+
+
         if (GameCanvasComponent._GameInstance._LocalPlayer._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
         {
             int stars = two * 2;
@@ -849,8 +848,39 @@ public class BattleSystem : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
+    [Command(requiresAuthority = false)]
+    public void SetArmyDefeated(int i)
+    {
+        ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
+        a._isDefeated = true;
+        a._Info.SetDefeated();
+        a._Info._Defeated.color = _AttackingCountry._CurColour;
+        a._Info._Defeated.gameObject.SetActive(true);
 
+        GameCanvasComponent._GameInstance._TurnOrder.RemoveAt(i);
+        GameCanvasComponent._GameInstance._TurnOrder.Insert(i, a);
+    }
+
+    [Command(requiresAuthority = false)]
+    void TransferStars(int j)
+    {
+        GameCanvasComponent._GameInstance._CurArmy._OneStars += GameCanvasComponent._GameInstance._TurnOrder[j]._OneStars;
+        GameCanvasComponent._GameInstance._CurArmy._TwoStars += GameCanvasComponent._GameInstance._TurnOrder[j]._TwoStars;
+
+        for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
+        {
+            if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+            {
+                GameCanvasComponent._GameInstance._TurnOrder.RemoveAt(i);
+                GameCanvasComponent._GameInstance._TurnOrder.Insert(i, GameCanvasComponent._GameInstance._CurArmy);
+
+                UpdateStarsText(GameCanvasComponent._GameInstance._TurnOrder[i]._TwoStars, GameCanvasComponent._GameInstance._TurnOrder[i]._OneStars);
+                break;
+            }
+        }
+    }
+
+    [ClientRpc]
     void EndOfFightRpc(string info, bool battleWon)
     {
         /*if (info == "battlewon")
@@ -904,7 +934,8 @@ public class BattleSystem : NetworkBehaviour
                     GameCanvasComponent._GameInstance.PlayRewardEffect();
                 }
 
-                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                if (isServer)
+                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
             }
 
             ResetFight();
@@ -942,8 +973,8 @@ public class BattleSystem : NetworkBehaviour
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
-
-            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            if (isServer)
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
 
             ResetFight();
         }
@@ -983,8 +1014,8 @@ public class BattleSystem : NetworkBehaviour
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(_CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
-
-            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            if (isServer)
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
 
             MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
             MainCameraComponent._MainCameraInstance._DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);

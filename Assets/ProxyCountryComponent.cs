@@ -41,22 +41,36 @@ public class ProxyCountryComponent : NetworkBehaviour
         {
             if (!MainCameraComponent._MainCameraInstance._Tweening && MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._AttackingCountry == _AttackerCountry && MainCameraComponent._MainCameraInstance._DefendingCountry == null && MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour != _ActualCountry._CurColour && MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount > 1)
             {
-                MainCameraComponent._MainCameraInstance._Tweening = true;
-                MainCameraComponent._MainCameraInstance._DefendingCountry = _ActualCountry;
-                _MouseHoverTracker = true;
-                _Selected = true;
-                _HoverObject.SetActive(true);
-
-                MainCameraComponent._MainCameraInstance.transform.DOMove(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[0].position, 1.5f).OnComplete(() => MainCameraComponent._MainCameraInstance.ActivateBattleSystem());
-                MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[0].eulerAngles, 1.5f);
+                CmdProxyCamera();
             }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdProxyCamera()
+    {
+        ProxyCamera();
+    }
+
+    [ClientRpc]
+    void ProxyCamera()
+    {
+        MainCameraComponent._MainCameraInstance._Tweening = true;
+        MainCameraComponent._MainCameraInstance._DefendingCountry = _ActualCountry;
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+            _MouseHoverTracker = true;
+        _Selected = true;
+        _HoverObject.SetActive(true);
+
+        MainCameraComponent._MainCameraInstance.transform.DOMove(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[0].position, 1.5f).OnComplete(() => MainCameraComponent._MainCameraInstance.ActivateBattleSystem());
+        MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[0].eulerAngles, 1.5f);
     }
 
     //[ClientRpc]
     public void UpdateDetails()
     {
         _TroopDisplay.text = _ActualCountry._TroopDisplay.text;
+        _TroopDisplay.color = _ActualCountry._TroopDisplay.color;
 
         for (int j = 0; j < this._CountryColour.Length; j++)
         {

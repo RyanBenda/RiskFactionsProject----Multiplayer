@@ -59,11 +59,11 @@ public class StarTradeComponent : NetworkBehaviour
     private void OnDisable()
     {
         ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
-        int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
+        /*int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
         stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
 
         if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
-            GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
+            GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();*/
     }
 
     private void Update()

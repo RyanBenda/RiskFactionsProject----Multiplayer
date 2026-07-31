@@ -14,26 +14,39 @@ public class RewardDisplay : NetworkBehaviour
 
     private void OnEnable()
     {
-        if (isClient)
+        if (isServer)
         {
-            _Val = 0;
-            foreach (RewardScriptableObject r in GameCanvasComponent._GameInstance._CurArmy._PossibleRewards)
-            {
-                GameObject newButton = Instantiate(_ButtonPrefab);
-                RewardButton rb = newButton.GetComponent<RewardButton>();
-                rb.value = _Val;
-                newButton.transform.parent = this.transform;
-                rb._Parent = this;
-                newButton.transform.localScale = Vector3.one;
-                newButton.SetActive(true);
-
-                rb._Icons[r._Index].SetActive(true);
-
-
-                _Val++;
-            }
+            CmdSetRewards();
         }
     }
+
+    [Command(requiresAuthority = false)]
+    void CmdSetRewards()
+    {
+        CreateRewardButtons(GameCanvasComponent._GameInstance._CurArmy._PossibleRewards);
+    }
+
+    [ClientRpc]
+    void CreateRewardButtons(List<RewardScriptableObject> rewards)
+    {
+        _Val = 0;
+        foreach (RewardScriptableObject r in rewards)
+        {
+            GameObject newButton = Instantiate(_ButtonPrefab);
+            RewardButton rb = newButton.GetComponent<RewardButton>();
+            rb.value = _Val;
+            newButton.transform.parent = this.transform;
+            rb._Parent = this;
+            newButton.transform.localScale = Vector3.one;
+            newButton.SetActive(true);
+
+            rb._Icons[r._Index].SetActive(true);
+
+
+            _Val++;
+        }
+    }
+
     
     [Command(requiresAuthority = false)]
     public void SelectReward(int value)
@@ -89,6 +102,16 @@ public class RewardDisplay : NetworkBehaviour
                 }
             }
             
+        }
+        else
+        {
+            for (int i = 0; i < ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives.Count; i++)
+            {
+                ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives[i]._Inactive = false;
+
+                
+            }
+            ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives.Clear();
         }
 
         ClearChildren();

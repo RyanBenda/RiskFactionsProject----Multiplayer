@@ -94,6 +94,8 @@ public class QuickAttackComponent : NetworkBehaviour
         }
     }
 
+
+
     // Update is called once per frame
     void Update()
     {
@@ -138,6 +140,7 @@ public class QuickAttackComponent : NetworkBehaviour
 
             if (_step1)
             {
+
                 if (_DefendingCountry != MainCameraComponent._MainCameraInstance._HoveredCountry)
                 {
                     if (MainCameraComponent._MainCameraInstance._HoveredCountry != null && MainCameraComponent._MainCameraInstance._HoveredCountry != _AttackingCountry && MainCameraComponent._MainCameraInstance._HoveredCountry._CurColour != GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour)
@@ -274,34 +277,35 @@ public class QuickAttackComponent : NetworkBehaviour
             if (_DefendingCountry._OccupyingArmy._ControlledCountries.Count == 1)
             {
                 _DefendingCountry._OccupyingArmy._isDefeated = true;
-                _DefendingCountry._OccupyingArmy._Info._Defeated.color = _AttackingCountry._CurColour;
-                _DefendingCountry._OccupyingArmy._Info._Defeated.gameObject.SetActive(true);
+                /*_DefendingCountry._OccupyingArmy._Info._Defeated.color = _AttackingCountry._CurColour;
+                _DefendingCountry._OccupyingArmy._Info._Defeated.gameObject.SetActive(true);*/
 
-                GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
-                GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
+                //GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
+                //GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
 
                 for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
                 {
-                    if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+                    /*if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
                     {
                         GameCanvasComponent._GameInstance._TurnOrder[i] = GameCanvasComponent._GameInstance._CurArmy;
                     }
-                    else if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == _DefendingCountry._OccupyingArmy._Army._ArmyName)
+                    else */
+                    if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == _DefendingCountry._OccupyingArmy._Army._ArmyName)
                     {
-                        ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
+                        /*ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
                         a._isDefeated = true;
                         a._Info._Defeated.color = _AttackingCountry._CurColour;
                         a._Info._Defeated.gameObject.SetActive(true);
 
-                        GameCanvasComponent._GameInstance._TurnOrder[i] = a;
+                        GameCanvasComponent._GameInstance._TurnOrder[i] = a;*/
+                        TransferStars(i);
+                        SetArmyDefeated(i);
+                        break;
                     }
                 }
 
 
-                int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
-                stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
-
-                GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();
+                //BattleSystem._BattleSystemInstance.UpdateStarsText(GameCanvasComponent._GameInstance._CurArmy._TwoStars, GameCanvasComponent._GameInstance._CurArmy._OneStars);
             }
             _DefendingCountry._OccupyingArmy._ControlledCountries.Remove(_DefendingCountry);
 
@@ -330,9 +334,7 @@ public class QuickAttackComponent : NetworkBehaviour
 
             _DefendingCountry._Continent.CheckCountries(_DefendingCountry._CurColour);
 
-            ObjectiveManager._ObjectiveManagerInstance._TakenOverTerritories++;
-            if (_DefendingCountry._HasCity)
-                ObjectiveManager._ObjectiveManagerInstance._TakenOverCities++;
+            ObjectiveManager._ObjectiveManagerInstance.UpdateTakenOverVals(_DefendingCountry);
 
             if (_DefendingCountry._HasAirfield)
             {
@@ -532,6 +534,38 @@ public class QuickAttackComponent : NetworkBehaviour
         MainCameraComponent._MainCameraInstance._DefendingCountry = d;
     }
 
+    [Command(requiresAuthority = false)]
+    public void SetArmyDefeated(int i) 
+    {
+        ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
+        a._isDefeated = true;
+        GameCanvasComponent._GameInstance._TurnOrder[i]._Info.SetDefeated();
+        GameCanvasComponent._GameInstance._TurnOrder[i]._Info._Defeated.color = _AttackingCountry._CurColour;
+        GameCanvasComponent._GameInstance._TurnOrder[i]._Info._Defeated.gameObject.SetActive(true);
+
+        GameCanvasComponent._GameInstance._TurnOrder.RemoveAt(i);
+        GameCanvasComponent._GameInstance._TurnOrder.Insert(i, a);
+    }
+
+    [Command(requiresAuthority = false)]
+    void TransferStars(int j)
+    {
+        GameCanvasComponent._GameInstance._CurArmy._OneStars += GameCanvasComponent._GameInstance._TurnOrder[j]._OneStars;
+        GameCanvasComponent._GameInstance._CurArmy._TwoStars += GameCanvasComponent._GameInstance._TurnOrder[j]._TwoStars;
+
+        for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
+        {
+            if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
+            {
+                GameCanvasComponent._GameInstance._TurnOrder.RemoveAt(i);
+                GameCanvasComponent._GameInstance._TurnOrder.Insert(i, GameCanvasComponent._GameInstance._CurArmy);
+
+                BattleSystem._BattleSystemInstance.UpdateStarsText(GameCanvasComponent._GameInstance._TurnOrder[i]._TwoStars, GameCanvasComponent._GameInstance._TurnOrder[i]._OneStars);
+                break;
+            }
+        }
+    }
+
     [ClientRpc]
 
     void UpdateTextColours(CountryComponent def)
@@ -585,7 +619,8 @@ public class QuickAttackComponent : NetworkBehaviour
                     GameCanvasComponent._GameInstance.PlayRewardEffect();
                 }
 
-                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                if (isServer)
+                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
             }
         }
         else if (info == "<4")
@@ -614,8 +649,8 @@ public class QuickAttackComponent : NetworkBehaviour
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(BattleSystem._BattleSystemInstance._CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
-
-            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            if (isServer)
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
         }
         /*else if (info == "rotate")
         {
@@ -651,8 +686,8 @@ public class QuickAttackComponent : NetworkBehaviour
                 GameCanvasComponent._GameInstance._RewardEffectList.Add(BattleSystem._BattleSystemInstance._CardReward);
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
-
-            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            if (isServer)
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
 
             _DefendingCountry._Selected = false;
             _DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);

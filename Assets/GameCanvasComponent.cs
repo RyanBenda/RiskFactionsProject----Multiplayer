@@ -265,6 +265,12 @@ public class GameCanvasComponent : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha6))
             _CurArmy._OneStars--;
+
+
+        if (_CurArmy._Army != default)
+        {
+            //Debug.Log(_CurArmy._PossibleRewards.Count);
+        }
     }
 
     void OnCurArmyChange(ArmiesClass2 old, ArmiesClass2 _new)
@@ -466,7 +472,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    if (isServer)
+                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
@@ -501,18 +508,8 @@ public class GameCanvasComponent : NetworkBehaviour
                 }
                 else if (_CurArmy._PossibleRewards.Count == 0 && _CurArmy._HasGuaranteedCard)
                 {
-                    int val = Random.Range(0, 3);
-
-                    if (val != 2)
-                    {
-                        val = 1;
-
-                        _CurArmy._OneStars++;
-                    }
-                    else
-                        _CurArmy._TwoStars++;
-
-                    _StarDisplay.DoCardReveal(val);
+                    if (isServer)
+                        SetStars();
                     _CurrentState = TurnStates.Reward;
                     _ProgressButtonText.text = "Reward";
                 }
@@ -538,12 +535,13 @@ public class GameCanvasComponent : NetworkBehaviour
 
                 MainCameraComponent._MainCameraInstance.ResetSelected();
 
-                if (_CurArmy._PossibleRewards.Count == 0)
+                if (_CurArmy._PossibleRewards.Count == 0 && !_CurArmy._HasGuaranteedCard)
                 {
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    if (isServer)
+                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
@@ -575,6 +573,13 @@ public class GameCanvasComponent : NetworkBehaviour
                         _StarsDisplay.text = "Cards: " + cards.ToString();
                     }
                 }
+                else if (_CurArmy._PossibleRewards.Count == 0 && _CurArmy._HasGuaranteedCard)
+                {
+                    if (isServer)
+                        SetStars();
+                    _CurrentState = TurnStates.Reward;
+                    _ProgressButtonText.text = "Reward";
+                }
                 else
                 {
                     _RewardDisplay.SetActive(true);
@@ -595,7 +600,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    if (isServer)
+                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
                     _NewTroopsIcon.SetActive(true);
                     Debug.Log(_CurArmy._OneStars);
@@ -656,7 +662,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    if (isServer)
+                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
@@ -726,7 +733,8 @@ public class GameCanvasComponent : NetworkBehaviour
                 _CurrentArmyBanner.color = FindActiveArmy();
                 _CurArmy = _TurnOrder[_TurnIndex];
                 SetRewards();
-                ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                if (isServer)
+                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                 BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
                 _NewTroopsIcon.SetActive(true);
                 if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
@@ -808,6 +816,33 @@ public class GameCanvasComponent : NetworkBehaviour
                 _TurnOrder[i] = a;
             }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    void SetStars()
+    {
+        int val = Random.Range(0, 3);
+
+        if (val != 2)
+        {
+            val = 1;
+
+            _CurArmy._OneStars++;
+            _TurnOrder[_TurnIndex] = _CurArmy;
+        }
+        else
+        {
+            _CurArmy._TwoStars++;
+            _TurnOrder[_TurnIndex] = _CurArmy;
+        }
+
+        DisplayCard(val);
+    }
+
+    [ClientRpc]
+    void DisplayCard(int val)
+    {
+        _StarDisplay.DoCardReveal(val);
     }
 
     public void AddRewardAffect()

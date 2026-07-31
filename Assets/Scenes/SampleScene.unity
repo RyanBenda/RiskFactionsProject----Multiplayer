@@ -53562,13 +53562,6 @@ MonoBehaviour:
   syncInterval: 0
   _PossibleObjectives:
   - {fileID: 11400000, guid: 350df6fcb56fad54db48a70b3bd27368, type: 2}
-  - {fileID: 11400000, guid: ee43785a41a0cec45bec93d1c4b18a80, type: 2}
-  - {fileID: 11400000, guid: 62d22b1c30ab1854cbb55d9290298e46, type: 2}
-  - {fileID: 11400000, guid: 1ec4831372f4c2d42a708e4e807c9e72, type: 2}
-  - {fileID: 11400000, guid: 7ff58c56fee57ad4fa8bf3a000caaf30, type: 2}
-  - {fileID: 11400000, guid: 850c23c233e0e25408b8c3fbcc6f4522, type: 2}
-  - {fileID: 11400000, guid: dd9da7b9c99f5a34da3a545111809d27, type: 2}
-  - {fileID: 11400000, guid: ccc451b6f7b89b44d80bfa2db5302b12, type: 2}
   - {fileID: 11400000, guid: 8b1057f4901463843a7afb96332037f1, type: 2}
   - {fileID: 11400000, guid: b520c1e353602cd4a82d2aa88bae7bb2, type: 2}
   - {fileID: 11400000, guid: 6a8c77ca2842caa478a2bed2154b497f, type: 2}
@@ -63812,7 +63805,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -69344,6 +69337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f720b5adbaefbe40b05f8dd98a9d803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _Card: {fileID: 476054367}
   _StarText: {fileID: 2115015801}
   _CardText: {fileID: 214296109}
