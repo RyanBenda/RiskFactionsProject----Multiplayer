@@ -42,23 +42,17 @@ public class RewardDisplay : NetworkBehaviour
 
             rb._Icons[r._Index].SetActive(true);
 
-
             _Val++;
         }
     }
-
     
     [Command(requiresAuthority = false)]
-    public void SelectReward(int value)
+    public void SelectReward(int value) //Handles the figuring out the Reward on the server as its data is obviously the most reliable and accurate
     {
         if (!GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._Card)
         {
-            //GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value].DetermineReward(/*GameCanvasComponent._GameInstance._CurArmy*/);
-            //DetermineReward(GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]);
-
             if (GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._Airfield == true)
             {
-                //GameCanvasComponent._GameInstance._PlaceAirfield = true;
                 PlacingAirfield();
             }
             else if (GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._EarlyMove)
@@ -80,8 +74,6 @@ public class RewardDisplay : NetworkBehaviour
             {
                 if (GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._Name == ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives[i]._Reward._Name)
                 {
-                    //ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives.RemoveAt(i);
-
                     for (int j = 0; j < ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives.Count; j++)
                     {
                         if (j != i)
@@ -101,15 +93,12 @@ public class RewardDisplay : NetworkBehaviour
                     break;
                 }
             }
-            
         }
         else
         {
             for (int i = 0; i < ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives.Count; i++)
             {
                 ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives[i]._Inactive = false;
-
-                
             }
             ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives.Clear();
         }
@@ -154,11 +143,10 @@ public class RewardDisplay : NetworkBehaviour
             this.gameObject.SetActive(false);
             GameCanvasComponent._GameInstance.CmdProgressTurn();
         }
-
     }
 
     [ClientRpc]
-    void ObjectiveClaimed(int j)
+    void ObjectiveClaimed(int j) // Adds the correct cross colour the objectives display for claimed rewards
     {
         _Objectives[j]._Claimed.color = GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour;
         _Objectives[j]._Claimed.gameObject.SetActive(true);

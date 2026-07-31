@@ -18,18 +18,11 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
         
     }
 
+    //Starts the game when all the players have loaded in and added themselves to the Players SyncList
     void OnPlayersChanged(int old, int _new)
     {
-        //Debug.Log(_PlayerCount);
-        //Debug.Log(NetworkServer.connections.Count);
-
         if (_PlayerCount == NetworkServer.connections.Count)
         {
-            //Debug.Log(_PlayerCount);
-            //Debug.Log("All Ready");
-
-            //_BattleSystem.gameObject.SetActive(false);
-
             if (isServer)
             {
                 ArmyScriptableObject[] armies = new ArmyScriptableObject[_PlayerCount];
@@ -39,14 +32,7 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
                 _ObjectiveManager.SetUpObjectives();
                 _Board.BeginMatch(armies);
             }
-
-            //_Board.SetUpCountries();
         }    
-    }
-
-    void OnItemAdded(int index)
-    {
-
     }
 
     // Update is called once per frame

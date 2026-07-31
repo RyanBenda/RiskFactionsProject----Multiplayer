@@ -8,7 +8,7 @@ public class ContinentComponent : NetworkBehaviour
     public CountryComponent[] _Countries;
 
     [SyncVar]
-    public ArmiesClass2 _ControllingArmy;
+    public ArmiesStruct _ControllingArmy;
 
     public int _TroopValue = 4;
 

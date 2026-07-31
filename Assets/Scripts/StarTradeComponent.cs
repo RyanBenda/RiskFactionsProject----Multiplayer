@@ -27,7 +27,6 @@ public class StarTradeComponent : NetworkBehaviour
             stars += 2;
         }
 
-        //if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         _StarCount.text = "Star Count: "+ stars;
 
         bool temp = false;
@@ -58,12 +57,7 @@ public class StarTradeComponent : NetworkBehaviour
 
     private void OnDisable()
     {
-        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
-        /*int stars = GameCanvasComponent._GameInstance._CurArmy._TwoStars * 2;
-        stars += GameCanvasComponent._GameInstance._CurArmy._OneStars;
-
-        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
-            GameCanvasComponent._GameInstance._StarsDisplay.text = "Stars: " + stars.ToString();*/
+        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck(); // Trading Stars ends the Calculating Troops phase so now time to check objectives at the proper start of turn
     }
 
     private void Update()
@@ -75,9 +69,8 @@ public class StarTradeComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void TradeIn(int value)
+    public void TradeIn(int value) // Handles trading in the stars
     {
-
         int newTroops = 0;
         switch (value)
         {
@@ -140,8 +133,7 @@ public class StarTradeComponent : NetworkBehaviour
     }
 
     [ClientRpc]
-
-    void UpdateCardText(int oneStar, int twoStar)
+    void UpdateCardText(int oneStar, int twoStar) // Handles updating the stars text for the players
     {
 
         if (GameCanvasComponent._GameInstance._LocalPlayer._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)

@@ -19,8 +19,7 @@ public class RewardScriptableObject : ScriptableObject
 
     public int _Index = 0;
 
-
-    public void DetermineReward(/*ArmiesClass2 Army*/)
+    public void DetermineReward() //Pretty sure this is unused in Multiplayer version
     {
         if (_Airfield == true)
         {
@@ -38,9 +37,8 @@ public class RewardScriptableObject : ScriptableObject
             GameCanvasComponent._GameInstance._CurArmy._HasExtraTroops = true;
         else if (_GuaranteedCard)
             GameCanvasComponent._GameInstance._CurArmy._HasGuaranteedCard = true;
-        
     }
-    public int DetermineRewardCard(/*ArmiesClass Army*/)
+    public int DetermineRewardCard() //Pretty sure this is unused in Multiplayer version
     {
         int value = Random.Range(0, 3);
 
@@ -48,16 +46,5 @@ public class RewardScriptableObject : ScriptableObject
             value = 1;
 
         return value;
-
-        /*if (_Card == true)
-        {
-            if (CardValue() == 1)
-            {
-                Army._OneStars++;
-            }
-            else
-                Army._TwoStars++;
-        }
-        else*/
     }
 }

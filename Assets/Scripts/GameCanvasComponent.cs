@@ -22,157 +22,7 @@ public enum TurnStates
 }
 
 [System.Serializable]
-public class ArmiesClass
-{
-    //[SyncVar]
-    public ArmyScriptableObject _Army;
-    
-    //[SyncVar]
-    public int _OneStars = 0;
-    //[SyncVar]
-    public int _TwoStars = 0;
-
-    //[SyncVar]
-    public bool _HasEarlyMove = false;
-    //[SyncVar]
-    public bool _HasAdditionalMove = false;
-    //[SyncVar]
-    public bool _HasAttackDie = false;
-    //[SyncVar]
-    public bool _HasDefenceDie = false;
-    //[SyncVar]
-    public bool _HasExtraTroops = false;
-    //[SyncVar]
-    public bool _HasGuaranteedCard = false;
-    //[SyncVar]
-    public bool _HasStarReward = false;
-    public List<RewardScriptableObject> _Rewards = new List<RewardScriptableObject>();
-    public List<RewardScriptableObject> _PossibleRewards = new List<RewardScriptableObject>();
-
-    public bool _isDefeated = false;
-    public Color _TextColour = Color.black;
-    public ArmyInfoComponent _Info;
-
-    public List<CountryComponent> _ControlledCountries = new List<CountryComponent>();
-}
-
-public static class ArmiesClassSerializers
-{
-    // Write extension method
-    public static void WriteMyCustomData(this NetworkWriter writer, ArmiesClass data)
-    {
-        if (data == null)
-        {
-            writer.WriteBool(false);
-            return;
-        }
-
-        //writer.Write<ArmyScriptableObject>(data._Army);
-        writer.WriteInt(data._OneStars);
-        //writer.WriteInt(data._TwoStars);
-        //writer.WriteBool(data._HasEarlyMove);
-        //writer.WriteBool(data._HasAdditionalMove);
-        //writer.WriteBool(data._HasAttackDie);
-        //writer.WriteBool(data._HasDefenceDie);
-        //writer.WriteBool(data._HasExtraTroops);
-        //writer.WriteBool(data._HasGuaranteedCard);
-        //writer.WriteBool(data._HasStarReward);
-        //writer.WriteList<RewardScriptableObject>(data._Rewards);
-        //writer.WriteList<RewardScriptableObject>(data._PossibleRewards);
-        //writer.WriteBool(data._isDefeated);
-        //writer.WriteColor(data._TextColour);
-        //writer.Write<ArmyInfoComponent>(data._Info);
-        //writer.WriteList<CountryComponent>(data._ControlledCountries);
-    }
-
-    // Read extension method
-    public static ArmiesClass ReadMyCustomData(this NetworkReader reader)
-    {
-        if (!reader.ReadBool())
-        {
-            return null;
-        }
-
-        ArmiesClass data = new ArmiesClass();
-        data._Army = default;
-        data._OneStars = reader.ReadInt();
-        data._TwoStars = default;
-        data._HasEarlyMove = default;
-        data._HasAdditionalMove = default;
-        data._HasAttackDie = default;
-        data._HasDefenceDie = default;
-        data._HasExtraTroops = default;
-        data._HasGuaranteedCard = default;
-        data._HasStarReward = default;
-        data._Rewards = default;
-        data._PossibleRewards = default;
-        data._isDefeated = default;
-        data._TextColour = default;
-        data._Info = default;
-        data._ControlledCountries = default;
-
-        //data._ControlledCountries = reader.ReadList<CountryComponent>();
-        //data._Info = reader.Read<ArmyInfoComponent>();
-        //data._TextColour = reader.ReadColor();
-        //data._isDefeated = reader.ReadBool();
-        //data._PossibleRewards = reader.ReadList<RewardScriptableObject>();
-        //data._Rewards = reader.ReadList<RewardScriptableObject>();
-        //data._HasStarReward = reader.ReadBool();
-        //data._HasGuaranteedCard = reader.ReadBool();
-        //data._HasExtraTroops = reader.ReadBool();
-        //data._HasDefenceDie = reader.ReadBool();
-        //data._HasAttackDie = reader.ReadBool();
-        //data._HasAdditionalMove = reader.ReadBool();   
-        //data._HasEarlyMove = reader.ReadBool();
-        //data._TwoStars = reader.ReadInt();
-
-        //data._Army = reader.Read<ArmyScriptableObject>();
-        return data;
-    }
-}
-
-/*public static class MyArmyScriptableObjectExtensions
-{
-    public static void WriteMyType(this NetworkWriter writer, ArmyScriptableObject value)
-    {
-        if (value == null)
-        {
-            writer.WriteBool(false);
-            return;
-        }
-
-        /*if (value._ArmyName == null)
-            value._ArmyName = "";
-
-        writer.WriteString(value._ArmyName);
-        writer.WriteColor(value._ArmyColour);
-    }
-
-    public static ArmyScriptableObject ReadMyType(this NetworkReader reader)
-    {
-        if (!reader.ReadBool())
-        {
-            return null;
-        }
-
-        //ArmyScriptableObject data = new ArmyScriptableObject();
-        ArmyScriptableObject data = ScriptableObject.CreateInstance<ArmyScriptableObject>();   
-        data._ArmyColour = reader.ReadColor();
-        //Debug.Log(reader.ReadString());
-
-        string temp = reader.ReadString();
-
-        Debug.Log(temp);
-
-        if (temp != null)
-            data._ArmyName = reader.ReadString();
-        else
-            data._ArmyName = "";
-        return data;
-    }
-}*/
-[System.Serializable]
-public struct ArmiesClass2
+public struct ArmiesStruct
 {
     public ArmyScriptableObject _Army;
 
@@ -208,11 +58,11 @@ public class GameCanvasComponent : NetworkBehaviour
     public TextMeshProUGUI _ProgressButtonText;
     public TurnStates _CurrentState = TurnStates.CalculateTroops;
 
-    public readonly SyncList<ArmiesClass2> _TurnOrder = new SyncList<ArmiesClass2>();
-    //public List<ArmiesClass2> _TurnOrder = new List<ArmiesClass2>();
+    public readonly SyncList<ArmiesStruct> _TurnOrder = new SyncList<ArmiesStruct>();
+
     int _TurnIndex = 0;
     [SyncVar(hook = nameof(OnCurArmyChange))]
-    public ArmiesClass2 _CurArmy;
+    public ArmiesStruct _CurArmy;
 
     public GameObject _NewTroopsIcon;
     public GameObject _RewardDisplay;
@@ -227,7 +77,6 @@ public class GameCanvasComponent : NetworkBehaviour
     public IEnumerator _RewardCoroutine;
     bool _Active = false;
 
-    //[SyncVar]
     public bool _PlaceAirfield = false;
 
     [SyncVar]
@@ -254,42 +103,16 @@ public class GameCanvasComponent : NetworkBehaviour
         _ProgressButton.interactable = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-            _CurArmy._TwoStars++;
-
-        if (Input.GetKeyDown(KeyCode.Alpha8))
-            _CurArmy._OneStars++;
-
-        if (Input.GetKeyDown(KeyCode.Alpha7))
-            _CurArmy._TwoStars--;
-
-        if (Input.GetKeyDown(KeyCode.Alpha6))
-            _CurArmy._OneStars--;
-
-
-        if (_CurArmy._Army != default)
-        {
-            //Debug.Log(_CurArmy._PossibleRewards.Count);
-        }
-    }
-
-    void OnCurArmyChange(ArmiesClass2 old, ArmiesClass2 _new)
+    void OnCurArmyChange(ArmiesStruct old, ArmiesStruct _new)
     {
         if (_CurArmy._Army != null)
         {
-            if (_CurArmy._Info == null)
+            if (_CurArmy._Info == null) // Sets the Army Info for each army on first call of Army change as they needed time to be spawned by the server
                 SetInfo();
 
             _CurrentArmyBanner.color = _CurArmy._Army._ArmyColour;
-
             
-            RiskFactionsPlayerScript p = NetworkClient.connection.identity.GetComponent<RiskFactionsPlayerScript>();
-            
-            //Debug.Log(p._Army._ArmyName);
-            //Debug.Log(_CurArmy._Army._ArmyName);
+            RiskFactionsPlayerScript p = NetworkClient.connection.identity.GetComponent<RiskFactionsPlayerScript>(); // could this be _LocalPlayer? Come back to this
             
             if (p._Army._ArmyName == _CurArmy._Army._ArmyName)
             {
@@ -309,7 +132,6 @@ public class GameCanvasComponent : NetworkBehaviour
 
                 p.CmdSetTurn(false);
             }
-            
         }
     }
 
@@ -481,37 +303,12 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                            _StarTrade.gameObject.SetActive(true);
-                        _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";*/
-
                         CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        /*_CurrentState = TurnStates.PlaceTroops;
-                        _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
-
                         CmdNewTurn(TurnStates.PlaceTroops);
                     }
-
-                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                    {
-                        int stars = _CurArmy._TwoStars * 2;
-                        stars += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Stars: " + stars.ToString();
-                    }
-                    else
-                    {
-                        int cards = _CurArmy._TwoStars;
-                        cards += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }*/
-
                 }
                 else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
                 {
@@ -553,36 +350,12 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                            _StarTrade.gameObject.SetActive(true);
-                        _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";*/
-
                         CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        /*_CurrentState = TurnStates.PlaceTroops;
-                        _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
-
                         CmdNewTurn(TurnStates.PlaceTroops);
                     }
-
-                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                    {
-                        int stars = _CurArmy._TwoStars * 2;
-                        stars += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Stars: " + stars.ToString();
-                    }
-                    else
-                    {
-                        int cards = _CurArmy._TwoStars;
-                        cards += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }*/
                 }
                 else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
                 {
@@ -598,9 +371,8 @@ public class GameCanvasComponent : NetworkBehaviour
                     _ProgressButtonText.text = "Reward";
                 }
             }
-            else if (_CurrentState == TurnStates.Reward/* && _RewardDisplay.activeSelf == false*/)
+            else if (_CurrentState == TurnStates.Reward)
             {
-                //if (!_LocalPlayer._IsTurn)
                 _RewardDisplay.SetActive(false);
 
                 if (!_PlaceAirfield)
@@ -619,42 +391,12 @@ public class GameCanvasComponent : NetworkBehaviour
                     Debug.Log(_CurArmy._TwoStars);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        /*Debug.Log("got here");
-                        Debug.Log(_LocalPlayer._Army._ArmyName);
-                        Debug.Log(_CurArmy._Army._ArmyName);
-                        Debug.Log(_TurnOrder[_TurnIndex]._Army._ArmyName);
-                        if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                        {
-                            Debug.Log("Made it");
-                            _StarTrade.gameObject.SetActive(true);
-                        }
-                        _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";*/
-
                         CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        /*_CurrentState = TurnStates.PlaceTroops;
-                        _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
                         CmdNewTurn(TurnStates.PlaceTroops);
                     }
-
-                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                    {
-                        int stars = _CurArmy._TwoStars * 2;
-                        stars += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Stars: " + stars.ToString();
-                    }
-                    else
-                    {
-                        int cards = _CurArmy._TwoStars;
-                        cards += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }*/
                 }
                 else
                 {
@@ -682,38 +424,12 @@ public class GameCanvasComponent : NetworkBehaviour
                     _NewTroopsIcon.SetActive(true);
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                            _StarTrade.gameObject.SetActive(true);
-                        _CurrentState = TurnStates.CalculateTroops;
-                        _ProgressButtonText.text = "Calculate Troops";*/
-
                         CmdNewTurn(TurnStates.CalculateTroops);
                     }
                     else
                     {
-                        /*_CurrentState = TurnStates.PlaceTroops;
-                        _ProgressButtonText.text = "Place Troops";
-                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
-
                         CmdNewTurn(TurnStates.PlaceTroops);
                     }
-
-                    /*_NewTroopsIcon.gameObject.SetActive(true);
-
-                    if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                    {
-                        int stars = _CurArmy._TwoStars * 2;
-                        stars += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Stars: " + stars.ToString();
-                    }
-                    else
-                    {
-                        int cards = _CurArmy._TwoStars;
-                        cards += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }*/
 
                     BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(true);
                     BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(true);
@@ -757,42 +473,17 @@ public class GameCanvasComponent : NetworkBehaviour
                 _NewTroopsIcon.SetActive(true);
                 if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                 {
-                    /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                        _StarTrade.gameObject.SetActive(true);
-                    _CurrentState = TurnStates.CalculateTroops;
-                    _ProgressButtonText.text = "Calculate Troops";*/
-
                     CmdNewTurn(TurnStates.CalculateTroops);
                 }
                 else
                 {
-                    /*_CurrentState = TurnStates.PlaceTroops;
-                    _ProgressButtonText.text = "Place Troops";
-                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();*/
-
                     CmdNewTurn(TurnStates.PlaceTroops);
                 }
-
-                /*if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                {
-                    int stars = _CurArmy._TwoStars * 2;
-                    stars += _CurArmy._OneStars;
-                    _StarsDisplay.color = _CurArmy._TextColour;
-                    _StarsDisplay.text = "Stars: " + stars.ToString();
-                }
-                else
-                {
-                    int cards = _CurArmy._TwoStars;
-                    cards += _CurArmy._OneStars;
-                    _StarsDisplay.color = _CurArmy._TextColour;
-                    _StarsDisplay.text = "Cards: " + cards.ToString();
-                }*/
-
             }
         }
     }
 
-    Color FindActiveArmy() // Shouldn't be possible to have all the armies defeated in a game cause then there wouldn't be a winner, but probs should add a check at some point
+    Color FindActiveArmy()
     {
         _TurnIndex++;
         if (_TurnIndex == _TurnOrder.Count)
@@ -804,7 +495,7 @@ public class GameCanvasComponent : NetworkBehaviour
             return _TurnOrder[_TurnIndex]._Army._ArmyColour;
     }
 
-    void SetRewards()
+    void SetRewards() //Sets what rewards the Current army has based on what is in their Reward List as that was updating across clients reliably and quickly
     {
         foreach (RewardScriptableObject r in _CurArmy._Rewards)
         {
@@ -829,10 +520,9 @@ public class GameCanvasComponent : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void SetInfo()
     {
-        
         for (int i = 0; i < _TurnOrder.Count; i++)
         {
-            ArmiesClass2 a = _TurnOrder[i];
+            ArmiesStruct a = _TurnOrder[i];
             if (i < _ArmyOrder.content.childCount)
             {
                 a._Info = _ArmyOrder.content.GetChild(i).GetComponent<ArmyInfoComponent>();
@@ -842,7 +532,7 @@ public class GameCanvasComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void SetStars()
+    void SetStars() // Adds stars for the Army with guaranteed card but didn't get another reward for it to be called that way
     {
         int val = Random.Range(0, 3);
 
@@ -875,7 +565,7 @@ public class GameCanvasComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void CmdNewTurn(TurnStates state)
+    void CmdNewTurn(TurnStates state) //Command for starting a new turn to force set all clients to this point in case they didn't stay up to date for some reason
     {
         _RewardCount = 0;
 
@@ -936,15 +626,12 @@ public class GameCanvasComponent : NetworkBehaviour
         _RewardAddition.transform.localPosition = new Vector3(_RewardAddition.transform.localPosition.x + 100, _RewardAddition.transform.localPosition.y - 100, _RewardAddition.transform.localPosition.z);
         _RewardAddition.transform.DOLocalMove(temp, 1);
         _RewardAddition.transform.DOScale(Vector3.one, 1f);
-        //_RewardAddition._Image.DOColor(Color.white, 1f).OnComplete(() => ResetRewardAffect());
         _RewardAddition._TextMeshPro.DOColor(Color.black, 1f);
-        
     }
 
     void ResetRewardEffect(int index)
     {
         _RewardAddition._Image[0].DOColor(new Color(_RewardAddition._Image[0].color.r, _RewardAddition._Image[0].color.g, _RewardAddition._Image[0].color.b, 0), 0.5f).OnComplete(() => EndRewardEffect(index));
-        //_RewardAddition._TextMeshPro.DOColor(new Color(_RewardAddition._TextMeshPro.color.r, _RewardAddition._TextMeshPro.color.g, _RewardAddition._TextMeshPro.color.b, 0), 0.5f).OnComplete(() => EndRewardEffect(index));
     }
 
     void EndRewardEffect(int index)
@@ -962,10 +649,8 @@ public class GameCanvasComponent : NetworkBehaviour
         }
     }
 
-
-    IEnumerator RewardEffectCoroutine()
+    IEnumerator RewardEffectCoroutine() //Coroutine for playing the little animation when you complete an objective and get a new reward to choose from, Coroutine allows for rewards to be played back to back if unlocked at the same time
     {
-
         _Active = true;
 
         for (int i = 0; i < _RewardEffectList.Count;)
@@ -977,7 +662,6 @@ public class GameCanvasComponent : NetworkBehaviour
             _RewardAddition.transform.DOLocalMove(temp, 1);
             _RewardAddition.transform.DOScale(Vector3.one, 1f);
             _RewardAddition._Image[0].DOColor(Color.white, 1f).OnComplete(() => ResetRewardEffect(_RewardEffectList[i]._Index));
-            //_RewardAddition._TextMeshPro.DOColor(Color.black, 1f);
 
             yield return new WaitForSecondsRealtime(1.5f); 
 

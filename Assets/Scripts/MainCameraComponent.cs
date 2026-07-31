@@ -27,25 +27,7 @@ public class MainCameraComponent : NetworkBehaviour
         _StartingRot = transform.eulerAngles;
     }
 
-    /*[Command(requiresAuthority = false)]
-    void CmdSetCountry(bool isAttacking)
-    {
-        if (isAttacking)
-            RpcSetCounty(_AttackingCountry, isAttacking);
-        else
-            RpcSetCounty(_DefendingCountry, isAttacking);
-    }
-
-    [ClientRpc]
-
-    void RpcSetCounty(CountryComponent c, bool isAttacking)
-    {
-        if (isAttacking)
-            _AttackingCountry = c;
-        else
-            _DefendingCountry = c;
-    }*/
-    public void Update()
+    public void Update() // Allows you to activate moving and placing troops with the Enter key and stop with Escape Key
     {
         if (GameCanvasComponent._GameInstance != null && GameCanvasComponent._GameInstance._LocalPlayer != null && GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
@@ -70,14 +52,6 @@ public class MainCameraComponent : NetworkBehaviour
                     CmdResetCamera();
             }
         }
-        /*if (isServer)
-        {
-            if (Input.GetKey(KeyCode.H))
-            {
-                CmdSetCountry(true);
-            }
-        }*/
-
     }
 
     public void ActivateBattleSystem()
@@ -102,8 +76,6 @@ public class MainCameraComponent : NetworkBehaviour
     {
         _Tweening = true;
 
-        //Debug.Log(BattleSystem._BattleSystemInstance);
-
         if (_DefendingCountry == null)
         {
             this.transform.DOMove(_StartingPos, 1).OnComplete(() => ResetSelected());
@@ -111,10 +83,8 @@ public class MainCameraComponent : NetworkBehaviour
         }
         else
         {
-
             this.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => this._Tweening = false);
             this.transform.DORotate(_StartingRot, 2);
-
 
             _DefendingCountry._Selected = false;
             _DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);
@@ -140,7 +110,6 @@ public class MainCameraComponent : NetworkBehaviour
             _AttackingCountry._MouseHoverTracker = false;
             _AttackingCountry = null;
         }
-
 
         BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
         BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";

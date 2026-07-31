@@ -51,8 +51,6 @@ public class RiskFactionsPlayerScript : NetworkBehaviour
 
         _GameCanvas = FindFirstObjectByType<GameCanvasComponent>();
 
-        //GameCanvasComponent._GameInstance._LocalPlayer = this;
-
         _GameCanvas._LocalPlayer = this;
     }
 }

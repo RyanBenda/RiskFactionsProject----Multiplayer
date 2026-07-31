@@ -7,7 +7,7 @@ using Mirror;
 
 public class ArmyInfoComponent : NetworkBehaviour
 {
-    public ArmiesClass2 _Army;
+    public ArmiesStruct _Army;
     public Image _Image;
     public TextMeshProUGUI _Name;
     public TextMeshProUGUI _Defeated;
@@ -18,20 +18,18 @@ public class ArmyInfoComponent : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _NetworkIdentity.enabled = false;
+        _NetworkIdentity.enabled = false; //Set false on start becuase it needs a network identity to be spawned but parent has network identity
         transform.parent = GameCanvasComponent._GameInstance._ArmyOrder.content;
         transform.localScale = Vector3.one;
     }
 
     [ClientRpc]
-    public void RpcCreateArmyOrderObject(ArmiesClass2 army)
+    public void RpcCreateArmyOrderObject(ArmiesStruct army)
     {
         _Army = army;
         _Image.color = army._Army._ArmyColour;
         _Name.text = army._Army._ArmyName;
         _Name.color = army._TextColour;
-
-
     }
 
     [Command(requiresAuthority = false)]
@@ -48,11 +46,5 @@ public class ArmyInfoComponent : NetworkBehaviour
             _Defeated.gameObject.SetActive(true);
 
         }
-    }
-    
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

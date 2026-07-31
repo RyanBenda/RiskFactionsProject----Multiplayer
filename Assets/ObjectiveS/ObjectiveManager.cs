@@ -9,11 +9,10 @@ public class ObjectiveManager : NetworkBehaviour
     public static ObjectiveManager _ObjectiveManagerInstance;
 
     public List<ObjectiveScriptableObject> _PossibleObjectives = new List<ObjectiveScriptableObject>();
-    //public List<ObjectiveScriptableObject> _ActiveObjectives = new List<ObjectiveScriptableObject>();
+
     public readonly SyncList<ObjectiveScriptableObject> _ActiveObjectives = new SyncList<ObjectiveScriptableObject>();
 
     public readonly SyncList<ObjectiveScriptableObject> _InactiveObjectives = new SyncList<ObjectiveScriptableObject>();
-    //public List<ObjectiveScriptableObject> _InactiveObjectives = new List<ObjectiveScriptableObject>();
 
     public RewardScriptableObject[] _Rewards;
 
@@ -28,7 +27,6 @@ public class ObjectiveManager : NetworkBehaviour
     public bool[] _Can1TurnContinent = new bool[6];
     [SyncVar]
     public int _TakenOverTerritories = 0;
-    //public int _TakenOverCapitals = 0;
     [SyncVar]
     public int _TakenOverCities = 0;
 
@@ -89,7 +87,6 @@ public class ObjectiveManager : NetworkBehaviour
             _Can1TurnContinent[i] = true;
         }
         _TakenOverTerritories = 0;
-        //_TakenOverCapitals = 0;
         _TakenOverCities = 0;
 
         foreach (CountryComponent c in GameCanvasComponent._GameInstance._CurArmy._ControlledCountries)

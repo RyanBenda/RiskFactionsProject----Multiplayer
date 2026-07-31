@@ -24,7 +24,6 @@ public class ArmyColourButton : NetworkBehaviour
             _Selector._Requester.CmdChangePlayerName(_Army._Army._ArmyName);
         _Selector._Requester.CmdChangePlayerColour(_Colour);
         _Selector._Requester._ColourIndex = _ColourIndex;
-        //_Selector._Requester._SetArmy = _Army._Army;
         _Selector._Requester.CmdChangePlayerArmy(_Army._Army);
 
         ArmySelection temp2 = new ArmySelection();

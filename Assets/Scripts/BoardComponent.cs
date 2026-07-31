@@ -28,8 +28,6 @@ public class BoardComponent : NetworkBehaviour
 
     public List<CountryComponent> _Airfields = new List<CountryComponent>();
 
-    //public readonly SyncList<CountryComponent> tempCountries = new SyncList<CountryComponent>();
-
     private void Start()
     {
         if (_BoardInstance == null)
@@ -40,17 +38,11 @@ public class BoardComponent : NetworkBehaviour
         int armyIndex = Random.Range(0, armies.Length);
 
         int temp = armyIndex;
-        for (int i = 0; i < armies.Length; i++)
+        for (int i = 0; i < armies.Length; i++) //Creates the army and sets up the turn order
         {
-            ArmiesClass2 army = new ArmiesClass2();
+            ArmiesStruct army = new ArmiesStruct();
             army._Army = armies[armyIndex];
-            /*army._Stars = 0;
-            army._HasEarlyMove = false;
-            army._HasAdditionalMove = false;
-            army._HasReward = false;
-            army._isDefeated = false;
 
-            army._ControlledCountries = new List<CountryComponent>();*/
             float cardcount = -0.1f + (0.5f * (i + 1));
             int cardcountint = Mathf.FloorToInt(cardcount);
 
@@ -70,12 +62,6 @@ public class BoardComponent : NetworkBehaviour
             army._Rewards = new List<RewardScriptableObject>();
             army._ControlledCountries = new List<CountryComponent>();
 
-            /*GameObject a = Instantiate(_GameCanvas._ArmyTabPrefab, _GameCanvas._ArmyOrder.content);
-            ArmyInfoComponent aic = a.GetComponent<ArmyInfoComponent>();
-            aic._Army = army;
-            aic._Image.color = army._Army._ArmyColour;
-            aic._Name.text = army._Army._ArmyName;*/
-
             float sum = army._Army._ArmyColour.r + army._Army._ArmyColour.g + army._Army._ArmyColour.b;
 
             if (sum < 1)
@@ -83,14 +69,8 @@ public class BoardComponent : NetworkBehaviour
             else
                 army._TextColour = Color.black;
 
-            
-
             CmdCreateArmyOrderObject(army);
 
-
-            //Debug.Log(_GameCanvas._ArmyOrder.content.transform.childCount);
-
-            //army._Info = _GameCanvas._ArmyOrder.transform.GetChild(armyIndex).GetComponent<ArmyInfoComponent>();
             _GameCanvas._TurnOrder.Add(army);
 
             armyIndex++;
@@ -99,7 +79,7 @@ public class BoardComponent : NetworkBehaviour
         }
         armyIndex = temp;
 
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 15; i++) //adds cities to countries
         {
             int index = Random.Range(0, _Countries.Length);
 
@@ -119,7 +99,7 @@ public class BoardComponent : NetworkBehaviour
             tempCountries.Add(_Countries[i]);
         }
 
-        for (int i = 0; i < tempCountries.Count;)
+        for (int i = 0; i < tempCountries.Count;) //Randomly sets which army controls which country
         {
             int index = Random.Range(0, tempCountries.Count);
 
@@ -135,7 +115,6 @@ public class BoardComponent : NetworkBehaviour
                 {
                     _GameCanvas._TurnOrder[j]._ControlledCountries.Add(tempCountries[index]);
                     tempCountries[index]._OccupyingArmy = _GameCanvas._TurnOrder[j];
-                    //tempCountries[index].SetOccupier(j);
 
                     tempCountries[index]._TroopDisplay.color = _GameCanvas._TurnOrder[j]._TextColour;
                     tempCountries[index]._CityDisplay.color = _GameCanvas._TurnOrder[j]._TextColour;
@@ -143,7 +122,6 @@ public class BoardComponent : NetworkBehaviour
 
                     if (tempCountries[index]._HasProxy)
                         tempCountries[index]._Proxy._TroopDisplay.color = _GameCanvas._TurnOrder[j]._TextColour;
-
                 }
             }
             
@@ -156,21 +134,21 @@ public class BoardComponent : NetworkBehaviour
                 armyIndex = 0;
         }
 
-        int troopCap = 3;
+        int troopCap = 3; //troop cap for max amount of troops a country could have
         if (_GameCanvas._TurnOrder.Count == 4)
             troopCap = 4;
 
         for (int i = 0; i < _GameCanvas._TurnOrder.Count; i++)
         {
-            int troops = 30 - (5 * (_GameCanvas._TurnOrder.Count - 3));
+            int troops = 30 - (5 * (_GameCanvas._TurnOrder.Count - 3)); // equation for working out how many troops each army gets based on how many players there are
 
-            if (troops < 10)
+            if (troops < 10) // its a 5 player game but this is here in case you want more than 5, I use it for when I do a full 42 army round
             {
-                troops = 4; //10
+                troops = 4;
                 troopCap = 20;
             }  
 
-            foreach (CountryComponent c in _GameCanvas._TurnOrder[i]._ControlledCountries)
+            foreach (CountryComponent c in _GameCanvas._TurnOrder[i]._ControlledCountries) // gives every country 1 troop as a start
             {
                 c._TroopsCount = 1;
                 troops--;
@@ -178,7 +156,7 @@ public class BoardComponent : NetworkBehaviour
             }
 
             int val = Random.Range(0, _GameCanvas._TurnOrder[i]._ControlledCountries.Count);
-            while (troops > 0)
+            while (troops > 0) // Randomly distributes the troops
             {
                 while (_GameCanvas._TurnOrder[i]._ControlledCountries[val]._TroopsCount == troopCap)
                     val = Random.Range(0, _GameCanvas._TurnOrder[i]._ControlledCountries.Count);
@@ -190,10 +168,10 @@ public class BoardComponent : NetworkBehaviour
             }
         }
 
-        foreach (ContinentComponent c in _Continents)
+        foreach (ContinentComponent c in _Continents) // Checks if any army starts off controlling a continent
         {
             c._ControllingArmy = default;
-            foreach (ArmiesClass2 a in _GameCanvas._TurnOrder)
+            foreach (ArmiesStruct a in _GameCanvas._TurnOrder)
             {
                 if (c._ControllingArmy._Army == default)
                 {
@@ -203,30 +181,11 @@ public class BoardComponent : NetworkBehaviour
             }
         }
 
-        
-
         _GameCanvas._CurrentArmyBanner.color = _GameCanvas._TurnOrder[0]._Army._ArmyColour;
         _GameCanvas._CurArmy = _GameCanvas._TurnOrder[0];
 
-
         HideMinMaXButtons();
         HideBattle();
-        //_GameCanvas.SetInfo();
-        /*int stars = _GameCanvas._CurArmy._TwoStars * 2;
-        stars += _GameCanvas._CurArmy._OneStars;
-
-        _GameCanvas._StarsDisplay.color = _GameCanvas._CurArmy._TextColour;
-        _GameCanvas._StarsDisplay.text = "Stars: " + stars.ToString();*/
-
-        /*CalculateNewTroops(0);
-
-        if (_GameCanvas._CurrentState == TurnStates.CalculateTroops)
-        {
-            if (_GameCanvas._CurArmy._OneStars >= 2 || _GameCanvas._CurArmy._TwoStars >= 1)
-                _GameCanvas._StarTrade.gameObject.SetActive(true);
-            else
-                _GameCanvas.ProgressTurn();
-        }*/
     }
 
     [ClientRpc]
@@ -246,35 +205,19 @@ public class BoardComponent : NetworkBehaviour
 
     [Command(requiresAuthority = false)]
 
-    void CmdCreateArmyOrderObject(ArmiesClass2 army)
+    void CmdCreateArmyOrderObject(ArmiesStruct army)
     {
-        GameObject a = Instantiate(_GameCanvas._ArmyTabPrefab); //_GameCanvas._ArmyOrder.content
-        
+        GameObject a = Instantiate(_GameCanvas._ArmyTabPrefab); 
 
         NetworkServer.Spawn(a);
 
         ArmyInfoComponent aic = a.GetComponent<ArmyInfoComponent>();
         aic.RpcCreateArmyOrderObject(army);
     }
-    
-    /*[ClientRpc]
-    void RpcCreateArmyOrderObject(GameObject a, ArmiesClass2 army)
-    {
-        ArmyInfoComponent aic = a.GetComponent<ArmyInfoComponent>();
-        aic._Army = army;
-        aic._Image.color = army._Army._ArmyColour;
-        aic._Name.text = army._Army._ArmyName;
-        aic._Name.color = army._TextColour;
-    }*/
 
     void OnNewTroopsChanged(int old, int _new)
     {
         _NewTroopsCount.text = _NewTroops.ToString();
-    }
-
-    private void Update()
-    {
-
     }
 
     [ClientRpc]
@@ -344,7 +287,6 @@ public class BoardComponent : NetworkBehaviour
 
         if (hasExtraTroops)
         {
-            Debug.Log("EXTRA TROOPS");
             troopPointsFloor += 2;
         }
 
@@ -355,27 +297,30 @@ public class BoardComponent : NetworkBehaviour
 
     public void ScrollCheck(CountryComponent scrolledCountry)
     {
-        if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops && MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._AttackingCountry == scrolledCountry)
+        if (_GameCanvas._LocalPlayer._IsTurn)
         {
-            if (Input.mouseScrollDelta.y > 0)
-                AddTroops();
-            else if (Input.mouseScrollDelta.y < 0)
-                SubtractTroops();
-        }
-        else if (MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._DefendingCountry != null && MainCameraComponent._MainCameraInstance._DefendingCountry == scrolledCountry)
-        {
-            if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
+            if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops && MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._AttackingCountry == scrolledCountry)
             {
                 if (Input.mouseScrollDelta.y > 0)
-                    MoveTroopsTo();
+                    AddTroops();
                 else if (Input.mouseScrollDelta.y < 0)
-                    MoveTroopsBack();
+                    SubtractTroops();
+            }
+            else if (MainCameraComponent._MainCameraInstance._AttackingCountry != null && MainCameraComponent._MainCameraInstance._DefendingCountry != null && MainCameraComponent._MainCameraInstance._DefendingCountry == scrolledCountry)
+            {
+                if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
+                {
+                    if (Input.mouseScrollDelta.y > 0)
+                        MoveTroopsTo();
+                    else if (Input.mouseScrollDelta.y < 0)
+                        MoveTroopsBack();
+                }
             }
         }
     }
 
     [Command(requiresAuthority = false)]
-    public void MaxTroops()
+    public void MaxTroops() // Command for placing/moving Max amount of troops
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
         {
@@ -383,22 +328,8 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount += _NewTroops;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-            /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
-            {
-                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = Color.magenta;
-                _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
-            }
-
-            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
-
             _NewTroops = 0;
             _NewTroopsCount.text = "0";
-
-            /*BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
-
-            int temp2 = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount - 1;
-            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();*/
 
             MaxTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, false);
         }
@@ -410,27 +341,8 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount += MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount - 1;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
 
-                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
-                {
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.magenta;
-                    if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                        MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = Color.magenta;
-                    _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._DefendingCountry);
-                }
-
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();*/
-
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount = 1;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = "1";
-
-                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
-
-                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
-
-                int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount - 1;
-                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();*/
 
                 MaxTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount, true);
             }
@@ -438,7 +350,7 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [ClientRpc]
-    void MaxTroopsButtonsValueUpdate(int troopCount, bool isMove)
+    void MaxTroopsButtonsValueUpdate(int troopCount, bool isMove) // Rpc that updates the UI for placing/moving Max amount of troops
     {
         if (!isMove)
         {
@@ -480,7 +392,7 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void AddTroops()
+    public void AddTroops() // Command for placing troops/capital/airfield
     {
         if (_NewTroops > 0 && GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
         {
@@ -488,28 +400,8 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount++;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-            /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
-            {
-                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = Color.magenta;
-                _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
-            }
-
-            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
-
             _NewTroops--;
             _NewTroopsCount.text = _NewTroops.ToString();
-
-            /*if (_NewTroops == 0)
-                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
-            else
-            {
-                int temp = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount + 1;
-                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString();
-            }
-
-            int temp2 = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount - 1;
-            BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();*/
 
             AddTroopsButtonsValueUpdate(_NewTroops, MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount);
         }
@@ -517,7 +409,6 @@ public class BoardComponent : NetworkBehaviour
         {
             MainCameraComponent._MainCameraInstance._AttackingCountry.CmdSetCapital(MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour);
 
-            //MainCameraComponent._MainCameraInstance.ResetSelected();
             GameCanvasComponent._GameInstance.CmdProgressTurn();
             MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
@@ -537,7 +428,7 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [ClientRpc]
-    void AddTroopsButtonsValueUpdate(int newtroops, int troopCount)
+    void AddTroopsButtonsValueUpdate(int newtroops, int troopCount) // Rpc that updates the UI for placing troops
     {
         if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color != Color.magenta)
         {
@@ -563,7 +454,7 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void MinTroops()
+    public void MinTroops() // Command for placing/moving Min amount of troops
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops && MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops > 0)
         {
@@ -573,19 +464,8 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount -= temp;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-            /*_TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
-            MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
-
-            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
-
             _NewTroops += temp;
             _NewTroopsCount.text = _NewTroops.ToString();
-
-            /*BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
-
-            int temp2 = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount + 1;
-            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
 
             MinTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, false);
         }
@@ -600,65 +480,20 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
 
                 _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
-                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                {
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
-                }
-                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;*/
-
-                
-                    
 
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount += temp;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
-                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
-
-                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
-
-                int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
-                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
                 MinTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount, true);
             }
         }
-        /*else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove)
-        {
-            if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops > 0 && MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount > 3)
-            {
-                int temp = MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops;
-
-                MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops -= temp;
-                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount -= temp;
-                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
-
-                _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = Color.black;
-                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.black;
-
-                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount += temp;
-                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
-
-                if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
-
-                BoardComponent._BoardInstance._DecreaseButtonValue.text = "";
-
-                int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
-                BoardComponent._BoardInstance._IncreaseButtonValue.text = temp2.ToString();
-            }
-        }*/
     }
 
     [ClientRpc]
-    void MinTroopsButtonsValueUpdate(int troopCount, bool isMove)
+    void MinTroopsButtonsValueUpdate(int troopCount, bool isMove) // Rpc that updates the UI for placing/moving Min amount of troops
     {
         if (!isMove)
         {
-
-
             _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
 
@@ -690,54 +525,32 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void SubtractTroops()
+    public void SubtractTroops() // Command for removing troops/capital/airfield
     {
         if (MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops > 0 && GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
         {
             MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops--;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount--;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
-            /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops == 0)
-            {
-                _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
-                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._AttackingCountry._OccupyingArmy._TextColour;
-            }
-
-            if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();*/
 
             _NewTroops++;
             _NewTroopsCount.text = _NewTroops.ToString();
-
-            /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops == 0)
-                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
-            else
-            {
-                int temp = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount - 1;
-                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
-            }
-
-            int temp2 = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount + 1;
-            BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
 
             SubtractTroopsButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops, MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount);
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceCapital)
         {
-            //MainCameraComponent._MainCameraInstance.ResetSelected();
             MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceAirfield)
         {
-            //MainCameraComponent._MainCameraInstance.ResetSelected();
             MainCameraComponent._MainCameraInstance.CmdResetCamera();
         }
     }
 
     [ClientRpc]
-    void SubtractTroopsButtonsValueUpdate(int addedTroops, int troopCount)
+    void SubtractTroopsButtonsValueUpdate(int addedTroops, int troopCount) // Rpc that updates the UI for removing troops
     {
-
         if (addedTroops == 0)
         {
             BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
@@ -759,7 +572,7 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void MoveTroopsTo()
+    public void MoveTroopsTo() // Command for moving troops to a country
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
         {
@@ -769,33 +582,8 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount++;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
 
-                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
-                {
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.magenta;
-                    if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                        MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = Color.magenta;
-                    _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._DefendingCountry);
-                }
-
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();*/
-
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount--;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
-
-                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
-
-                if (MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount == 1)
-                    BoardComponent._BoardInstance._IncreaseButtonValue[0].text = "";
-                else
-                {
-                    int temp = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
-                    BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp.ToString();
-                }
-
-                int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount - 1;
-                BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp2.ToString();*/
 
                 MoveTroopsToButtonsValueUpdate(MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount, MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount);
             }
@@ -803,7 +591,7 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [ClientRpc]
-    void MoveTroopsToButtonsValueUpdate(int troopCountA, int troopCountD)
+    void MoveTroopsToButtonsValueUpdate(int troopCountA, int troopCountD) // Rpc that updates the UI for moving troops to a country
     {
         if (MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color != Color.magenta)
         {
@@ -832,7 +620,7 @@ public class BoardComponent : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    public void MoveTroopsBack()
+    public void MoveTroopsBack() // Command for moving troops back from a country
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.Move || GameCanvasComponent._GameInstance._CurrentState == TurnStates.AdditionalMove || GameCanvasComponent._GameInstance._CurrentState == TurnStates.EarlyMove)
         {
@@ -841,77 +629,17 @@ public class BoardComponent : NetworkBehaviour
                 MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops--;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount--;
                 MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
-                /*if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops == 0)
-                {
-                    _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
-                    if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                        MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = MainCameraComponent._MainCameraInstance._DefendingCountry._OccupyingArmy._TextColour;
-                }
-
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();*/
 
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount++;
                 MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
-
-                /*if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
-
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops == 0)
-                    BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
-                else
-                {
-                    int temp = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount - 1;
-                    BoardComponent._BoardInstance._DecreaseButtonValue[0].text = temp.ToString();
-                }
-
-                int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
-                BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();*/
 
                 MoveTroopsBackButtonsValueUpdate(MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops, MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount);
             }
         }
-        /*else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.BattleMove)
-        {
-            if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops > 0 && MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount > 3)
-            {
-                MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops--;
-                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount--;
-                MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount.ToString();
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops == 0)
-                {
-                    _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._DefendingCountry);
-                    if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                        MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy._TroopDisplay.color = Color.black;
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._TroopDisplay.color = Color.black;
-                }
-
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._DefendingCountry._Proxy.UpdateDetails();
-
-                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount++;
-                MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
-
-                if (MainCameraComponent._MainCameraInstance._AttackingCountry._HasProxy)
-                    MainCameraComponent._MainCameraInstance._AttackingCountry._Proxy.UpdateDetails();
-
-                if (MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops == 0)
-                    BoardComponent._BoardInstance._DecreaseButtonValue.text = "";
-                else
-                {
-                    int temp = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount - 1;
-                    BoardComponent._BoardInstance._DecreaseButtonValue.text = temp.ToString();
-                }
-
-                int temp2 = MainCameraComponent._MainCameraInstance._DefendingCountry._TroopsCount + 1;
-                BoardComponent._BoardInstance._IncreaseButtonValue.text = temp2.ToString();
-            }
-        }*/
     }
 
     [ClientRpc]
-    void MoveTroopsBackButtonsValueUpdate(int addedTroops, int troopCount)
+    void MoveTroopsBackButtonsValueUpdate(int addedTroops, int troopCount) // Rpc that updates the UI for moving troops back from a country
     {
         if (addedTroops == 0)
         {
@@ -939,7 +667,7 @@ public class BoardComponent : NetworkBehaviour
         BoardComponent._BoardInstance._IncreaseButtonValue[0].text = temp2.ToString();
     }
 
-    public bool CheckCountriesConnection(CountryComponent Provider, CountryComponent Reciever)
+    public bool CheckCountriesConnection(CountryComponent Provider, CountryComponent Reciever) // Checking that a path can be made through allied countries for moving troops
     {
         Provider._ConnectedToProvider = true;
         Reciever._ConnectedToReciever = true;
@@ -1005,7 +733,6 @@ public class BoardComponent : NetworkBehaviour
             c._BeenAdded = false;
         }
 
-        return foundConnection;
-        
+        return foundConnection; 
     }
 }

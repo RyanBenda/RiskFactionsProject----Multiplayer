@@ -5,7 +5,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 using Mirror;
-public class ProxyCountryComponent : NetworkBehaviour
+public class ProxyCountryComponent : NetworkBehaviour // Proxy country on the edge of the map used for non quick battles
 {
     public CountryComponent _AttackerCountry;
     public CountryComponent _ActualCountry;
@@ -66,7 +66,6 @@ public class ProxyCountryComponent : NetworkBehaviour
         MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._AttackingCountry._CameraPositions[0].eulerAngles, 1.5f);
     }
 
-    //[ClientRpc]
     public void UpdateDetails()
     {
         _TroopDisplay.text = _ActualCountry._TroopDisplay.text;

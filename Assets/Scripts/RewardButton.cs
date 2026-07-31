@@ -19,7 +19,6 @@ public class RewardButton : MonoBehaviour
             _Button.interactable = true;
         else
             _Button.interactable = false;
-
     }
     public void SelectReward()
     {

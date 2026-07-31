@@ -6,7 +6,7 @@ using Mirror;
 
 public class QuickAttackComponent : NetworkBehaviour
 {
-    public QuickAttackArrow _Arrow;
+    public Transform _Arrow;
     public Transform _Body;
     bool _step1 = false;
 
@@ -20,12 +20,6 @@ public class QuickAttackComponent : NetworkBehaviour
 
     bool _ActiveBattle;
     public IEnumerator _BattleCoroutine;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     [Command(requiresAuthority = false)]
     void CmdStartArrow(CountryComponent c)
@@ -94,10 +88,8 @@ public class QuickAttackComponent : NetworkBehaviour
         }
     }
 
-
-
     // Update is called once per frame
-    void Update()
+    void Update() // Handling the holding and dragging and releasing used in starting a quick battle
     {
         if (GameCanvasComponent._GameInstance != null && GameCanvasComponent._GameInstance._CurrentState == TurnStates.Battle && !_ActiveBattle && MainCameraComponent._MainCameraInstance._AttackingCountry == null && GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
@@ -118,9 +110,6 @@ public class QuickAttackComponent : NetworkBehaviour
                     _timer -= Time.deltaTime;
                 else if (_AttackingCountry != null)
                 {
-                    //Vector3 mouseScreenPos = Input.mousePosition;
-
-                    //mouseScreenPos.z = -Camera.main.transform.position.z;
                     CmdStartArrow(_AttackingCountry);
                 }
             }
@@ -140,7 +129,6 @@ public class QuickAttackComponent : NetworkBehaviour
 
             if (_step1)
             {
-
                 if (_DefendingCountry != MainCameraComponent._MainCameraInstance._HoveredCountry)
                 {
                     if (MainCameraComponent._MainCameraInstance._HoveredCountry != null && MainCameraComponent._MainCameraInstance._HoveredCountry != _AttackingCountry && MainCameraComponent._MainCameraInstance._HoveredCountry._CurColour != GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour)
@@ -184,7 +172,6 @@ public class QuickAttackComponent : NetworkBehaviour
 
                     _Body.up = _Arrow.transform.right;
                     _Arrow.transform.position = Camera.main.ScreenToWorldPoint(mouseScreenPos) - (_Arrow.transform.right * 50);
-                    //CmdArrowPos(_Arrow.transform.position);
                 }
                 else
                 {
@@ -205,10 +192,7 @@ public class QuickAttackComponent : NetworkBehaviour
         }
     }
 
-   
-
-
-    IEnumerator DoBattle()
+    IEnumerator DoBattle() // Shorter version of the Battle System that doesn't need to handle all the UI stuff the slow Battle System does
     {
         _ActiveBattle = true;
 
@@ -277,35 +261,16 @@ public class QuickAttackComponent : NetworkBehaviour
             if (_DefendingCountry._OccupyingArmy._ControlledCountries.Count == 1)
             {
                 _DefendingCountry._OccupyingArmy._isDefeated = true;
-                /*_DefendingCountry._OccupyingArmy._Info._Defeated.color = _AttackingCountry._CurColour;
-                _DefendingCountry._OccupyingArmy._Info._Defeated.gameObject.SetActive(true);*/
-
-                //GameCanvasComponent._GameInstance._CurArmy._OneStars += _DefendingCountry._OccupyingArmy._OneStars;
-                //GameCanvasComponent._GameInstance._CurArmy._TwoStars += _DefendingCountry._OccupyingArmy._TwoStars;
 
                 for (int i = 0; i < GameCanvasComponent._GameInstance._TurnOrder.Count; i++)
                 {
-                    /*if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName)
-                    {
-                        GameCanvasComponent._GameInstance._TurnOrder[i] = GameCanvasComponent._GameInstance._CurArmy;
-                    }
-                    else */
                     if (GameCanvasComponent._GameInstance._TurnOrder[i]._Army._ArmyName == _DefendingCountry._OccupyingArmy._Army._ArmyName)
                     {
-                        /*ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
-                        a._isDefeated = true;
-                        a._Info._Defeated.color = _AttackingCountry._CurColour;
-                        a._Info._Defeated.gameObject.SetActive(true);
-
-                        GameCanvasComponent._GameInstance._TurnOrder[i] = a;*/
                         TransferStars(i);
                         SetArmyDefeated(i);
                         break;
                     }
                 }
-
-
-                //BattleSystem._BattleSystemInstance.UpdateStarsText(GameCanvasComponent._GameInstance._CurArmy._TwoStars, GameCanvasComponent._GameInstance._CurArmy._OneStars);
             }
             _DefendingCountry._OccupyingArmy._ControlledCountries.Remove(_DefendingCountry);
 
@@ -314,18 +279,6 @@ public class QuickAttackComponent : NetworkBehaviour
             _DefendingCountry.ChangedOwner();
 
             UpdateTextColours(_DefendingCountry);
-
-            /*if (_DefendingCountry._IsCapital)
-            {
-                if (_DefendingCountry._CurColour == _DefendingCountry._CapitalColour)
-                {
-                    _DefendingCountry._CaptialDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
-                }
-                else
-                    _DefendingCountry._CaptialDisplay.color = _DefendingCountry._CapitalColour;
-            }
-            _DefendingCountry._CityDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;
-            _DefendingCountry._TroopDisplay.color = GameCanvasComponent._GameInstance._CurArmy._TextColour;*/
 
             for (int j = 0; j < _DefendingCountry._CountryColour.Length; j++)
             {
@@ -366,13 +319,8 @@ public class QuickAttackComponent : NetworkBehaviour
         if (_AttackingCountry._HasProxy)
             _AttackingCountry._Proxy.UpdateDetails();
 
-        if (_AttackingCountry._TroopsCount == 1)
+        if (_AttackingCountry._TroopsCount == 1) // These are basically the same as the ones in the slow battle system
         {
-            //MainCameraComponent._MainCameraInstance._Tweening = true;
-
-            //MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
-            //MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
-
             EndOfFightRpc("1", battleWon);
 
             battleOver = true;
@@ -392,8 +340,6 @@ public class QuickAttackComponent : NetworkBehaviour
         }
         else if (_AttackingCountry._TroopsCount > 4 && battleWon)
         {
-            //MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
-
             _AttackingCountry._TroopsCount -= 3;
 
             _DefendingCountry._TroopsCount = 3;
@@ -411,17 +357,10 @@ public class QuickAttackComponent : NetworkBehaviour
 
             GameCanvasComponent._GameInstance._CurrentState = TurnStates.BattleMove;
 
-            //_DefendingCountry.SetUpMoveTroopsButtons(_AttackingCountry);
-            //GameCanvasComponent._GameInstance._ProgressButton.gameObject.SetActive(true);
             EndOfFightRpc("battlemove", false);
 
             while (GameCanvasComponent._GameInstance._CurrentState != TurnStates.Battle)
                 yield return null;
-
-            //MainCameraComponent._MainCameraInstance._Tweening = true;
-
-
-            //MainCameraComponent._MainCameraInstance._DefendingCountry = null;
 
             EndOfFightRpc(">4", battleWon);
         }
@@ -432,7 +371,6 @@ public class QuickAttackComponent : NetworkBehaviour
             QuickAttack(_AttackingCountry, _DefendingCountry);
         else
         {
-
             EndOfFightRpc("QuickEnd", false);
         }
     }
@@ -489,7 +427,6 @@ public class QuickAttackComponent : NetworkBehaviour
             }
         }
 
-        // if AttackingCountry has Attack Die temp += 1;
         if (attacker && hasAtkDie)
         {
             temp += 1;
@@ -537,7 +474,7 @@ public class QuickAttackComponent : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void SetArmyDefeated(int i) 
     {
-        ArmiesClass2 a = GameCanvasComponent._GameInstance._TurnOrder[i];
+        ArmiesStruct a = GameCanvasComponent._GameInstance._TurnOrder[i];
         a._isDefeated = true;
         GameCanvasComponent._GameInstance._TurnOrder[i]._Info.SetDefeated();
         GameCanvasComponent._GameInstance._TurnOrder[i]._Info._Defeated.color = _AttackingCountry._CurColour;
@@ -567,11 +504,8 @@ public class QuickAttackComponent : NetworkBehaviour
     }
 
     [ClientRpc]
-
     void UpdateTextColours(CountryComponent def)
     {
-        Debug.Log("called");
-
         if (def._IsCapital)
         {
             if (def._CurColour == def._CapitalColour)
@@ -588,7 +522,6 @@ public class QuickAttackComponent : NetworkBehaviour
     }
 
     [ClientRpc]
-
     void EndOfFightRpc(string info, bool battleWon)
     {
         if (info == "Won")
@@ -654,23 +587,12 @@ public class QuickAttackComponent : NetworkBehaviour
             if (isServer)
                 ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
         }
-        /*else if (info == "rotate")
-        {
-            MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
-
-            if (_DefendingCountry._HasProxy)
-                _DefendingCountry._Proxy.UpdateDetails();
-
-            if (_AttackingCountry._HasProxy)
-                _AttackingCountry._Proxy.UpdateDetails();
-        }*/
         else if (info == "battlemove")
         {
             GameCanvasComponent._GameInstance._CurrentState = TurnStates.BattleMove;
 
             if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
                 _DefendingCountry.SetUpMoveTroopsButtons(_AttackingCountry);
-            //GameCanvasComponent._GameInstance._ProgressButton.gameObject.SetActive(true);
         }
         else if (info == ">4")
         {
@@ -678,8 +600,6 @@ public class QuickAttackComponent : NetworkBehaviour
             BoardComponent._BoardInstance._DecreaseButtonValue[0].text = "";
             BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(false);
             BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(false);
-
-            //MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
 
             if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
             {
@@ -712,7 +632,6 @@ public class QuickAttackComponent : NetworkBehaviour
 
             MainCameraComponent._MainCameraInstance._AttackingCountry = null;
             MainCameraComponent._MainCameraInstance._DefendingCountry = null;
-
 
             _step1 = false;
             _timer = _timerval;

@@ -11,24 +11,12 @@ public struct CapitalPlacement
 
 public class CapitalPlacementComponent : MonoBehaviour
 {
-
-    //public ArmiesClass _Army;
-
-
     public bool _test = false;
 
-    //[System.Serializable]
     public List<CapitalPlacement> _Options = new List<CapitalPlacement>();
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
-    void Update()
+    void Update() //Unfinished start of creating an AI opposition, was just starting on it before prioritising Multiplayer
     {
         if (_test)
         {

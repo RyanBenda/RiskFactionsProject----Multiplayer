@@ -17,7 +17,7 @@ public class DiceComponent : NetworkBehaviour
     {
         if (_Roll != -1)
         {
-            if (!_Airfield)
+            if (!_Airfield) // Making sure the dice displays the original roll value and not the increased value by the Airfield as that is displayed through a +1 logo on the die
                 _RollText.text = _Roll.ToString();
             else
                 _RollText.text = (_Roll - 1).ToString();

@@ -11,19 +11,8 @@ public class StarsAdditionComponent : NetworkBehaviour
     public Image _Card;
     public TextMeshProUGUI _StarText;
     public TextMeshProUGUI _CardText;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void DoCardReveal(int stars)
+    public void DoCardReveal(int stars) //Does the card reveal for the player recieving the card but hides it from everyone else
     {
         _StarText.color = new Color(0, 0, 0, 0);
         _CardText.color = new Color(0, 0, 0, 0);
