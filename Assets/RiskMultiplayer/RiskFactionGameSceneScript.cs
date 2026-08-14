@@ -35,9 +35,9 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
         }    
     }
 
-    // Update is called once per frame
-    void Update()
+    [ClientRpc]
+    public void HideNetworkHud()
     {
-
+        StartGameNetworkManager.singleton._NMHUD.enabled = false;
     }
 }

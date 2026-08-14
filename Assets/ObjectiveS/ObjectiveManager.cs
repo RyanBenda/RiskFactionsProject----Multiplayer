@@ -248,7 +248,6 @@ public class ObjectiveManager : NetworkBehaviour
     [ClientRpc]
     void AddReward(ObjectiveScriptableObject o)
     {
-        Debug.Log(GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName);
         GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
         GameCanvasComponent._GameInstance._RewardEffectList.Add(o._Reward);
         GameCanvasComponent._GameInstance.PlayRewardEffect();

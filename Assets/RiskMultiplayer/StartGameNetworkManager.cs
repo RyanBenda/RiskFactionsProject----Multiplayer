@@ -12,6 +12,14 @@ public class StartGameNetworkManager : NetworkRoomManager
 
     public RiskFactionGameSceneScript _RFSceneScript;
 
+    public NetworkManagerHUD _NMHUD;
+
+    public override void Awake()
+    {
+        base.Awake();
+        _NMHUD = GetComponent<NetworkManagerHUD>();
+    }
+
     // Sets up the Actual Player Objects when loading to the actual game scene from the room
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
     {
@@ -27,8 +35,7 @@ public class StartGameNetworkManager : NetworkRoomManager
         _RFSceneScript._Players.Add(riskPlayer);
         _RFSceneScript._PlayerCount++;
 
-        Debug.Log("ran");
-        //_RFSceneScript._Board._GameCanvas._LocalPlayer = riskPlayer;
+        _RFSceneScript.HideNetworkHud();
 
         return true;
     }

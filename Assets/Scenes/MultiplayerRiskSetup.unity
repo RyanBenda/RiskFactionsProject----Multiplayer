@@ -1307,6 +1307,7 @@ MonoBehaviour:
   _RiskFactionsPlayerPrefab: {fileID: 0}
   val: 0
   _RFSceneScript: {fileID: 0}
+  _NMHUD: {fileID: 0}
 --- !u!1 &1385568199
 GameObject:
   m_ObjectHideFlags: 0

@@ -387,8 +387,7 @@ public class GameCanvasComponent : NetworkBehaviour
                         ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
                     _NewTroopsIcon.SetActive(true);
-                    Debug.Log(_CurArmy._OneStars);
-                    Debug.Log(_CurArmy._TwoStars);
+
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
                         CmdNewTurn(TurnStates.CalculateTroops);
