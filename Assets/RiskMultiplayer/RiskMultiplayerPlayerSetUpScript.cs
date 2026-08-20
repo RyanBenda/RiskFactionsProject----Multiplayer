@@ -71,7 +71,7 @@ public class RiskMultiplayerPlayerSetUpScript : NetworkRoomPlayer
         CmdChangePlayerName(_NameInputField.text);
     }
 
-    public override void OnStartLocalPlayer()
+    public override void OnStartClient()
     {
         CmdSetupPlayer();
         SetOtherColourButtons(); // Updates the colour buttons to be correct when starting
@@ -101,7 +101,9 @@ public class RiskMultiplayerPlayerSetUpScript : NetworkRoomPlayer
         ArmySelection temp = new ArmySelection();
         temp._Army = _SceneScript._ArmyChoices[ind]._Army;
         temp._Chosen = true;
-        _SceneScript._ArmyChoices.OnSet(ind, temp);
+        //_SceneScript._ArmyChoices.OnSet(ind, temp);
+        _SceneScript._ArmyChoices.RemoveAt(ind);
+        _SceneScript._ArmyChoices.Insert(ind, temp);
 
         _SceneScript._Players.Add(this);
         _SceneScript._PlayerCount++;

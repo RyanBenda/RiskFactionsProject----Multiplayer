@@ -586,6 +586,18 @@ public class GameCanvasComponent : NetworkBehaviour
             Destroy(temp);
         }
 
+        _ArmyOrder.gameObject.SetActive(false);
+        _LastState = state;
+        _DisplayActive = false;
+
+        foreach (ObjectiveDisplay obj in ObjectiveManager._ObjectiveManagerInstance._Displayers)
+        {
+            obj._HoverObject.SetActive(false);
+        }
+        ObjectiveManager._ObjectiveManagerInstance._ObjectiveDescription.text = "";
+        ObjectiveManager._ObjectiveManagerInstance._ObjectiveDisplay.SetActive(false);
+        ObjectiveManager._ObjectiveManagerInstance._DisplayActive = false;
+
         BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
         _NewTroopsIcon.SetActive(true);
 

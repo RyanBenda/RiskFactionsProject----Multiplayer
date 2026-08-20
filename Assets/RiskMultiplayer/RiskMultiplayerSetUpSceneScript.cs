@@ -40,10 +40,15 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
         }
     }
 
+    private void Awake()
+    {
+        _ArmyChoices.OnSet += OnArmyChoice;
+    }
+
     public override void OnStartClient()
     {
         _Players.OnAdd += OnItemAdded;
-        _ArmyChoices.OnSet += OnArmyChoice;
+        //_ArmyChoices.OnSet += OnArmyChoice;
     }
 
     void OnPlayersChanged(int old, int _new)
@@ -87,10 +92,10 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
         }
     }
     [Command(requiresAuthority = false)]
-    void OnArmyChoice(int test, ArmySelection temp2)
+    void OnArmyChoice(int index, ArmySelection army)
     {
-        _ArmyChoices.RemoveAt(test);
-        _ArmyChoices.Insert(test, temp2);
+        _ArmyChoices.RemoveAt(index);
+        _ArmyChoices.Insert(index, army);
 
         if (_ArmyColourSelector != null)
             _ArmyColourSelector.OnEnable(); // Updates the colour buttons to be correct for host client

@@ -62,8 +62,11 @@ public class ObjectiveManager : NetworkBehaviour
         if (!_DisplayActive && !GameCanvasComponent._GameInstance._DisplayActive && !BattleSystem._BattleSystemInstance.gameObject.activeSelf)
         {
             _DisplayActive = true;
-            _LastState = GameCanvasComponent._GameInstance._CurrentState;
-            GameCanvasComponent._GameInstance._CurrentState = TurnStates.Suspend;
+            if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+            {
+                _LastState = GameCanvasComponent._GameInstance._CurrentState;
+                GameCanvasComponent._GameInstance._CurrentState = TurnStates.Suspend;
+            }
             _ObjectiveDisplay.SetActive(true);
         }
         else if (!BattleSystem._BattleSystemInstance.gameObject.activeSelf)
@@ -74,7 +77,8 @@ public class ObjectiveManager : NetworkBehaviour
             }
             _ObjectiveDescription.text = "";
             _ObjectiveDisplay.SetActive(false);
-            GameCanvasComponent._GameInstance._CurrentState = _LastState;
+            if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn && GameCanvasComponent._GameInstance._CurrentState != TurnStates.PlaceCapital)
+                GameCanvasComponent._GameInstance._CurrentState = _LastState;
             _DisplayActive = false;
         }
     }

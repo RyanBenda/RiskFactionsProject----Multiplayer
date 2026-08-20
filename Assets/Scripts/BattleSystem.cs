@@ -91,6 +91,8 @@ public class BattleSystem : NetworkBehaviour
             _RollButton.gameObject.SetActive(false);
             _DiceButton.interactable = false;
         }
+
+        _ActiveBattle = false;
     }
 
     public void ResetFight()
@@ -229,7 +231,8 @@ public class BattleSystem : NetworkBehaviour
     
     IEnumerator DoBattle()
     {
-        _ActiveBattle = true;
+        //_ActiveBattle = true;
+        SetActiveBattle(true);
 
         List<int> diceRolls = CalculateRoll(_AttackingCountry, true);
         int atkDiceRolls = diceRolls.Count;
@@ -431,7 +434,8 @@ public class BattleSystem : NetworkBehaviour
             EndOfFightRpc(">4", battleWon);
         }
 
-        _ActiveBattle = false;
+        //_ActiveBattle = false;
+        SetActiveBattle(false);
 
         if (_DiceIndex == 4 && !battleWon)
             CmdRollDice();
@@ -540,6 +544,12 @@ public class BattleSystem : NetworkBehaviour
         }
 
         return templist;
+    }
+
+    [ClientRpc]
+    void SetActiveBattle(bool val)
+    {
+        _ActiveBattle = val;
     }
 
     [ClientRpc]
