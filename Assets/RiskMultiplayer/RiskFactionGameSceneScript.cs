@@ -25,12 +25,12 @@ public class RiskFactionGameSceneScript : NetworkBehaviour
         {
             if (isServer)
             {
-                ArmyScriptableObject[] armies = new ArmyScriptableObject[_PlayerCount];
+                /*ArmyScriptableObject[] armies = new ArmyScriptableObject[_PlayerCount];
                 for (int i = 0; i < _PlayerCount; i++)
                     armies[i] = _Players[i]._Army;
 
                 _ObjectiveManager.SetUpObjectives();
-                _Board.BeginMatch(armies);
+                _Board.BeginMatch(armies);*/
             }
         }    
     }

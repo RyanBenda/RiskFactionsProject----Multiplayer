@@ -203,7 +203,7 @@ public class BoardComponent : NetworkBehaviour
         _BattleSystem.gameObject.SetActive(false);
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
 
     void CmdCreateArmyOrderObject(ArmiesStruct army)
     {

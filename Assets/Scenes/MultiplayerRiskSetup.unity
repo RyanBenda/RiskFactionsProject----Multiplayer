@@ -287,7 +287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &264801183
 RectTransform:
   m_ObjectHideFlags: 0
@@ -352,8 +352,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1126133937}
-        m_TargetAssemblyTypeName: StartGameNetworkManager, Assembly-CSharp
+      - m_Target: {fileID: 264801188}
+        m_TargetAssemblyTypeName: StartGameButton, Assembly-CSharp
         m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
@@ -434,6 +434,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _NM: {fileID: 1126133937}
 --- !u!1 &268077037
 GameObject:
   m_ObjectHideFlags: 0

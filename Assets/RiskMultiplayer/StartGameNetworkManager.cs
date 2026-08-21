@@ -37,6 +37,16 @@ public class StartGameNetworkManager : NetworkRoomManager
 
         _RFSceneScript.HideNetworkHud();
 
+        if (_RFSceneScript._PlayerCount == NetworkServer.connections.Count)
+        {
+            ArmyScriptableObject[] armies = new ArmyScriptableObject[_RFSceneScript._PlayerCount];
+            for (int i = 0; i < _RFSceneScript._PlayerCount; i++)
+                armies[i] = _RFSceneScript._Players[i]._Army;
+
+            _RFSceneScript._ObjectiveManager.SetUpObjectives();
+            _RFSceneScript._Board.BeginMatch(armies);
+        }
+
         return true;
     }
 

@@ -1,15 +1,21 @@
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class StartGameButton : NetworkBehaviour
 {
+    public StartGameNetworkManager _NM;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        if (!isServer)
-        {
-            this.gameObject.SetActive(false);
-        }
+        this.gameObject.SetActive(false);
+    }
+
+    [Command(requiresAuthority = false)]
+    public void StartGame()
+    {
+        _NM.StartGame();
     }
 }

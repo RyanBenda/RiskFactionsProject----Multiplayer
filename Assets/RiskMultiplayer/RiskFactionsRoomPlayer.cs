@@ -34,7 +34,29 @@ public class RiskFactionsRoomPlayer : NetworkRoomPlayer
         base.OnStartLocalPlayer();
 
         if (SceneManager.GetActiveScene().name == "MultiplayerRiskSetup")
+        {
             CreateSetupObject(this);
+            CmdSetStartButton();
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdSetStartButton() //CMD for getting the first player in the server and giving them and only them the start button to start the game
+    {
+        RiskMultiplayerSetUpSceneScript _SceneScript = FindAnyObjectByType<RiskMultiplayerSetUpSceneScript>();
+
+        int pCount = _SceneScript._PlayerCount;
+
+        TRPCSetStartButton(connectionToClient, pCount);
+    }
+
+    [TargetRpc]
+    private void TRPCSetStartButton(NetworkConnectionToClient target, int value) //Target RPC for getting the first player in the server and giving them and only them the start button to start the game
+    {
+        if (value == 0)
+        {
+            FindAnyObjectByType<StartGameButton>(FindObjectsInactive.Include).gameObject.SetActive(true);
+        }
     }
 
     [Command] //Creates the set up object in the Room scene so player can choose the Colour and Name they want
@@ -54,8 +76,8 @@ public class RiskFactionsRoomPlayer : NetworkRoomPlayer
     void RpcParentUpdate(Transform obj, RiskMultiplayerSetUpSceneScript sceneScript)
     {
         obj.parent = sceneScript._ScrollViewContent.transform;
-        RiskMultiplayerPlayerSetUpScript p = obj.GetComponent<RiskMultiplayerPlayerSetUpScript>();
-        p.OnStartLocalPlayer();
+        //RiskMultiplayerPlayerSetUpScript p = obj.GetComponent<RiskMultiplayerPlayerSetUpScript>();
+        //p.OnStartLocalPlayer();
     }
 
     public override void OnClientExitRoom()

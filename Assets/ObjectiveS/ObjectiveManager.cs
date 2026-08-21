@@ -37,7 +37,7 @@ public class ObjectiveManager : NetworkBehaviour
             _ObjectiveManagerInstance = this;       
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
     public void SetUpObjectives()
     {
         List<ObjectiveScriptableObject> tempList = new List<ObjectiveScriptableObject>();
