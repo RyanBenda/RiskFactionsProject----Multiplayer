@@ -57,14 +57,14 @@ public class StarTradeComponent : NetworkBehaviour
 
     private void OnDisable()
     {
-        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck(); // Trading Stars ends the Calculating Troops phase so now time to check objectives at the proper start of turn
+        ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck(); // Trading Stars ends the Calculating Troops phase so now time to check objectives at the proper start of turn
     }
 
     private void Update()
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.CalculateTroops && Input.GetKeyDown(KeyCode.Escape))
         {
-            GameCanvasComponent._GameInstance.ProgressTurn();
+            GameCanvasComponent._GameInstance.CmdProgressTurn();
         }
     }
 
@@ -129,7 +129,7 @@ public class StarTradeComponent : NetworkBehaviour
         BoardComponent._BoardInstance._NewTroopsCount.text = BoardComponent._BoardInstance._NewTroops.ToString();
 
         UpdateCardText(GameCanvasComponent._GameInstance._CurArmy._OneStars, GameCanvasComponent._GameInstance._CurArmy._TwoStars);
-        GameCanvasComponent._GameInstance.CmdProgressTurn();
+        GameCanvasComponent._GameInstance.ProgressTurn();
     }
 
     [ClientRpc]

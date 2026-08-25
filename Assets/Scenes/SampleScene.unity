@@ -68670,7 +68670,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1593918447}
         m_TargetAssemblyTypeName: GameCanvasComponent, Assembly-CSharp
-        m_MethodName: ProgressTurn
+        m_MethodName: ProgressTurnButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -83,7 +83,7 @@ public class ObjectiveManager : NetworkBehaviour
         }
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
     public void ResetManager()
     {
         for (int i = 0; i < _Can1TurnContinent.Length; i++)
@@ -99,7 +99,22 @@ public class ObjectiveManager : NetworkBehaviour
         }
     }
 
-    [Command(requiresAuthority = false)]
+    public void NonCmdResetManager()
+    {
+        for (int i = 0; i < _Can1TurnContinent.Length; i++)
+        {
+            _Can1TurnContinent[i] = true;
+        }
+        _TakenOverTerritories = 0;
+        _TakenOverCities = 0;
+
+        foreach (CountryComponent c in GameCanvasComponent._GameInstance._CurArmy._ControlledCountries)
+        {
+            _Can1TurnContinent[c._Continent._ContinentOrder] = false;
+        }
+    }
+
+    //[Command(requiresAuthority = false)]
     public void UpdateTakenOverVals(CountryComponent c)
     {
         _TakenOverTerritories++;
@@ -108,6 +123,11 @@ public class ObjectiveManager : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
+    public void CmdObjectiveCheck()
+    {
+        ObjectiveCheck();
+    }
+
     public void ObjectiveCheck()
     {
         foreach (ObjectiveScriptableObject o in _ActiveObjectives)

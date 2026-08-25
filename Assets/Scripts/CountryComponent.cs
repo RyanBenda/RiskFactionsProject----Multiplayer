@@ -264,18 +264,38 @@ public class CountryComponent : NetworkBehaviour
         {
             case "Capital":
                 CapitalPlacementCamera();
+                if (isServerOnly)
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = this;
                 break;
             case "NewTroops":
                 NewTroopsPlacementCamera();
+                if (isServerOnly)
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = this;
                 break;
             case "Attacking":
                 AttackingCamera();
+                if (isServerOnly)
+                {
+                    if (MainCameraComponent._MainCameraInstance._AttackingCountry == null)
+                        MainCameraComponent._MainCameraInstance._AttackingCountry = this;
+                    else
+                        MainCameraComponent._MainCameraInstance._DefendingCountry = this;
+                }
                 break;
             case "Moving":
                 MovingCamera();
+                if (isServerOnly)
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = this;
                 break;
             case "MoveState":
                 MovingTroops();
+                if (isServerOnly)
+                {
+                    if (MainCameraComponent._MainCameraInstance._AttackingCountry == null)
+                        MainCameraComponent._MainCameraInstance._AttackingCountry = this;
+                    else
+                        MainCameraComponent._MainCameraInstance._DefendingCountry = this;
+                }
                 break;
         }
     }

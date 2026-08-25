@@ -68,11 +68,19 @@ public class MainCameraComponent : NetworkBehaviour
         if (!_Tweening && _AttackingCountry != null)
         {
             RpcResetCamera();
+
+            if (isServerOnly)
+            {
+                if (_DefendingCountry != null)
+                    _DefendingCountry = null;
+                else if (_AttackingCountry != null)
+                    _AttackingCountry = null;
+            }
         }
     }
 
     [ClientRpc]
-    void RpcResetCamera()
+    public void RpcResetCamera()
     {
         _Tweening = true;
 

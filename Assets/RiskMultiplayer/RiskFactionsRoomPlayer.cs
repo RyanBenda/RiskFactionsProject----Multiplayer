@@ -55,7 +55,9 @@ public class RiskFactionsRoomPlayer : NetworkRoomPlayer
     {
         if (value == 0)
         {
-            FindAnyObjectByType<StartGameButton>(FindObjectsInactive.Include).gameObject.SetActive(true);
+            StartGameButton sgb = FindAnyObjectByType<StartGameButton>(FindObjectsInactive.Include);
+            sgb.gameObject.SetActive(true);
+            sgb._Button.enabled = true;
         }
     }
 

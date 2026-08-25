@@ -407,10 +407,19 @@ public class BoardComponent : NetworkBehaviour
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceCapital)
         {
-            MainCameraComponent._MainCameraInstance._AttackingCountry.CmdSetCapital(MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour);
+            //MainCameraComponent._MainCameraInstance._AttackingCountry.CmdSetCapital(MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour);
+            MainCameraComponent._MainCameraInstance._AttackingCountry._IsCapital = true;
+            MainCameraComponent._MainCameraInstance._AttackingCountry._CapitalColour = MainCameraComponent._MainCameraInstance._AttackingCountry._CurColour;
 
-            GameCanvasComponent._GameInstance.CmdProgressTurn();
-            MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            //GameCanvasComponent._GameInstance.CmdProgressTurn();
+            GameCanvasComponent._GameInstance.ProgressTurn();
+            //MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            if (!MainCameraComponent._MainCameraInstance._Tweening && MainCameraComponent._MainCameraInstance._AttackingCountry != null)
+            {
+                MainCameraComponent._MainCameraInstance.RpcResetCamera();
+                if (isServerOnly)
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+            }
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceAirfield)
         {
@@ -422,8 +431,10 @@ public class BoardComponent : NetworkBehaviour
 
             ResetAirfield();
 
-            GameCanvasComponent._GameInstance.CmdProgressTurn();
+            GameCanvasComponent._GameInstance.ProgressTurn();
             MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            if (isServerOnly)
+                MainCameraComponent._MainCameraInstance._AttackingCountry = null;
         }
     }
 
@@ -540,11 +551,23 @@ public class BoardComponent : NetworkBehaviour
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceCapital)
         {
-            MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            //MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            if (!MainCameraComponent._MainCameraInstance._Tweening && MainCameraComponent._MainCameraInstance._AttackingCountry != null)
+            {
+                MainCameraComponent._MainCameraInstance.RpcResetCamera();
+                if (isServerOnly)
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+            }
         }
         else if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceAirfield)
         {
-            MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            //MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            if (!MainCameraComponent._MainCameraInstance._Tweening && MainCameraComponent._MainCameraInstance._AttackingCountry != null)
+            {
+                MainCameraComponent._MainCameraInstance.RpcResetCamera();
+                if (isServerOnly)
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+            }
         }
     }
 

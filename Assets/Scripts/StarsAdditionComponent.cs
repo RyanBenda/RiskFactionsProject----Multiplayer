@@ -39,7 +39,7 @@ public class StarsAdditionComponent : NetworkBehaviour
         _Card.color = new Color(1, 1, 1, 0);
         _StarText.color = new Color(0, 0, 0, 0);
         _CardText.color = new Color(0, 0, 0, 0);
-        if (isServer)
+        if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
             GameCanvasComponent._GameInstance.CmdProgressTurn();
     }
 }

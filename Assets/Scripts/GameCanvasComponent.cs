@@ -161,58 +161,55 @@ public class GameCanvasComponent : NetworkBehaviour
         _Warning.SetActive(false);
     }
 
-    public void ProgressTurn() // For Progress Turn Button to make sure players can't click it if isn't their turn
+    public void ProgressTurnButton()
     {
         if (_LocalPlayer._IsTurn && _CurrentState != TurnStates.Reward)
             CmdProgressTurn();
     }
 
     [Command(requiresAuthority = false)]
+    public void CmdProgressTurn()
+    {
+        ProgressTurn();
+    }
+
+    /*[Command(requiresAuthority = false)]
     public void CmdProgressTurn() // Command so the server can call the Rpc
     {
         RpcProgressTurn();
-    }
+    }*/
 
-    [ClientRpc]
-    public void RpcProgressTurn() //Rpc that means it runs on every client but can only be activated by the client who's turn it is
+    //[ClientRpc]
+    //[Command(requiresAuthority = false)]
+    public void ProgressTurn() //Rpc that means it runs on every client but can only be activated by the client who's turn it is
     {
         if (!MainCameraComponent._MainCameraInstance._Tweening)
         {
             if (_CurrentState == TurnStates.CalculateTroops)
             {
-                _StarTrade.gameObject.SetActive(false);
-                _CurrentState = TurnStates.PlaceTroops;
-                _ProgressButtonText.text = "Place Troops";
+                RPCCalculateTroops();
+
+                if (isServerOnly)
+                    _CurrentState = TurnStates.PlaceTroops;
             }
             else if (_CurrentState == TurnStates.PlaceTroops)
             {
                 if (BoardComponent._BoardInstance._NewTroops == 0)
                 {
-                    MainCameraComponent._MainCameraInstance.CmdResetCamera();
+                    if (MainCameraComponent._MainCameraInstance._AttackingCountry != null)
+                        MainCameraComponent._MainCameraInstance.RpcResetCamera();
 
-                    for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
-                    {
-                        BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
-                        BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+                    if (isServerOnly)
+                        MainCameraComponent._MainCameraInstance._AttackingCountry = null;
 
-                        if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
-                            BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+                    RPCPlaceTroops();
 
-                        BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
-                    }
-
-                    _NewTroopsIcon.SetActive(false);
+                    BoardComponent._BoardInstance._TroopsAdded.Clear();
 
                     if (_CurArmy._HasEarlyMove)
-                    {
                         _CurrentState = TurnStates.EarlyMove;
-                        _ProgressButtonText.text = "Early Move";
-                    }
                     else
-                    {
                         _CurrentState = TurnStates.Battle;
-                        _ProgressButtonText.text = "Battle";
-                    }
 
                     if (_CurArmy._HasGuaranteedCard)
                         _CurArmy._HasStarReward = true;
@@ -220,192 +217,154 @@ public class GameCanvasComponent : NetworkBehaviour
             }
             else if (_CurrentState == TurnStates.EarlyMove)
             {
-                for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
-                {
-                    BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
-                    BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
-                        BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
-                }
-
-                MainCameraComponent._MainCameraInstance.ResetSelected();
+                RPCEarlyMove();
 
                 _CurrentState = TurnStates.Battle;
-                _ProgressButtonText.text = "Battle";
             }
             else if (_CurrentState == TurnStates.Battle)
             {
                 if (_HasAttacked)
                 {
-                    MainCameraComponent._MainCameraInstance.CmdResetCamera();
+                    if (MainCameraComponent._MainCameraInstance._AttackingCountry != null)
+                        MainCameraComponent._MainCameraInstance.RpcResetCamera();
+
+                    RPCBattle(true);
 
                     _CurrentState = TurnStates.Move;
-                    _ProgressButtonText.text = "Move";
                     _HasAttacked = false;
-                    _Warning.SetActive(false);
                 }
                 else
                 {
-                    if (_LocalPlayer._IsTurn)
-                        _Warning.SetActive(true);
+                    RPCBattle(false);
                     _HasAttacked = true;
                 }
             }
             else if (_CurrentState == TurnStates.BattleMove)
             {
-                _ProgressButton.gameObject.SetActive(false);
-
-                for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
-                {
-                    BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
-                    BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
-                        BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
-                }
+                RPCBattleMove();
+                BoardComponent._BoardInstance._TroopsAdded.Clear();
 
                 _CurrentState = TurnStates.Battle;
-                _ProgressButtonText.text = "Battle";
             }
             else if (_CurrentState == TurnStates.Move)
             {
-                for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
-                {
-                    BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
-                    BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
-                        BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
-                }
-
-                MainCameraComponent._MainCameraInstance.ResetSelected();
-
                 if (_CurArmy._HasAdditionalMove)
                 {
+                    RPCMove("AMove");
                     _CurrentState = TurnStates.AdditionalMove;
-                    _ProgressButtonText.text = "Additional Move";
                 }
                 else if (_RewardCount == 0 && !_CurArmy._HasGuaranteedCard)
                 {
+                    RPCMove("NewTurn");
+
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    if (isServer)
-                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
-                    _NewTroopsIcon.SetActive(true);
+
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        CmdNewTurn(TurnStates.CalculateTroops);
+                        //CmdNewTurn(TurnStates.CalculateTroops);
+                        RpcNewTurn(TurnStates.CalculateTroops, _TurnIndex);
+                        _CurrentState = TurnStates.CalculateTroops;
                     }
                     else
                     {
-                        CmdNewTurn(TurnStates.PlaceTroops);
+                        //CmdNewTurn(TurnStates.PlaceTroops);
+                        RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
+                        _CurrentState = TurnStates.PlaceTroops;
                     }
                 }
                 else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
                 {
-                    if (isServer)
-                        SetStars();
+                    SetStars();
+
+                    RPCMove("Star");
                     _CurrentState = TurnStates.Reward;
-                    _ProgressButtonText.text = "Reward";
                 }
                 else
                 {
-                    _RewardDisplay.SetActive(true);
+                    RPCMove("Reward");
                     _CurrentState = TurnStates.Reward;
-                    _ProgressButtonText.text = "Reward";
                 }
+
+                BoardComponent._BoardInstance._TroopsAdded.Clear();
             }
             else if (_CurrentState == TurnStates.AdditionalMove)
             {
-                for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
-                {
-                    BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
-                    BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
-                        BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
-
-                    BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
-                }
-
-                MainCameraComponent._MainCameraInstance.ResetSelected();
-
                 if (_RewardCount == 0 && !_CurArmy._HasGuaranteedCard)
                 {
+                    RPCMove("NewTurn");
+
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    if (isServer)
-                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
-                    _NewTroopsIcon.SetActive(true);
+
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        CmdNewTurn(TurnStates.CalculateTroops);
+                        //CmdNewTurn(TurnStates.CalculateTroops);
+                        RpcNewTurn(TurnStates.CalculateTroops, _TurnIndex);
+                        _CurrentState = TurnStates.CalculateTroops;
                     }
                     else
                     {
-                        CmdNewTurn(TurnStates.PlaceTroops);
+                        //CmdNewTurn(TurnStates.PlaceTroops);
+                        RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
+                        _CurrentState = TurnStates.PlaceTroops;
                     }
                 }
                 else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
                 {
-                    if (isServer)
-                        SetStars();
+                    SetStars();
+
+                    RPCMove("Star");
                     _CurrentState = TurnStates.Reward;
-                    _ProgressButtonText.text = "Reward";
                 }
                 else
                 {
-                    _RewardDisplay.SetActive(true);
+                    RPCMove("Reward");
                     _CurrentState = TurnStates.Reward;
-                    _ProgressButtonText.text = "Reward";
                 }
+
+                BoardComponent._BoardInstance._TroopsAdded.Clear();
             }
             else if (_CurrentState == TurnStates.Reward)
             {
-                _RewardDisplay.SetActive(false);
-
                 if (!_PlaceAirfield)
                 {
                     _CurArmy._HasStarReward = false;
                     _CurArmy._PossibleRewards.Clear();
+                    RPCReward(false);
 
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    if (isServer)
-                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
-                    _NewTroopsIcon.SetActive(true);
 
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        CmdNewTurn(TurnStates.CalculateTroops);
+                        //CmdNewTurn(TurnStates.CalculateTroops);
+                        RpcNewTurn(TurnStates.CalculateTroops, _TurnIndex);
+                        _CurrentState = TurnStates.CalculateTroops;
                     }
                     else
                     {
-                        CmdNewTurn(TurnStates.PlaceTroops);
+                        //CmdNewTurn(TurnStates.PlaceTroops);
+                        RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
+                        _CurrentState = TurnStates.PlaceTroops;
                     }
                 }
                 else
                 {
                     _CurArmy._HasStarReward = false;
                     _CurArmy._PossibleRewards.Clear();
-                    BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(false);
-                    BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(false);
+                    RPCReward(true);
 
                     _CurrentState = TurnStates.PlaceAirfield;
-                    _ProgressButtonText.text = "Place Airfield";
                 }
             }
             else if (_CurrentState == TurnStates.PlaceCapital)
@@ -417,66 +376,56 @@ public class GameCanvasComponent : NetworkBehaviour
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
                     SetRewards();
-                    if (isServer)
-                        ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
-                    _NewTroopsIcon.SetActive(true);
+
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
-                        CmdNewTurn(TurnStates.CalculateTroops);
+                        //CmdNewTurn(TurnStates.CalculateTroops);
+                        RpcNewTurn(TurnStates.CalculateTroops, _TurnIndex);
+                        _CurrentState = TurnStates.CalculateTroops;
                     }
                     else
                     {
-                        CmdNewTurn(TurnStates.PlaceTroops);
+                        //CmdNewTurn(TurnStates.PlaceTroops);
+                        RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
+                        _CurrentState = TurnStates.PlaceTroops;
                     }
 
-                    BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(true);
-                    BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(true);
-                    _ProgressButton.interactable = true;
+                    RPCCapital(-1, true);
                 }
                 else
                 {
                     _TurnIndex--;
+
                     _CurrentArmyBanner.color = FindActiveArmy();
                     _CurArmy = _TurnOrder[_TurnIndex];
-                    SetRewards();
 
-                    if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
-                    {
-                        int stars = _CurArmy._TwoStars * 2;
-                        stars += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Stars: " + stars.ToString();
-                    }
-                    else
-                    {
-                        int cards = _CurArmy._TwoStars;
-                        cards += _CurArmy._OneStars;
-                        _StarsDisplay.color = _CurArmy._TextColour;
-                        _StarsDisplay.text = "Cards: " + cards.ToString();
-                    }
+                    RPCCapital(_TurnIndex, false);             
                 }
             }
             else if (_CurrentState == TurnStates.PlaceAirfield)
             {
-                BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(true);
-                BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(true);
+                RPCAirfield();
                 _PlaceAirfield = false;
 
                 _CurrentArmyBanner.color = FindActiveArmy();
                 _CurArmy = _TurnOrder[_TurnIndex];
                 SetRewards();
-                if (isServer)
-                    ObjectiveManager._ObjectiveManagerInstance.ResetManager();
+                ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                 BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
-                _NewTroopsIcon.SetActive(true);
+
                 if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                 {
-                    CmdNewTurn(TurnStates.CalculateTroops);
+                    //CmdNewTurn(TurnStates.CalculateTroops);
+                    RpcNewTurn(TurnStates.CalculateTroops, _TurnIndex);
+                    _CurrentState = TurnStates.CalculateTroops;
                 }
                 else
                 {
-                    CmdNewTurn(TurnStates.PlaceTroops);
+                    //CmdNewTurn(TurnStates.PlaceTroops);
+                    RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
+                    _CurrentState = TurnStates.PlaceTroops;
                 }
             }
         }
@@ -530,7 +479,6 @@ public class GameCanvasComponent : NetworkBehaviour
         }
     }
 
-    [Command(requiresAuthority = false)]
     void SetStars() // Adds stars for the Army with guaranteed card but didn't get another reward for it to be called that way
     {
         int val = Random.Range(0, 3);
@@ -562,6 +510,17 @@ public class GameCanvasComponent : NetworkBehaviour
     {
         GameCanvasComponent._GameInstance._RewardCount++;
     }
+
+    /*[Command(requiresAuthority = false)]
+    void CmdCapitalPlacementChange()
+    {
+        if (isServerOnly)
+        {
+            _CurrentArmyBanner.color = FindActiveArmy();
+            _CurArmy = _TurnOrder[_TurnIndex];
+            SetRewards();
+        }
+    }*/
 
     [Command(requiresAuthority = false)]
     void CmdNewTurn(TurnStates state) //Command for starting a new turn to force set all clients to this point in case they didn't stay up to date for some reason
@@ -611,7 +570,7 @@ public class GameCanvasComponent : NetworkBehaviour
         else if (_CurrentState == TurnStates.PlaceTroops)
         {
             if (isServer)
-                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck();
             _ProgressButtonText.text = "Place Troops";
         }
 
@@ -630,6 +589,193 @@ public class GameCanvasComponent : NetworkBehaviour
             _StarsDisplay.text = "Cards: " + cards.ToString();
         }
     }
+
+    [ClientRpc]
+    void RPCCalculateTroops()
+    {
+        _StarTrade.gameObject.SetActive(false);
+        _CurrentState = TurnStates.PlaceTroops;
+        _ProgressButtonText.text = "Place Troops";
+    }
+
+    [ClientRpc]
+    void RPCPlaceTroops()
+    {
+        for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
+        {
+            BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
+            BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
+                BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
+        }
+
+        _NewTroopsIcon.SetActive(false);
+
+        if (_CurArmy._HasEarlyMove)
+        {
+            _CurrentState = TurnStates.EarlyMove;
+            _ProgressButtonText.text = "Early Move";
+        }
+        else
+        {
+            _CurrentState = TurnStates.Battle;
+            _ProgressButtonText.text = "Battle";
+        }
+
+        if (_CurArmy._HasGuaranteedCard)
+            _CurArmy._HasStarReward = true;
+    }
+
+    [ClientRpc]
+    void RPCEarlyMove()
+    {
+        for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
+        {
+            BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
+            BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
+                BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
+        }
+
+        MainCameraComponent._MainCameraInstance.ResetSelected();
+
+        _CurrentState = TurnStates.Battle;
+        _ProgressButtonText.text = "Battle";
+    }
+
+    [ClientRpc]
+    void RPCBattle(bool attacked)
+    {
+        if (attacked)
+        {
+            _CurrentState = TurnStates.Move;
+            _ProgressButtonText.text = "Move";
+
+            _Warning.SetActive(false);
+        }
+        else
+        {
+            if (_LocalPlayer._IsTurn)
+                _Warning.SetActive(true);
+        }
+    }
+
+    [ClientRpc]
+    void RPCBattleMove()
+    {
+        _ProgressButton.gameObject.SetActive(false);
+
+        for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
+        {
+            BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
+            BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
+                BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
+        }
+
+        _CurrentState = TurnStates.Battle;
+        _ProgressButtonText.text = "Battle";
+    }
+    
+    [ClientRpc]
+    void RPCMove(string nextphase)
+    {
+        for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
+        {
+            BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
+            BoardComponent._BoardInstance._TroopsAdded[i]._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            if (BoardComponent._BoardInstance._TroopsAdded[i]._HasProxy)
+                BoardComponent._BoardInstance._TroopsAdded[i]._Proxy._TroopDisplay.color = BoardComponent._BoardInstance._TroopsAdded[i]._OccupyingArmy._TextColour;
+
+            BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
+        }
+
+        MainCameraComponent._MainCameraInstance.ResetSelected();
+
+        switch (nextphase)
+        {
+            case "AMove":
+                _CurrentState = TurnStates.AdditionalMove;
+                _ProgressButtonText.text = "Additional Move";
+                break;
+            case "NewTurn":
+                break;
+            case "Star":
+                _CurrentState = TurnStates.Reward;
+                _ProgressButtonText.text = "Reward";
+                break;
+            case "Reward":
+                _RewardDisplay.SetActive(true);
+                _CurrentState = TurnStates.Reward;
+                _ProgressButtonText.text = "Reward";
+                break;
+        }
+    }
+
+    [ClientRpc]
+    void RPCReward(bool airfield)
+    {
+        _RewardDisplay.SetActive(false);
+
+        _CurArmy._HasStarReward = false;
+        _CurArmy._PossibleRewards.Clear();
+
+        if (airfield)
+        {
+            BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(false);
+            BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(false);
+
+            _CurrentState = TurnStates.PlaceAirfield;
+            _ProgressButtonText.text = "Place Airfield";
+        }
+    }
+
+    [ClientRpc]
+    void RPCCapital(int index, bool changeTurn)
+    {
+        if (!changeTurn)
+        {
+            _TurnIndex = index;
+
+            if (_LocalPlayer._Army._ArmyName == _CurArmy._Army._ArmyName)
+            {
+                int stars = _CurArmy._TwoStars * 2;
+                stars += _CurArmy._OneStars;
+                _StarsDisplay.color = _CurArmy._TextColour;
+                _StarsDisplay.text = "Stars: " + stars.ToString();
+            }
+            else
+            {
+                int cards = _CurArmy._TwoStars;
+                cards += _CurArmy._OneStars;
+                _StarsDisplay.color = _CurArmy._TextColour;
+                _StarsDisplay.text = "Cards: " + cards.ToString();
+            }
+        }
+        else
+        {
+            BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(true);
+            BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(true);
+            _ProgressButton.interactable = true;
+        }
+    }
+
+    [ClientRpc]
+    void RPCAirfield()
+    {
+        BoardComponent._BoardInstance._IncreaseButton[1].gameObject.SetActive(true);
+        BoardComponent._BoardInstance._DecreaseButton[1].gameObject.SetActive(true);
+    }    
 
     public void AddRewardAffect()
     {

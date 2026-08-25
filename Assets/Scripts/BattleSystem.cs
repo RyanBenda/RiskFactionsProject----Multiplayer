@@ -123,6 +123,11 @@ public class BattleSystem : NetworkBehaviour
     }
 
     [ClientRpc]
+    void RPCResetDice()
+    {
+        ResetDice();
+    }
+
     private void ResetDice()
     {
         for (int i = 0; i < _LeftDice.Length; i++)
@@ -148,6 +153,13 @@ public class BattleSystem : NetworkBehaviour
     {
         if (!_ActiveBattle)
         {
+            if (isServerOnly)
+            {
+                _AttackingCountry = MainCameraComponent._MainCameraInstance._AttackingCountry;
+                _DefendingCountry = MainCameraComponent._MainCameraInstance._DefendingCountry;
+            }
+
+            Debug.Log("StartBattleCoroutine");
             _BattleCoroutine = DoBattle();
             StartCoroutine(_BattleCoroutine);
 
@@ -231,7 +243,10 @@ public class BattleSystem : NetworkBehaviour
     
     IEnumerator DoBattle()
     {
-        //_ActiveBattle = true;
+        Debug.Log("BATTLESYSTEMRAN");
+
+        if (isServerOnly)
+            _ActiveBattle = true;
         SetActiveBattle(true);
 
         List<int> diceRolls = CalculateRoll(_AttackingCountry, true);
@@ -268,6 +283,8 @@ public class BattleSystem : NetworkBehaviour
             _RightDice[i]._RollText.text = diceRolls[i].ToString();
             _RightDice[i].gameObject.SetActive(true);
         }
+
+        //SetDiceGameObjectActive(atkDiceRolls, diceRolls.Count);
 
         yield return new WaitForSecondsRealtime(1f);
 
@@ -330,7 +347,9 @@ public class BattleSystem : NetworkBehaviour
             _RightDice[i].SetArrowActive(false);
         }
 
-        ResetDice();
+        RPCResetDice();
+        if (isServerOnly)
+            ResetDice();
 
         bool battleWon = false;
         if (_DefendingCountry._TroopsCount <= 0)
@@ -380,6 +399,18 @@ public class BattleSystem : NetworkBehaviour
 
             BoardComponent._BoardInstance.ResetAirfield();
 
+            if (isServerOnly)
+            {
+                _DefendingCountry._OccupyingArmy = GameCanvasComponent._GameInstance._CurArmy;
+                GameCanvasComponent._GameInstance._CurArmy._ControlledCountries.Add(_DefendingCountry);
+
+                if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
+                {
+                    GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
+                    GameCanvasComponent._GameInstance._RewardCount++;
+                }
+            }
+
             battleWon = true;
         }
 
@@ -395,6 +426,14 @@ public class BattleSystem : NetworkBehaviour
         if (_AttackingCountry._TroopsCount == 1) //Ending battle with troops as is cause there is only 1 attacking troop left so nothing to change
         {
             EndOfFightRpc("1", battleWon);
+            if (isServerOnly)
+                MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+
+            if (battleWon)
+            {
+                if (isServerOnly)
+                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            }
         }
         else if (_AttackingCountry._TroopsCount <= 4 && battleWon) // Ends the battle with moving as many troops as it can (up to 3) over to the newly captured country as per Risk Faction Rules doesn't need to set up moving as there are not troops to move
         {
@@ -408,6 +447,12 @@ public class BattleSystem : NetworkBehaviour
             _DefendingCountry._TroopDisplay.text = _DefendingCountry._TroopsCount.ToString();
 
             EndOfFightRpc("<4", battleWon);
+
+            if (isServerOnly)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            }
         }
         else if (_AttackingCountry._TroopsCount > 4 && battleWon) // Ends the battle with moving 3 troops over to the newly captured country as per Risk Faction Rules sets up moving troops
         {
@@ -432,13 +477,21 @@ public class BattleSystem : NetworkBehaviour
                 yield return null;
 
             EndOfFightRpc(">4", battleWon);
+            if (isServerOnly)
+            {
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            }
         }
 
-        //_ActiveBattle = false;
+        if (isServerOnly)
+            _ActiveBattle = false;
         SetActiveBattle(false);
 
         if (_DiceIndex == 4 && !battleWon)
+        {
+            Debug.Log("INCourotineRAN");
             CmdRollDice();
+        }
         else if (!battleWon && _DiceIndex == 3 && _AttackingCountry._TroopsCount < 4)
         {
             if (_AttackingCountry._TroopsCount == 3)
@@ -453,9 +506,9 @@ public class BattleSystem : NetworkBehaviour
             }
         }
         else if (!battleWon && _DiceIndex == 2 && _AttackingCountry._TroopsCount == 2)
-        {           
+        {
             _DiceIndex = 1;
-            _DiceButtonText.text = "1";          
+            _DiceButtonText.text = "1";
         }
     }
 
@@ -544,6 +597,22 @@ public class BattleSystem : NetworkBehaviour
         }
 
         return templist;
+    }
+
+    [ClientRpc]
+    void SetDiceGameObjectActive(int count1, int count2)
+    {
+        for (int i = 0; i <= count1; i++)
+        {
+            //if (_LeftDice[i]._Roll != -1)
+            _LeftDice[i].gameObject.SetActive(true);
+        }
+
+        for (int i = 0; i < count2; i++)
+        {
+            //if (_RightDice[i]._Roll != -1)
+            _RightDice[i].gameObject.SetActive(true);
+        }
     }
 
     [ClientRpc]
@@ -657,7 +726,7 @@ public class BattleSystem : NetworkBehaviour
                 }
 
                 if (isServer)
-                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                    ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck();
             }
 
             ResetFight();
@@ -697,7 +766,7 @@ public class BattleSystem : NetworkBehaviour
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
             if (isServer)
-                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck();
 
             ResetFight();
         }
@@ -739,7 +808,7 @@ public class BattleSystem : NetworkBehaviour
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
             if (isServer)
-                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck();
 
             MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
             MainCameraComponent._MainCameraInstance._DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);

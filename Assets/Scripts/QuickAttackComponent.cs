@@ -91,7 +91,7 @@ public class QuickAttackComponent : NetworkBehaviour
     // Update is called once per frame
     void Update() // Handling the holding and dragging and releasing used in starting a quick battle
     {
-        if (GameCanvasComponent._GameInstance != null && GameCanvasComponent._GameInstance._CurrentState == TurnStates.Battle && !_ActiveBattle && MainCameraComponent._MainCameraInstance._AttackingCountry == null && GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
+        if (!isServerOnly && GameCanvasComponent._GameInstance != null && GameCanvasComponent._GameInstance._CurrentState == TurnStates.Battle && !_ActiveBattle && MainCameraComponent._MainCameraInstance._AttackingCountry == null && GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
             if (Input.GetMouseButton(0) && MainCameraComponent._MainCameraInstance._HoveredCountry != null && _step1 == false && MainCameraComponent._MainCameraInstance._HoveredCountry._TroopsCount > 1)
             {
@@ -554,7 +554,7 @@ public class QuickAttackComponent : NetworkBehaviour
                 }
 
                 if (isServer)
-                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                    ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck();
             }
         }
         else if (info == "<4")
@@ -585,7 +585,7 @@ public class QuickAttackComponent : NetworkBehaviour
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
             if (isServer)
-                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck();
         }
         else if (info == "battlemove")
         {
@@ -610,7 +610,7 @@ public class QuickAttackComponent : NetworkBehaviour
                 GameCanvasComponent._GameInstance.PlayRewardEffect();
             }
             if (isServer)
-                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                ObjectiveManager._ObjectiveManagerInstance.CmdObjectiveCheck();
 
             _DefendingCountry._Selected = false;
             _DefendingCountry._HoverObject.SetActive(_DefendingCountry._MouseHoverTracker);

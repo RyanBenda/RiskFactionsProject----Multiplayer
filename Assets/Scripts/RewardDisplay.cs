@@ -53,7 +53,8 @@ public class RewardDisplay : NetworkBehaviour
         {
             if (GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._Airfield == true)
             {
-                PlacingAirfield();
+                //PlacingAirfield();
+                GameCanvasComponent._GameInstance._PlaceAirfield = true;
             }
             else if (GameCanvasComponent._GameInstance._CurArmy._PossibleRewards[value]._EarlyMove)
                 GameCanvasComponent._GameInstance._CurArmy._HasEarlyMove = true;
@@ -141,7 +142,7 @@ public class RewardDisplay : NetworkBehaviour
         else
         {
             this.gameObject.SetActive(false);
-            GameCanvasComponent._GameInstance.CmdProgressTurn();
+            GameCanvasComponent._GameInstance.ProgressTurn();
         }
     }
 
@@ -172,9 +173,9 @@ public class RewardDisplay : NetworkBehaviour
         _StarDisplay.DoCardReveal(val);
     }
 
-    [ClientRpc]
+    /*[ClientRpc]
     void PlacingAirfield()
     {
         GameCanvasComponent._GameInstance._PlaceAirfield = true;
-    }
+    }*/
 }
