@@ -146,6 +146,9 @@ public class ObjectiveManager : NetworkBehaviour
                                 _InactiveObjectives.Add(o);
                                 o._Inactive = true;
 
+                                if (isServerOnly)
+                                    GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
+
                                 GameCanvasComponent._GameInstance._RewardCount++;
                                 break;
                             }
@@ -168,6 +171,9 @@ public class ObjectiveManager : NetworkBehaviour
                                     _InactiveObjectives.Add(o);
                                     o._Inactive = true;
 
+                                    if (isServerOnly)
+                                        GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
+
                                     GameCanvasComponent._GameInstance._RewardCount++;
                                     break;
                                 }
@@ -180,6 +186,9 @@ public class ObjectiveManager : NetworkBehaviour
                                 AddReward(o);
                                 _InactiveObjectives.Add(o);
                                 o._Inactive = true;
+
+                                if (isServerOnly)
+                                    GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
 
                                 GameCanvasComponent._GameInstance._RewardCount++;
                             }
@@ -196,6 +205,9 @@ public class ObjectiveManager : NetworkBehaviour
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
 
+                            if (isServerOnly)
+                                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
+
                             GameCanvasComponent._GameInstance._RewardCount++;
                         }
                     }
@@ -206,6 +218,9 @@ public class ObjectiveManager : NetworkBehaviour
                             AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
+
+                            if (isServerOnly)
+                                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
 
                             GameCanvasComponent._GameInstance._RewardCount++;
                         }
@@ -227,6 +242,9 @@ public class ObjectiveManager : NetworkBehaviour
                         _InactiveObjectives.Add(o);
                         o._Inactive = true;
 
+                        if (isServerOnly)
+                            GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
+
                         GameCanvasComponent._GameInstance._RewardCount++;
                     }
                 }
@@ -239,6 +257,9 @@ public class ObjectiveManager : NetworkBehaviour
                             AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
+
+                            if (isServerOnly)
+                                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
 
                             GameCanvasComponent._GameInstance._RewardCount++;
                         }
@@ -260,6 +281,9 @@ public class ObjectiveManager : NetworkBehaviour
                             AddReward(o);
                             _InactiveObjectives.Add(o);
                             o._Inactive = true;
+
+                            if (isServerOnly)
+                                GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(o._Reward);
 
                             GameCanvasComponent._GameInstance._RewardCount++;
                         }

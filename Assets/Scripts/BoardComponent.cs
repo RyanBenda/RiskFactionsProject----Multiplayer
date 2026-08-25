@@ -432,7 +432,7 @@ public class BoardComponent : NetworkBehaviour
             ResetAirfield();
 
             GameCanvasComponent._GameInstance.ProgressTurn();
-            MainCameraComponent._MainCameraInstance.CmdResetCamera();
+            MainCameraComponent._MainCameraInstance.RpcResetCamera();
             if (isServerOnly)
                 MainCameraComponent._MainCameraInstance._AttackingCountry = null;
         }

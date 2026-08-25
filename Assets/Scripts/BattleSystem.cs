@@ -151,15 +151,34 @@ public class BattleSystem : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdRollDice()
     {
+        RollDice();
+    }
+    public void RollDice()
+    {
         if (!_ActiveBattle)
         {
             if (isServerOnly)
             {
                 _AttackingCountry = MainCameraComponent._MainCameraInstance._AttackingCountry;
                 _DefendingCountry = MainCameraComponent._MainCameraInstance._DefendingCountry;
+
+                if (_AttackingCountry._TroopsCount >= 4)
+                {
+                    _DiceIndex = 3;
+                    _DiceButtonText.text = "3";
+                }
+                else if (_AttackingCountry._TroopsCount == 3)
+                {
+                    _DiceIndex = 2;
+                    _DiceButtonText.text = "2";
+                }
+                else
+                {
+                    _DiceIndex = 1;
+                    _DiceButtonText.text = "1";
+                }
             }
 
-            Debug.Log("StartBattleCoroutine");
             _BattleCoroutine = DoBattle();
             StartCoroutine(_BattleCoroutine);
 
@@ -219,6 +238,19 @@ public class BattleSystem : NetworkBehaviour
                 _DiceButtonText.text = "1";
             }
         }
+
+        RpcChangeDice(_DiceIndex);
+    }
+
+    [ClientRpc]
+    void RpcChangeDice(int index)
+    {
+        _DiceIndex = index;
+
+        if (_DiceIndex != 4)
+            _DiceButtonText.text = _DiceIndex.ToString();
+        else
+            _DiceButtonText.text = ">";
     }
 
     void OnDiceIndexChanged(int old, int _new)
@@ -243,8 +275,6 @@ public class BattleSystem : NetworkBehaviour
     
     IEnumerator DoBattle()
     {
-        Debug.Log("BATTLESYSTEMRAN");
-
         if (isServerOnly)
             _ActiveBattle = true;
         SetActiveBattle(true);
@@ -406,6 +436,7 @@ public class BattleSystem : NetworkBehaviour
 
                 if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
                 {
+                    GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
                     GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(_CardReward);
                     GameCanvasComponent._GameInstance._RewardCount++;
                 }
@@ -479,6 +510,7 @@ public class BattleSystem : NetworkBehaviour
             EndOfFightRpc(">4", battleWon);
             if (isServerOnly)
             {
+                MainCameraComponent._MainCameraInstance._DefendingCountry = null;
                 ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
             }
         }
@@ -489,8 +521,7 @@ public class BattleSystem : NetworkBehaviour
 
         if (_DiceIndex == 4 && !battleWon)
         {
-            Debug.Log("INCourotineRAN");
-            CmdRollDice();
+            RollDice();
         }
         else if (!battleWon && _DiceIndex == 3 && _AttackingCountry._TroopsCount < 4)
         {
@@ -504,11 +535,15 @@ public class BattleSystem : NetworkBehaviour
                 _DiceIndex = 1;
                 _DiceButtonText.text = "1";
             }
+
+            RpcChangeDice(_DiceIndex);
         }
         else if (!battleWon && _DiceIndex == 2 && _AttackingCountry._TroopsCount == 2)
         {
             _DiceIndex = 1;
             _DiceButtonText.text = "1";
+
+            RpcChangeDice(_DiceIndex);
         }
     }
 

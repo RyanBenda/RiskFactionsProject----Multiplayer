@@ -147,6 +147,25 @@ public class MainCameraComponent : NetworkBehaviour
     void CmdResetTroopMove()
     {
         ResetTroopMove();
+
+        if (isServerOnly)
+        {
+            if (_DefendingCountry != null)
+            {
+                _AttackingCountry._TroopsCount += _DefendingCountry._AddedTroops;
+                _DefendingCountry._TroopsCount -= _DefendingCountry._AddedTroops;
+                _DefendingCountry._AddedTroops = 0;
+
+                _AttackingCountry._TroopDisplay.text = _AttackingCountry._TroopsCount.ToString();
+                _DefendingCountry._TroopDisplay.text = _DefendingCountry._TroopsCount.ToString();
+
+                _DefendingCountry = null;
+            }
+            else
+            {
+                _AttackingCountry = null;
+            }
+        }
     }
 
     [ClientRpc]

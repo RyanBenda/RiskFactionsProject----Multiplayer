@@ -14,7 +14,11 @@ public class RewardDisplay : NetworkBehaviour
 
     private void OnEnable()
     {
-        if (isServer)
+        if (isServerOnly)
+        {
+            CreateRewardButtons(GameCanvasComponent._GameInstance._CurArmy._PossibleRewards);
+        }
+        else if (isServer)
         {
             CmdSetRewards();
         }

@@ -230,6 +230,12 @@ public class GameCanvasComponent : NetworkBehaviour
 
                     RPCBattle(true);
 
+                    if (isServerOnly)
+                    {
+                        MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+                        MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+                    }
+
                     _CurrentState = TurnStates.Move;
                     _HasAttacked = false;
                 }
@@ -274,6 +280,9 @@ public class GameCanvasComponent : NetworkBehaviour
                         //CmdNewTurn(TurnStates.PlaceTroops);
                         RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
                         _CurrentState = TurnStates.PlaceTroops;
+
+                        if (isServerOnly)
+                            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
                     }
                 }
                 else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
@@ -285,6 +294,8 @@ public class GameCanvasComponent : NetworkBehaviour
                 }
                 else
                 {
+                    if (isServerOnly)
+                        _RewardDisplay.SetActive(true);
                     RPCMove("Reward");
                     _CurrentState = TurnStates.Reward;
                 }
@@ -314,6 +325,9 @@ public class GameCanvasComponent : NetworkBehaviour
                         //CmdNewTurn(TurnStates.PlaceTroops);
                         RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
                         _CurrentState = TurnStates.PlaceTroops;
+
+                        if (isServerOnly)
+                            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
                     }
                 }
                 else if (_RewardCount == 0 && _CurArmy._HasGuaranteedCard)
@@ -325,6 +339,9 @@ public class GameCanvasComponent : NetworkBehaviour
                 }
                 else
                 {
+                    if (isServerOnly)
+                        _RewardDisplay.SetActive(true);
+
                     RPCMove("Reward");
                     _CurrentState = TurnStates.Reward;
                 }
@@ -356,6 +373,9 @@ public class GameCanvasComponent : NetworkBehaviour
                         //CmdNewTurn(TurnStates.PlaceTroops);
                         RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
                         _CurrentState = TurnStates.PlaceTroops;
+
+                        if (isServerOnly)
+                            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
                     }
                 }
                 else
@@ -390,6 +410,9 @@ public class GameCanvasComponent : NetworkBehaviour
                         //CmdNewTurn(TurnStates.PlaceTroops);
                         RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
                         _CurrentState = TurnStates.PlaceTroops;
+
+                        if (isServerOnly)
+                            ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
                     }
 
                     RPCCapital(-1, true);
@@ -426,6 +449,9 @@ public class GameCanvasComponent : NetworkBehaviour
                     //CmdNewTurn(TurnStates.PlaceTroops);
                     RpcNewTurn(TurnStates.PlaceTroops, _TurnIndex);
                     _CurrentState = TurnStates.PlaceTroops;
+
+                    if (isServerOnly)
+                        ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
                 }
             }
         }
