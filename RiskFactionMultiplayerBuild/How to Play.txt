@@ -1,0 +1,186 @@
+Currently the game is intended and built for the server to be run as Host rather than Server Only, I am actively working on the Server Only version of the project but this build is still designed for just Host
+
+START
+
+You are free to change your colour by clicking on the coloured button and selecting one of the options
+You are free to change your name by clicking in the text box and typing in a name
+
+You will always be organised to be in the top left position in the display of players on your screen
+
+
+PLACE CAPITAL
+
+By clicking on a country you own you can choose to place your capital in that country. Clicking on a country will select the country.
+After selecting a country by clicking no or pressing the escape key you can go back to the full world view if you wish to change your mind
+After selecting a country by clicking yes you can place your capital there
+
+On the bottom right hand side of the screen there is a button with 3 lines, clicking on it will show you the turn order of the game, click on it again to close it. When a player defeats another player a cross with the colour of the owner will appear over the tab of the defeated player
+On the bottom right hand side of the screen there is a button with a downwards arrow, clicking on it will show you the objectives available in this round, hover the mouse over the icons to see the requirements, click on it again to close it
+
+OBJECTIVES & REWARDS
+
+All players have the same objectives and the same reward for completing that objective, if one player completes an objective and chooses the corresponding reward in the Reward Phase no other player that round is able to obtain it
+
+The arrow pointed to the right is called Early Move, obtaining it unlocks a troop movement phase before the battle phase
+The arrow pointed left and right is called Additional Move, obtaining it unlocks an extra troop movement phase after the normal troop movement phase
+The planes are called Airfields, obtaining it unlocks an airfield that you can place in the same way as the capital. If an Airfield is placed all allied neighbouring countries and the country with the airfield will have +1 added to their highest dice roll
+The box with an A is called Attack Die, obtaining it unlocks an extra die that will be rolled when Attacking
+The box with a D is called Defence Die, obtaining it unlocks an extra die that will be rolled when Defending
+The circle with 2 is called Extra Troops, obtaining it gives the player 2 Extra Troops when receiving New Troops at the start of a turn
+The diagonal rectangle is called Guaranteed Card, obtaining it means at the end of a players turn they will always receive a card regardless of if they have attacked or chosen a different reward during the reward phase
+
+When a player obtains a Reward a cross with the colour of the owner will appear over the reward icon
+
+Completing an objective will cause the reward associated with that objective to be obtainable during the reward phase of a players turn
+
+
+CALCULATING TROOPS
+
+During the Calculating Troops phase the player will be given the option to exchange their stars for extra troops.
+Exchanging 2 stars will give you 2 extra troops
+Exchanging 3 stars will give you 4 extra troops
+Exchanging 4 stars will give you 7 extra troops
+Exchanging 5 stars will give you 10 extra troops
+Exchanging 6 stars will give you 13 extra troops
+Exchanging 7 stars will give you 17 extra troops
+Exchanging 8 stars will give you 21 extra troops
+Exchanging 9 stars will give you 25 extra troops
+Exchanging 10 stars will give you 30 extra troops
+
+As for the calculations for new troops it is as followed:
+
+For every country the player owns they will receive one point, and for every one of those countries that contains a city they will receive an extra point
+
+These points are divided by 3 and then floored to the nearest integer, if this number is below 3 it will be set to 3. This number is how many troops received from owned countries
+
+The player will then receive an extra troop for every capital they own
+
+The player will then receive extra troops for any entire continents they own
+North America is a bonus 5 troops
+South America is a bonus 2 troops
+Europe is a bonus 5 troops
+Africa is a bonus 3 troops
+Asia is a bonus 7 troops
+Oceania is a bonus 2 troops
+
+The player will then also receive a bonus 2 troops if they own the Extra Troops Objective
+
+Adding these bonus troops to the troops received from owned countries calculation is the amount of new troops a player receives
+
+PLACE TROOPS
+
+During the place troops phase the player can click on a country they own and then add troops to it by clicking on the button that will appear on the right hand side of the country or scrolling upwards with the mouse scroll wheel to place troops one at a time. However by clicking the button labelled Max they can place all remaining new troops at once.
+Players are unable to move troops that were already in place before the Place Troops phase, however if a player wants to change where they have placed their new troops they can do so by selecting a country and clicking on the button that will appear on the left hand side or scrolling downwards with the mouse scroll wheel to remove troops one at a time. However by clicking the button labelled Min they can remove all placed new troops at once.
+
+Players can place new troops in multiple countries, if a player is done placing troops in a particular country they can press the escape or enter keys to go back to the full world view
+
+Once a player has placed all their troops they can click the button at the top of the screen labelled "Place Troops" to progress to the next phase
+
+
+EARLY MOVE
+
+During the Early Move phase the player must select 2 countries they own to initiate a move. Troops will move from the 1st selected country to the 2nd selected country. Troops are unable to move through enemy countries so a path made up of only allied countries must be available for troops to move between the two countries.
+
+They can move troops by pressing the right and left on-screen buttons to add and remove troops respectively, or they can use the mouse scroll wheel, by scrolling upwards they will add troops and by scrolling downwards they will remove troops, or by clicking Max to move the maximum amount of troops over or Min to reset the amount of moved troops to zero
+
+Players can only do 1 move per move phase
+
+The player can cancel a move by hitting the escape key once to return to just having the first select country and the escape key again to return to having no selected countries
+
+Once the player is happy with how many troops they are moving they can click the enter key to confirm it to progress
+
+If the player does not wish to move any troops this turn they can click the button labelled "Early Move" at the top middle of the screen to progress
+
+
+BATTLE
+
+During the battle phase the player must first select a country they own and then a neighbouring country they do not own to initiate a battle (The player's country must have at least 2 troops)
+
+Once a battle has been set up a new button will appear at the bottom right hand side of the screen, it will display "1", "2", "3" or ">".
+
+The 1 means the attacking player will roll one die (Will roll 2 dice if the player owns the attack die)
+The 2 means the attacking player will roll two dice (The attacking country must have at least 3 troops for this to be an option) (Will roll 3 dice if the player owns the attack die)
+The 3 means the attacking player will roll three dice (The attacking country must have at least 4 troops for this to be an option) (Will roll 4 dice if the player owns the attack die)
+The > means the attacking player will roll the max amount of dice they can and immediately roll again as soon as the previous roll has finished, to stop the automatic rolling once started click on the button again so that it displays "1", "2" or "3" 
+
+The Defending country will roll 2 dice if they have 2 or more troops and 1 die if they have only 1 troop (if the owner of the defending country owns the defence die they will have an extra die)
+
+Once the Player has chosen how many dice they want to roll they can click the roll button to roll them
+
+When the dice are rolled for each country the dice are ordered from highest to lowest, the two highest rolled dice from the attacking side are compared with their corresponding dice on the defending side
+
+If the attackers die is larger than the defenders die the defending country will lose a troop
+If the defenders die is equal or larger than the attackers die the attacking country will lose a troop
+
+If the player selected to roll 1 die only the highest rolled dice will be compared (even with an attack die)
+If the defending country only has 1 troop only the highest rolled dice will be compared (even with a defence die)
+
+If a player's (attacker or defender) 2 highest dice are both at least 6 every troop the opposing player lost in that roll will be doubled
+
+The player can exit the battle before doing another roll by hitting the escape key once to return the selected attacking country and the escape key again to return to the full map view
+
+A battle ends when the attacking country has only 1 troop remaining or all the defending country's troops are defeated
+
+If all the defending country's troops are defeated the attacking country will try to move 3 troops over to the newly captured country while leaving 1 remaining in the attacking country. If there is 3 troops now in the newly captured country and more than 1 left in the attacking country a battle move phase will activate where the player can choose how many of those extra troops they wish to move into the newly captured country. They can move troops by pressing the right and left on-screen buttons to add and remove troops respectively, or they can use the mouse scroll wheel, by scrolling upwards they will add troops and by scrolling downwards they will remove troops, or by clicking Max to move the maximum amount of troops over or Min to reset the amount of moved troops to zero
+
+Once the player is happy with how many troops they are moving they can click the enter key to confirm it
+
+A player can also perform a Quick Attack by holding down the left mouse button on top of a country they own and dragging the arrow that will appear over to a neighbouring country they do not own. This method will always use the max amount of dice available and will not stop until the battle is won or lost
+
+The first time each turn a player captures another country a card reward will be added to their pool of possible rewards that they can claim at the end of a turn (unless the player has the guaranteed card objective in which case the reward will just be given to them at the end of their turn)
+
+If a player does not wish to attack this turn they can click the button labelled "Battle" at the top middle of the screen, a warning will appear, click the screen again to remove the warning and then click the button labelled "Battle" again to progress
+
+Once the player is finished attacking this turn they can click the button labelled "Battle" at the top middle of the screen to progress
+
+
+MOVE
+
+During the Move phase the player must select 2 countries they own to initiate a move. Troops will move from the 1st selected country to the 2nd selected country. Troops are unable to move through enemy countries so a path made up of only allied countries must be available for troops to move between the two countries.
+
+They can move troops by pressing the right and left on-screen buttons to add and remove troops respectively, or they can use the mouse scroll wheel, by scrolling upwards they will add troops and by scrolling downwards they will remove troops, or by clicking Max to move the maximum amount of troops over or Min to reset the amount of moved troops to zero
+
+Players can only do 1 move per move phase
+
+The player can cancel a move by hitting the escape key once to return to just having the first select country and the escape key again to return to having no selected countries
+
+Once the player is happy with how many troops they are moving they can click the enter key to confirm it to progress
+
+If the player does not wish to move any troops this turn they can click the button labelled "Move" at the top middle of the screen to progress
+
+
+ADDITIONAL MOVE
+
+During the Additional Move phase the player must select 2 countries they own to initiate a move. Troops will move from the 1st selected country to the 2nd selected country. Troops are unable to move through enemy countries so a path made up of only allied countries must be available for troops to move between the two countries.
+
+They can move troops by pressing the right and left on-screen buttons to add and remove troops respectively, or they can use the mouse scroll wheel, by scrolling upwards they will add troops and by scrolling downwards they will remove troops, or by clicking Max to move the maximum amount of troops over or Min to reset the amount of moved troops to zero
+
+Players can only do 1 move per move phase
+
+The player can cancel a move by hitting the escape key once to return to just having the first select country and the escape key again to return to having no selected countries
+
+Once the player is happy with how many troops they are moving they can click the enter key to confirm it to progress
+
+If the player does not wish to move any troops this turn they can click the button labelled "Additional Move" at the top middle of the screen to progress
+
+
+REWARD
+
+During the Reward phase the player will be presented with a list of possible rewards they can choose from. Players may only choose 1 reward and do so by clicking on the icon on the screen. Doing so will progress the game
+
+Players are required to choose a reward
+
+The reward labelled "Card" will grant the player a card that contains 1 star (2/3 chance) or 2 stars (1/3 chance) that can be spent at the star exchange during the Calculating Troops phase 
+
+
+PLACE AIRFIELD
+
+If during the reward phase the player chose an airfield reward they will enter the Place Airfield phase
+
+By clicking on a country you own you can choose to place your airfield in that country
+After selecting a country by clicking no or pressing the escape key you can go back to the full world view if you wish to change your mind
+After selecting a country by clicking yes you can place your airfield there
+
+If an Airfield is placed all allied neighbouring countries and the country with the airfield will have +1 added to their highest dice roll. When a country with an airfield is taken over, the airfield is destroyed
+
+
