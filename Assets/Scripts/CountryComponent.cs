@@ -127,6 +127,8 @@ public class CountryComponent : NetworkBehaviour
         _AirfieldDisplay.gameObject.SetActive(_HasAirfield);
         if (!_HasAirfield)
             BoardComponent._BoardInstance._Airfields.Remove(this);
+        else
+            _AirfieldDisplay.color = _OccupyingArmy._TextColour;
     }
 
     [ClientRpc]

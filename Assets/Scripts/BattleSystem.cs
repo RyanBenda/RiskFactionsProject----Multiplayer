@@ -80,6 +80,7 @@ public class BattleSystem : NetworkBehaviour
             _DiceIndex = 1;
             _DiceButtonText.text = "1";
         }
+        ServerOnlyCmdDiceIndex(_DiceIndex);
 
         if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
@@ -93,6 +94,16 @@ public class BattleSystem : NetworkBehaviour
         }
 
         _ActiveBattle = false;
+    }
+
+    [Command(requiresAuthority = false)]
+    void ServerOnlyCmdDiceIndex(int index)
+    {
+        if (isServerOnly)
+        {
+            _DiceIndex = index;
+            _DiceButtonText.text = _DiceIndex.ToString();
+        }
     }
 
     public void ResetFight()
@@ -161,22 +172,6 @@ public class BattleSystem : NetworkBehaviour
             {
                 _AttackingCountry = MainCameraComponent._MainCameraInstance._AttackingCountry;
                 _DefendingCountry = MainCameraComponent._MainCameraInstance._DefendingCountry;
-
-                if (_AttackingCountry._TroopsCount >= 4)
-                {
-                    _DiceIndex = 3;
-                    _DiceButtonText.text = "3";
-                }
-                else if (_AttackingCountry._TroopsCount == 3)
-                {
-                    _DiceIndex = 2;
-                    _DiceButtonText.text = "2";
-                }
-                else
-                {
-                    _DiceIndex = 1;
-                    _DiceButtonText.text = "1";
-                }
             }
 
             _BattleCoroutine = DoBattle();
@@ -199,6 +194,11 @@ public class BattleSystem : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CMDChangeDice()
     {
+        if (isServerOnly)
+        {
+            _AttackingCountry = MainCameraComponent._MainCameraInstance._AttackingCountry;
+        }    
+
         if (_AttackingCountry != null)
         {
             if (_DiceIndex == 1)

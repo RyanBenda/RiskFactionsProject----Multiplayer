@@ -142,6 +142,9 @@ public class RewardDisplay : NetworkBehaviour
             }
 
             RecievedCard(val);
+
+            if (isServerOnly)
+                this.gameObject.SetActive(false);
         }
         else
         {

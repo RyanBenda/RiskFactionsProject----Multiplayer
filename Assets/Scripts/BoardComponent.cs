@@ -186,6 +186,9 @@ public class BoardComponent : NetworkBehaviour
 
         HideMinMaXButtons();
         HideBattle();
+
+        if (isServerOnly)
+            _BattleSystem.SetUpInstance();
     }
 
     [ClientRpc]
@@ -220,7 +223,7 @@ public class BoardComponent : NetworkBehaviour
         _NewTroopsCount.text = _NewTroops.ToString();
     }
 
-    [ClientRpc]
+    //[ClientRpc]
     public void ResetAirfield()
     {
         foreach (CountryComponent c in _Airfields)
@@ -324,6 +327,11 @@ public class BoardComponent : NetworkBehaviour
     {
         if (GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
         {
+            if (isServerOnly && MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops == 0)
+            {
+                _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            }
+
             MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops += _NewTroops;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount += _NewTroops;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
@@ -396,6 +404,11 @@ public class BoardComponent : NetworkBehaviour
     {
         if (_NewTroops > 0 && GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
         {
+            if (isServerOnly && MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops == 0)
+            {
+                _TroopsAdded.Add(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            }
+
             MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops++;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount++;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
@@ -475,6 +488,11 @@ public class BoardComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount -= temp;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();
 
+            if (isServerOnly)
+            {
+                _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            }
+
             _NewTroops += temp;
             _NewTroopsCount.text = _NewTroops.ToString();
 
@@ -540,6 +558,11 @@ public class BoardComponent : NetworkBehaviour
     {
         if (MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops > 0 && GameCanvasComponent._GameInstance._CurrentState == TurnStates.PlaceTroops)
         {
+            if (isServerOnly && MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops == 1)
+            {
+                _TroopsAdded.Remove(MainCameraComponent._MainCameraInstance._AttackingCountry);
+            }
+
             MainCameraComponent._MainCameraInstance._AttackingCountry._AddedTroops--;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount--;
             MainCameraComponent._MainCameraInstance._AttackingCountry._TroopDisplay.text = MainCameraComponent._MainCameraInstance._AttackingCountry._TroopsCount.ToString();

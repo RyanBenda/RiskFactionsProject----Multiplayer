@@ -303,6 +303,18 @@ public class QuickAttackComponent : NetworkBehaviour
 
             BoardComponent._BoardInstance.ResetAirfield();
 
+            if (isServerOnly)
+            {
+                _DefendingCountry._OccupyingArmy = GameCanvasComponent._GameInstance._CurArmy;
+
+                if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
+                {
+                    GameCanvasComponent._GameInstance._CurArmy._HasStarReward = true;
+                    GameCanvasComponent._GameInstance._CurArmy._PossibleRewards.Add(BattleSystem._BattleSystemInstance._CardReward);
+                    GameCanvasComponent._GameInstance._RewardCount++;
+                }
+            }
+
 
             EndOfFightRpc("Won", true);
 
@@ -323,6 +335,12 @@ public class QuickAttackComponent : NetworkBehaviour
         {
             EndOfFightRpc("1", battleWon);
 
+            if (battleWon)
+            {
+                if (isServerOnly)
+                    ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            }
+
             battleOver = true;
         }
         else if (_AttackingCountry._TroopsCount <= 4 && battleWon)
@@ -337,6 +355,12 @@ public class QuickAttackComponent : NetworkBehaviour
             _DefendingCountry._TroopDisplay.text = _DefendingCountry._TroopsCount.ToString();
 
             EndOfFightRpc("<4", battleWon);
+
+            if (isServerOnly)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            }
         }
         else if (_AttackingCountry._TroopsCount > 4 && battleWon)
         {
@@ -363,15 +387,33 @@ public class QuickAttackComponent : NetworkBehaviour
                 yield return null;
 
             EndOfFightRpc(">4", battleWon);
+            if (isServerOnly)
+            {
+                MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+                ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+            }
         }
 
         _ActiveBattle = false;
 
         if (!battleOver)
-            QuickAttack(_AttackingCountry, _DefendingCountry);
+        {
+            MainCameraComponent._MainCameraInstance._AttackingCountry = _AttackingCountry;
+            MainCameraComponent._MainCameraInstance._DefendingCountry = _DefendingCountry;
+
+            GameCanvasComponent._GameInstance._HasAttacked = true;
+            _BattleCoroutine = DoBattle();
+            StartCoroutine(_BattleCoroutine);
+        }
         else
         {
             EndOfFightRpc("QuickEnd", false);
+
+            if (isServerOnly)
+            {
+                MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+                MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+            }
         }
     }
 

@@ -200,7 +200,16 @@ public class GameCanvasComponent : NetworkBehaviour
                         MainCameraComponent._MainCameraInstance.RpcResetCamera();
 
                     if (isServerOnly)
+                    {
+                        for (int i = 0; i < BoardComponent._BoardInstance._TroopsAdded.Count;)
+                        {
+                            BoardComponent._BoardInstance._TroopsAdded[i]._AddedTroops = 0;
+
+                            BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
+                        }
+
                         MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+                    }
 
                     RPCPlaceTroops();
 
@@ -218,6 +227,13 @@ public class GameCanvasComponent : NetworkBehaviour
             else if (_CurrentState == TurnStates.EarlyMove)
             {
                 RPCEarlyMove();
+                if (isServerOnly)
+                {
+                    if (MainCameraComponent._MainCameraInstance._DefendingCountry != null)
+                        MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+                    MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+                }
 
                 _CurrentState = TurnStates.Battle;
             }
@@ -248,6 +264,13 @@ public class GameCanvasComponent : NetworkBehaviour
             else if (_CurrentState == TurnStates.BattleMove)
             {
                 RPCBattleMove();
+
+                if (isServerOnly)
+                {
+                    if (MainCameraComponent._MainCameraInstance._DefendingCountry != null)
+                        MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
+                }
+
                 BoardComponent._BoardInstance._TroopsAdded.Clear();
 
                 _CurrentState = TurnStates.Battle;
@@ -269,6 +292,7 @@ public class GameCanvasComponent : NetworkBehaviour
                     ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
 
+                    _RewardCount = 0;
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
                         //CmdNewTurn(TurnStates.CalculateTroops);
@@ -300,6 +324,13 @@ public class GameCanvasComponent : NetworkBehaviour
                     _CurrentState = TurnStates.Reward;
                 }
 
+                if (isServerOnly)
+                {
+                    if (MainCameraComponent._MainCameraInstance._DefendingCountry != null)
+                        MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+                    MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+                }
                 BoardComponent._BoardInstance._TroopsAdded.Clear();
             }
             else if (_CurrentState == TurnStates.AdditionalMove)
@@ -314,6 +345,7 @@ public class GameCanvasComponent : NetworkBehaviour
                     ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
 
+                    _RewardCount = 0;
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
                         //CmdNewTurn(TurnStates.CalculateTroops);
@@ -346,6 +378,13 @@ public class GameCanvasComponent : NetworkBehaviour
                     _CurrentState = TurnStates.Reward;
                 }
 
+                if (isServerOnly)
+                {
+                    if (MainCameraComponent._MainCameraInstance._DefendingCountry != null)
+                        MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
+                    MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+                    MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+                }
                 BoardComponent._BoardInstance._TroopsAdded.Clear();
             }
             else if (_CurrentState == TurnStates.Reward)
@@ -362,6 +401,7 @@ public class GameCanvasComponent : NetworkBehaviour
                     ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
 
+                    _RewardCount = 0;
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
                         //CmdNewTurn(TurnStates.CalculateTroops);
@@ -399,6 +439,7 @@ public class GameCanvasComponent : NetworkBehaviour
                     ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                     BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
 
+                    _RewardCount = 0;
                     if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                     {
                         //CmdNewTurn(TurnStates.CalculateTroops);
@@ -438,6 +479,7 @@ public class GameCanvasComponent : NetworkBehaviour
                 ObjectiveManager._ObjectiveManagerInstance.ResetManager();
                 BoardComponent._BoardInstance.CalculateNewTroops(_TurnIndex);
 
+                _RewardCount = 0;
                 if (_CurArmy._OneStars >= 2 || _CurArmy._TwoStars >= 1)
                 {
                     //CmdNewTurn(TurnStates.CalculateTroops);
@@ -561,6 +603,7 @@ public class GameCanvasComponent : NetworkBehaviour
     {
         _CurrentState = state;
         _TurnIndex = index;
+        _CurArmy = _TurnOrder[_TurnIndex];
 
         _RewardDisplay.SetActive(false);
 
@@ -668,6 +711,9 @@ public class GameCanvasComponent : NetworkBehaviour
 
             BoardComponent._BoardInstance._TroopsAdded.Remove(BoardComponent._BoardInstance._TroopsAdded[i]);
         }
+
+        if (MainCameraComponent._MainCameraInstance._DefendingCountry != null)
+            MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
 
         MainCameraComponent._MainCameraInstance.ResetSelected();
 

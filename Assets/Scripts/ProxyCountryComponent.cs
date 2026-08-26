@@ -50,6 +50,9 @@ public class ProxyCountryComponent : NetworkBehaviour // Proxy country on the ed
     void CmdProxyCamera()
     {
         ProxyCamera();
+
+        if (isServerOnly)
+            MainCameraComponent._MainCameraInstance._DefendingCountry = _ActualCountry;
     }
 
     [ClientRpc]
