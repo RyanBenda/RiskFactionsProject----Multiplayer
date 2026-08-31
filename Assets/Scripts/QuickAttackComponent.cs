@@ -513,7 +513,7 @@ public class QuickAttackComponent : NetworkBehaviour
         MainCameraComponent._MainCameraInstance._DefendingCountry = d;
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
     public void SetArmyDefeated(int i) 
     {
         ArmiesStruct a = GameCanvasComponent._GameInstance._TurnOrder[i];
@@ -526,7 +526,7 @@ public class QuickAttackComponent : NetworkBehaviour
         GameCanvasComponent._GameInstance._TurnOrder.Insert(i, a);
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
     void TransferStars(int j)
     {
         GameCanvasComponent._GameInstance._CurArmy._OneStars += GameCanvasComponent._GameInstance._TurnOrder[j]._OneStars;

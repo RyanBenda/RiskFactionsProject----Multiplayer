@@ -54,9 +54,17 @@ public class MainCameraComponent : NetworkBehaviour
         }
     }
 
+    [Command(requiresAuthority = false)]
+    public void ServerOnlySetTweening(bool tweening)
+    {
+        if (isServerOnly)
+            _Tweening = tweening;
+    }
+
     public void ActivateBattleSystem()
     {
         _Tweening = false;
+        ServerOnlySetTweening(false);
 
         BattleSystem._BattleSystemInstance.SetUpFight();
         BattleSystem._BattleSystemInstance.gameObject.SetActive(true);
@@ -83,6 +91,7 @@ public class MainCameraComponent : NetworkBehaviour
     public void RpcResetCamera()
     {
         _Tweening = true;
+        ServerOnlySetTweening(true);
 
         if (_DefendingCountry == null)
         {
@@ -91,7 +100,7 @@ public class MainCameraComponent : NetworkBehaviour
         }
         else
         {
-            this.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => this._Tweening = false);
+            this.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => _Tweening = false);
             this.transform.DORotate(_StartingRot, 2);
 
             _DefendingCountry._Selected = false;
@@ -141,6 +150,7 @@ public class MainCameraComponent : NetworkBehaviour
         }
 
         _Tweening = false;
+        ServerOnlySetTweening(false);
     }
 
     [Command(requiresAuthority = false)]

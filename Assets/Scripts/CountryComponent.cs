@@ -306,6 +306,7 @@ public class CountryComponent : NetworkBehaviour
     void CapitalPlacementCamera()
     {
         MainCameraComponent._MainCameraInstance._Tweening = true;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(true);
         MainCameraComponent._MainCameraInstance._AttackingCountry = this;
         if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
             _MouseHoverTracker = true;
@@ -318,6 +319,7 @@ public class CountryComponent : NetworkBehaviour
     void NewTroopsPlacementCamera()
     {
         MainCameraComponent._MainCameraInstance._Tweening = true;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(true);
         MainCameraComponent._MainCameraInstance._AttackingCountry = this;
         if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
             _MouseHoverTracker = true;
@@ -325,6 +327,13 @@ public class CountryComponent : NetworkBehaviour
         _HoverObject.SetActive(true);
         MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => SetUpNewTroopsButtons());
     }
+
+    void EndTweenFunction()
+    {
+        MainCameraComponent._MainCameraInstance._Tweening = false;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(false);
+    }
+
     [ClientRpc]
     void MovingCamera()
     {
@@ -334,12 +343,13 @@ public class CountryComponent : NetworkBehaviour
             MainCameraComponent._MainCameraInstance._AttackingCountry._MouseHoverTracker = false;
 
         MainCameraComponent._MainCameraInstance._Tweening = true;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(true);
         MainCameraComponent._MainCameraInstance._AttackingCountry = this;
         if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
             _MouseHoverTracker = true;
         _Selected = true;
         _HoverObject.SetActive(true);
-        MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+        MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => EndTweenFunction());
     }
 
     [ClientRpc]
@@ -348,12 +358,13 @@ public class CountryComponent : NetworkBehaviour
         if (MainCameraComponent._MainCameraInstance._AttackingCountry == null)
         {
             MainCameraComponent._MainCameraInstance._Tweening = true;
+            MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(true);
             MainCameraComponent._MainCameraInstance._AttackingCountry = this;
             if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
                 _MouseHoverTracker = true;
             _Selected = true;
             _HoverObject.SetActive(true);
-            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(this.transform.position.x, this.transform.position.y, -350), 1).OnComplete(() => EndTweenFunction());
         }
         else
         {
@@ -371,6 +382,7 @@ public class CountryComponent : NetworkBehaviour
             if (neighouringCountry)
             {
                 MainCameraComponent._MainCameraInstance._Tweening = true;
+                MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(true);
                 MainCameraComponent._MainCameraInstance._DefendingCountry = this;
                 if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
                     _MouseHoverTracker = true;
@@ -428,6 +440,7 @@ public class CountryComponent : NetworkBehaviour
     void SetUpCapital() // Set up the Adding and Removing troops buttons to be used for placing Capitals and Airfields
     {
         MainCameraComponent._MainCameraInstance._Tweening = false;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(false);
 
         if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
@@ -460,6 +473,7 @@ public class CountryComponent : NetworkBehaviour
     void SetUpNewTroopsButtons()
     {
         MainCameraComponent._MainCameraInstance._Tweening = false;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(false);
         if (GameCanvasComponent._GameInstance._LocalPlayer._IsTurn)
         {
             BoardComponent._BoardInstance._IncreaseButton[0].transform.position = new Vector3(this.transform.position.x + 75, this.transform.position.y, BoardComponent._BoardInstance._IncreaseButton[0].transform.position.z);

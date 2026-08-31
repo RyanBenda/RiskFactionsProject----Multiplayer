@@ -27,8 +27,6 @@ public class StarTradeComponent : NetworkBehaviour
             stars += 2;
         }
 
-        Debug.Log(GameCanvasComponent._GameInstance._CurArmy._Army._ArmyName);
-
         _StarCount.text = "Star Count: "+ stars;
 
         bool temp = false;

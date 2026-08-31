@@ -209,11 +209,11 @@ public class GameCanvasComponent : NetworkBehaviour
                         }
 
                         MainCameraComponent._MainCameraInstance._AttackingCountry = null;
+
+                        BoardComponent._BoardInstance._TroopsAdded.Clear();
                     }
 
                     RPCPlaceTroops();
-
-                    BoardComponent._BoardInstance._TroopsAdded.Clear();
 
                     if (_CurArmy._HasEarlyMove)
                         _CurrentState = TurnStates.EarlyMove;
@@ -269,9 +269,9 @@ public class GameCanvasComponent : NetworkBehaviour
                 {
                     if (MainCameraComponent._MainCameraInstance._DefendingCountry != null)
                         MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
-                }
 
-                BoardComponent._BoardInstance._TroopsAdded.Clear();
+                    BoardComponent._BoardInstance._TroopsAdded.Clear();
+                }
 
                 _CurrentState = TurnStates.Battle;
             }
@@ -330,8 +330,10 @@ public class GameCanvasComponent : NetworkBehaviour
                         MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
                     MainCameraComponent._MainCameraInstance._AttackingCountry = null;
                     MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+
+                    BoardComponent._BoardInstance._TroopsAdded.Clear();
                 }
-                BoardComponent._BoardInstance._TroopsAdded.Clear();
+                
             }
             else if (_CurrentState == TurnStates.AdditionalMove)
             {
@@ -384,8 +386,10 @@ public class GameCanvasComponent : NetworkBehaviour
                         MainCameraComponent._MainCameraInstance._DefendingCountry._AddedTroops = 0;
                     MainCameraComponent._MainCameraInstance._AttackingCountry = null;
                     MainCameraComponent._MainCameraInstance._DefendingCountry = null;
+
+                    BoardComponent._BoardInstance._TroopsAdded.Clear();
                 }
-                BoardComponent._BoardInstance._TroopsAdded.Clear();
+                
             }
             else if (_CurrentState == TurnStates.Reward)
             {
@@ -892,7 +896,7 @@ public class GameCanvasComponent : NetworkBehaviour
             _RewardAddition.transform.DOScale(Vector3.one, 1f);
             _RewardAddition._Image[0].DOColor(Color.white, 1f).OnComplete(() => ResetRewardEffect(_RewardEffectList[i]._Index));
 
-            yield return new WaitForSecondsRealtime(1.5f); 
+            yield return new WaitForSecondsRealtime(1.55f); 
 
             _RewardEffectList.RemoveAt(0);
         }

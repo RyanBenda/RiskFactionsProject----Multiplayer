@@ -275,8 +275,7 @@ public class BattleSystem : NetworkBehaviour
     
     IEnumerator DoBattle()
     {
-        if (isServerOnly)
-            _ActiveBattle = true;
+        _ActiveBattle = true;
         SetActiveBattle(true);
 
         List<int> diceRolls = CalculateRoll(_AttackingCountry, true);
@@ -458,12 +457,14 @@ public class BattleSystem : NetworkBehaviour
         {
             EndOfFightRpc("1", battleWon);
             if (isServerOnly)
+            {
+                MainCameraComponent._MainCameraInstance._Tweening = true;
                 MainCameraComponent._MainCameraInstance._DefendingCountry = null;
 
-            if (battleWon)
-            {
-                if (isServerOnly)
+                if (battleWon)
+                {
                     ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
+                }
             }
         }
         else if (_AttackingCountry._TroopsCount <= 4 && battleWon) // Ends the battle with moving as many troops as it can (up to 3) over to the newly captured country as per Risk Faction Rules doesn't need to set up moving as there are not troops to move
@@ -481,6 +482,7 @@ public class BattleSystem : NetworkBehaviour
 
             if (isServerOnly)
             {
+                MainCameraComponent._MainCameraInstance._Tweening = true;
                 MainCameraComponent._MainCameraInstance._DefendingCountry = null;
                 ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
             }
@@ -510,13 +512,13 @@ public class BattleSystem : NetworkBehaviour
             EndOfFightRpc(">4", battleWon);
             if (isServerOnly)
             {
+                MainCameraComponent._MainCameraInstance._Tweening = true;
                 MainCameraComponent._MainCameraInstance._DefendingCountry = null;
                 ObjectiveManager._ObjectiveManagerInstance.ObjectiveCheck();
             }
         }
 
-        if (isServerOnly)
-            _ActiveBattle = false;
+        _ActiveBattle = false;
         SetActiveBattle(false);
 
         if (_DiceIndex == 4 && !battleWon)
@@ -694,7 +696,7 @@ public class BattleSystem : NetworkBehaviour
         }
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
     public void SetArmyDefeated(int i)
     {
         ArmiesStruct a = GameCanvasComponent._GameInstance._TurnOrder[i];
@@ -707,7 +709,7 @@ public class BattleSystem : NetworkBehaviour
         GameCanvasComponent._GameInstance._TurnOrder.Insert(i, a);
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
     void TransferStars(int j)
     {
         GameCanvasComponent._GameInstance._CurArmy._OneStars += GameCanvasComponent._GameInstance._TurnOrder[j]._OneStars;
@@ -726,6 +728,12 @@ public class BattleSystem : NetworkBehaviour
         }
     }
 
+    void EndTweenFunction()
+    {
+        MainCameraComponent._MainCameraInstance._Tweening = false;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(false);
+    }
+
     [ClientRpc]
     void EndOfFightRpc(string info, bool battleWon)
     {
@@ -733,7 +741,7 @@ public class BattleSystem : NetworkBehaviour
         {
             MainCameraComponent._MainCameraInstance._Tweening = true;
 
-            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => EndTweenFunction());
             MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
 
             MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
@@ -776,7 +784,7 @@ public class BattleSystem : NetworkBehaviour
 
             MainCameraComponent._MainCameraInstance._Tweening = true;
 
-            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => EndTweenFunction());
             MainCameraComponent._MainCameraInstance.transform.DORotate(MainCameraComponent._MainCameraInstance._StartingRot, 1);
 
             MainCameraComponent._MainCameraInstance._DefendingCountry._Selected = false;
@@ -832,7 +840,7 @@ public class BattleSystem : NetworkBehaviour
             BoardComponent._BoardInstance._IncreaseButton[0].gameObject.SetActive(false);
             BoardComponent._BoardInstance._DecreaseButton[0].gameObject.SetActive(false);
 
-            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => MainCameraComponent._MainCameraInstance._Tweening = false);
+            MainCameraComponent._MainCameraInstance.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => EndTweenFunction());
 
             if (!GameCanvasComponent._GameInstance._CurArmy._HasStarReward)
             {

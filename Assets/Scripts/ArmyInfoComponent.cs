@@ -32,7 +32,7 @@ public class ArmyInfoComponent : NetworkBehaviour
         _Name.color = army._TextColour;
     }
 
-    [Command(requiresAuthority = false)]
+    //[Command(requiresAuthority = false)]
     public void SetDefeated()
     {
         _IsDefeated = true;
