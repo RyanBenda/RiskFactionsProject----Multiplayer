@@ -523,6 +523,8 @@ public class BattleSystem : NetworkBehaviour
 
         if (_DiceIndex == 4 && !battleWon)
         {
+            yield return new WaitForSecondsRealtime(1f);
+
             RollDice();
         }
         else if (!battleWon && _DiceIndex == 3 && _AttackingCountry._TroopsCount < 4)
