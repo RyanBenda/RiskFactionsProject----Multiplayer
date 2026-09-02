@@ -607,7 +607,8 @@ public class GameCanvasComponent : NetworkBehaviour
     {
         _CurrentState = state;
         _TurnIndex = index;
-        _CurArmy = _TurnOrder[_TurnIndex];
+        if (!isServer)
+            _CurArmy = _TurnOrder[_TurnIndex];
 
         _RewardDisplay.SetActive(false);
 
