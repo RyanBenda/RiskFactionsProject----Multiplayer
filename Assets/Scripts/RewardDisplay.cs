@@ -89,7 +89,7 @@ public class RewardDisplay : NetworkBehaviour
                     {
                         if (_Objectives[j]._Objective == ObjectiveManager._ObjectiveManagerInstance._InactiveObjectives[i])
                         {
-                            ObjectiveClaimed(j);
+                            ObjectiveClaimed(j, GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour);
                             break;
                         }
                     }
@@ -154,9 +154,9 @@ public class RewardDisplay : NetworkBehaviour
     }
 
     [ClientRpc]
-    void ObjectiveClaimed(int j) // Adds the correct cross colour the objectives display for claimed rewards
+    void ObjectiveClaimed(int j, Color c) // Adds the correct cross colour the objectives display for claimed rewards
     {
-        _Objectives[j]._Claimed.color = GameCanvasComponent._GameInstance._CurArmy._Army._ArmyColour;
+        _Objectives[j]._Claimed.color = c;
         _Objectives[j]._Claimed.gameObject.SetActive(true);
     }
 
