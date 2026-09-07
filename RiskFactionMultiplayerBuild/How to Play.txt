@@ -47,6 +47,10 @@ Exchanging 8 stars will give you 21 extra troops
 Exchanging 9 stars will give you 25 extra troops
 Exchanging 10 stars will give you 30 extra troops
 
+To exchange the troops click on the text that states the trade you would like to make, doing this will exchange the stars straight away, you can only make 1 exchange per round
+
+If you do not wish to exchange you can press the escape key to move on without exchanging stars
+
 As for the calculations for new troops it is as followed:
 
 For every country the player owns they will receive one point, and for every one of those countries that contains a city they will receive an extra point
