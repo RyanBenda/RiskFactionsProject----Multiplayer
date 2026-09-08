@@ -61,6 +61,12 @@ public class MainCameraComponent : NetworkBehaviour
             _Tweening = tweening;
     }
 
+    void EndTweenFunction()
+    {
+        MainCameraComponent._MainCameraInstance._Tweening = false;
+        MainCameraComponent._MainCameraInstance.ServerOnlySetTweening(false);
+    }
+
     public void ActivateBattleSystem()
     {
         _Tweening = false;
@@ -100,7 +106,7 @@ public class MainCameraComponent : NetworkBehaviour
         }
         else
         {
-            this.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => _Tweening = false);
+            this.transform.DOMove(new Vector3(_AttackingCountry.transform.position.x, _AttackingCountry.transform.position.y, -350), 2).OnComplete(() => EndTweenFunction());
             this.transform.DORotate(_StartingRot, 2);
 
             _DefendingCountry._Selected = false;
