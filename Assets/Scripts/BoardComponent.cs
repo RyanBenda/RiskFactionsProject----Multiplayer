@@ -152,7 +152,7 @@ public class BoardComponent : NetworkBehaviour
             {
                 c._TroopsCount = 1;
                 troops--;
-                c.UpdateTroops();
+                //c.UpdateTroops();
             }
 
             int val = Random.Range(0, _GameCanvas._TurnOrder[i]._ControlledCountries.Count);
@@ -163,7 +163,7 @@ public class BoardComponent : NetworkBehaviour
 
                 _GameCanvas._TurnOrder[i]._ControlledCountries[val]._TroopsCount++;
                 troops--;
-                _GameCanvas._TurnOrder[i]._ControlledCountries[val].UpdateTroops();
+                //_GameCanvas._TurnOrder[i]._ControlledCountries[val].UpdateTroops();
                 val = Random.Range(0, _GameCanvas._TurnOrder[i]._ControlledCountries.Count);
             }
         }
@@ -186,6 +186,7 @@ public class BoardComponent : NetworkBehaviour
 
         HideMinMaXButtons();
         HideBattle();
+        UpdateAllCountries();
 
         if (isServerOnly)
             _BattleSystem.SetUpInstance();
@@ -204,6 +205,15 @@ public class BoardComponent : NetworkBehaviour
         _BattleSystem.SetUpInstance();
 
         _BattleSystem.gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    void UpdateAllCountries()
+    {
+        for (int i = 0; i < _Countries.Length; i++)
+        {
+            _Countries[i].UpdateTroops();
+        }
     }
 
     //[Command(requiresAuthority = false)]
