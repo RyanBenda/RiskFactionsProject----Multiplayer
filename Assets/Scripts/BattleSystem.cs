@@ -174,7 +174,7 @@ public class BattleSystem : NetworkBehaviour
                 _DefendingCountry = MainCameraComponent._MainCameraInstance._DefendingCountry;
             }
 
-            _BattleCoroutine = DoBattle();
+            _BattleCoroutine = DoBattle(_DiceIndex);
             StartCoroutine(_BattleCoroutine);
 
             GameCanvasComponent._GameInstance._HasAttacked = true;
@@ -273,12 +273,12 @@ public class BattleSystem : NetworkBehaviour
         }
     }
     
-    IEnumerator DoBattle()
+    IEnumerator DoBattle(int diceIndex)
     {
         _ActiveBattle = true;
         SetActiveBattle(true);
 
-        List<int> diceRolls = CalculateRoll(_AttackingCountry, true);
+        List<int> diceRolls = CalculateRoll(_AttackingCountry, true, diceIndex);
         int atkDiceRolls = diceRolls.Count;
 
         for (int i = 0; i < diceRolls.Count; i++)
@@ -296,7 +296,7 @@ public class BattleSystem : NetworkBehaviour
             _LeftDice[i].gameObject.SetActive(true);
         }
 
-        diceRolls = CalculateRoll(_DefendingCountry, false);
+        diceRolls = CalculateRoll(_DefendingCountry, false, diceIndex);
 
         for (int i = 0; i < diceRolls.Count; i++)
         {
@@ -328,7 +328,7 @@ public class BattleSystem : NetworkBehaviour
         if (_DefendingCountry._TroopsCount == 1)
             atkDiceRolls = 1;
 
-        if (_DiceIndex == 1)
+        if (diceIndex == 1)
             atkDiceRolls = 1;
 
         int atkTroopsLost = 0;
@@ -521,7 +521,7 @@ public class BattleSystem : NetworkBehaviour
         _ActiveBattle = false;
         SetActiveBattle(false);
 
-        if (_DiceIndex == 4 && !battleWon)
+        if (diceIndex == 4 && _DiceIndex == 4 && !battleWon)
         {
             yield return new WaitForSecondsRealtime(1f);
 
@@ -551,22 +551,22 @@ public class BattleSystem : NetworkBehaviour
         }
     }
 
-    List<int> CalculateRoll(CountryComponent country, bool attacker)
+    List<int> CalculateRoll(CountryComponent country, bool attacker, int diceIndex)
     {
         List<int> templist = new List<int>();
         int temp = 0;
 
         if (attacker)
         {
-            if (_DiceIndex == 1)
+            if (diceIndex == 1)
             {
                 temp = 1;
             }
-            else if (_DiceIndex == 2)
+            else if (diceIndex == 2)
             {
                 temp = 2;
             }
-            else if (_DiceIndex == 3)
+            else if (diceIndex == 3)
             {
                 temp = 3;
             }
