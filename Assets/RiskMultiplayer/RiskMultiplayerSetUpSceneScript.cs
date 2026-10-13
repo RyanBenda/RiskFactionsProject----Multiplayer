@@ -15,6 +15,7 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
     
     public List<RiskMultiplayerPlayerSetUpScript> _PlayersLocal = new List<RiskMultiplayerPlayerSetUpScript>();
     public readonly SyncList<RiskMultiplayerPlayerSetUpScript> _Players = new SyncList<RiskMultiplayerPlayerSetUpScript>();
+    public readonly SyncList<RiskMultiplayerPlayerSetUpScript> _AIPlayers = new SyncList<RiskMultiplayerPlayerSetUpScript>();
 
     [SyncVar(hook = nameof(OnPlayersChanged))]
     public int _PlayerCount = 0;
@@ -48,6 +49,7 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
     public override void OnStartClient()
     {
         _Players.OnAdd += OnItemAdded;
+        _AIPlayers.OnAdd += OnAIAdded;
         //_ArmyChoices.OnSet += OnArmyChoice;
     }
 
@@ -78,9 +80,30 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
                 p.transform.parent = _ScrollViewContent.transform;
                 p.transform.localScale = Vector3.one;
             }
+
+            foreach (RiskMultiplayerPlayerSetUpScript a in _AIPlayers)
+            {
+                a.transform.parent = _ScrollViewContent.transform;
+                a.transform.localScale = Vector3.one;
+            }
+        }
+        else if (_AIPlayers.Count > 0)
+        {
+            _ScrollViewContent.transform.DetachChildren();
+            foreach (RiskMultiplayerPlayerSetUpScript p in _PlayersLocal)
+            {
+                p.transform.parent = _ScrollViewContent.transform;
+                p.transform.localScale = Vector3.one;
+            }
+
+            foreach (RiskMultiplayerPlayerSetUpScript a in _AIPlayers)
+            {
+                a.transform.parent = _ScrollViewContent.transform;
+                a.transform.localScale = Vector3.one;
+            }
         }
 
-        RiskFactionsRoomPlayer setupOwner =  NetworkClient.connection.identity.gameObject.GetComponent<RiskFactionsRoomPlayer>();
+        RiskFactionsRoomPlayer setupOwner = NetworkClient.connection.identity.gameObject.GetComponent<RiskFactionsRoomPlayer>();
 
         for (int i = 1; i < _PlayersLocal.Count; i++)
         {
@@ -90,7 +113,31 @@ public class RiskMultiplayerSetUpSceneScript : NetworkBehaviour
                 _PlayersLocal[i]._ColourButton.interactable = false;
             }
         }
+
+        for (int i = 0; i < _AIPlayers.Count; i++)
+        {
+            if (_Players[0]._Owner != setupOwner)
+            {
+                _AIPlayers[i]._NameInputField.interactable = false;
+                _AIPlayers[i]._ColourButton.interactable = false;
+            }
+        }
     }
+
+    void OnAIAdded(int index)
+    {
+        RiskFactionsRoomPlayer setupOwner = NetworkClient.connection.identity.gameObject.GetComponent<RiskFactionsRoomPlayer>();
+
+        for (int i = 0; i < _AIPlayers.Count; i++)
+        {
+            if (_Players[0]._Owner != setupOwner)
+            {
+                _AIPlayers[i]._NameInputField.interactable = false;
+                _AIPlayers[i]._ColourButton.interactable = false;
+            }
+        }
+    }
+
     [Command(requiresAuthority = false)]
     void OnArmyChoice(int index, ArmySelection army)
     {

@@ -32,6 +32,8 @@ public class RiskMultiplayerPlayerSetUpScript : NetworkRoomPlayer
     [SyncVar]
     public RiskFactionsRoomPlayer _Owner;
 
+    public bool _IsAI = false;
+
     void Awake()
     {
         if (SceneManager.GetActiveScene().name != "SampleScene")
@@ -40,6 +42,12 @@ public class RiskMultiplayerPlayerSetUpScript : NetworkRoomPlayer
             _NameInputField.onEndEdit.AddListener(delegate { ValueChangedCheck(); });
             _ColourSelector = FindAnyObjectByType<RiskArmyColourSelector>(FindObjectsInactive.Include);
             _ColourButton.onClick.AddListener(delegate { SetColourSelectorActive(); });
+        }
+
+        if (_IsAI)
+        {
+            CmdSetupPlayer();
+            SetOtherColourButtons();
         }
     }
     void OnNameChanged(string old, string _new)
@@ -82,7 +90,8 @@ public class RiskMultiplayerPlayerSetUpScript : NetworkRoomPlayer
     {
         if (_PlayerColour != Color.clear) return; //Stops this set up from running if it has already been run
 
-        _Owner._Setup = this;
+        if (_Owner != null)
+            _Owner._Setup = this;
 
         int ind = 0;
         while (_SceneScript._ArmyChoices[ind]._Chosen) // would cause issues if more people joined then possible armies but there are 42 territories and 42 army options so player 43 couldn't even play anyway
@@ -94,6 +103,15 @@ public class RiskMultiplayerPlayerSetUpScript : NetworkRoomPlayer
         }
 
         _PlayerName = _SceneScript._ArmyChoices[ind]._Army._ArmyName;
+        for (int i = 0; i < _SceneScript._Players.Count; i++)
+        {
+            if (_SceneScript._Players[i] != this && _PlayerName == _SceneScript._Players[i]._PlayerName)
+            {
+                _PlayerName = _PlayerName + " Copy";
+                i = 0;
+            }
+        }
+
         _PlayerColour = _SceneScript._ArmyChoices[ind]._Army._ArmyColour;
         _SetArmy = _SceneScript._ArmyChoices[ind]._Army;
         _ColourIndex = ind;
@@ -105,23 +123,40 @@ public class RiskMultiplayerPlayerSetUpScript : NetworkRoomPlayer
         _SceneScript._ArmyChoices.RemoveAt(ind);
         _SceneScript._ArmyChoices.Insert(ind, temp);
 
-        _SceneScript._Players.Add(this);
-        _SceneScript._PlayerCount++;
+        if (!_IsAI)
+        {
+            _SceneScript._Players.Add(this);
+            _SceneScript._PlayerCount++;
+        }
+        else
+        {
+            _SceneScript._AIPlayers.Add(this);
+
+        }
     }
 
     [Command(requiresAuthority = false)]
     public void CmdChangePlayerName(string text)
     {
+        string t = text;
         for (int i = 0; i < _SceneScript._Players.Count; i++)
         {
             if (_SceneScript._Players[i] != this && text == _SceneScript._Players[i]._PlayerName)
             {
-                text = text + " Copy";
+                t = text + " Copy";
                 i = 0;
+                text = t;
             }
         }
 
-        _PlayerName = text;
+        _PlayerName = t;
+        UpdateTextBox();
+    }
+
+    [ClientRpc]
+    void UpdateTextBox()
+    {
+        _NameInputField.text = _PlayerName;
     }
 
     [Command(requiresAuthority = false)]

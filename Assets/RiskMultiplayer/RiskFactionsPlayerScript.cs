@@ -22,6 +22,8 @@ public class RiskFactionsPlayerScript : NetworkBehaviour
     [SyncVar]
     public bool _IsTurn;
 
+    public bool _PermTurn;
+
     void OnNameChanged(string old, string _new)
     {
         this.name = _PlayerName;

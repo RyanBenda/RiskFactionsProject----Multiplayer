@@ -10,9 +10,12 @@ public class StartGameNetworkManager : NetworkRoomManager
     public GameObject _RiskFactionsPlayerPrefab;
     public int val = 0;
 
+    public RiskMultiplayerSetUpSceneScript _RFSetUpSceneScript;
     public RiskFactionGameSceneScript _RFSceneScript;
 
     public NetworkManagerHUD _NMHUD;
+
+    public List<RiskMultiplayerPlayerSetUpScript> _AIPlayers = new List<RiskMultiplayerPlayerSetUpScript>();
 
     public override void Awake()
     {
@@ -39,9 +42,23 @@ public class StartGameNetworkManager : NetworkRoomManager
 
         if (_RFSceneScript._PlayerCount == NetworkServer.connections.Count)
         {
-            ArmyScriptableObject[] armies = new ArmyScriptableObject[_RFSceneScript._PlayerCount];
+            ArmyScriptableObject[] armies = new ArmyScriptableObject[_RFSceneScript._PlayerCount + _AIPlayers.Count];
             for (int i = 0; i < _RFSceneScript._PlayerCount; i++)
                 armies[i] = _RFSceneScript._Players[i]._Army;
+            for (int i = 0; i < _AIPlayers.Count; i++)
+            {
+                armies[i + _RFSceneScript._PlayerCount] = _AIPlayers[i]._SetArmy;
+
+                GameObject g = Instantiate(_RiskFactionsPlayerPrefab);
+                RiskFactionsPlayerScript ai = g.GetComponent<RiskFactionsPlayerScript>();
+
+                ai.index = _AIPlayers[i].index;
+                ai._PlayerName = _AIPlayers[i]._PlayerName;
+                ai._PlayerColour = _AIPlayers[i]._PlayerColour;
+                ai._Army = _AIPlayers[i]._SetArmy;
+                ai._SceneScript = _RFSceneScript;
+            }
+
 
             _RFSceneScript._ObjectiveManager.SetUpObjectives();
             _RFSceneScript._Board.BeginMatch(armies);
@@ -62,6 +79,9 @@ public class StartGameNetworkManager : NetworkRoomManager
 
     public void StartGame()
     {
+        foreach(RiskMultiplayerPlayerSetUpScript ai in _RFSetUpSceneScript._AIPlayers)
+            _AIPlayers.Add(ai);
+
         ServerChangeScene(GameplayScene);
     }
 }

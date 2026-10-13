@@ -571,6 +571,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &26629851
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,6 +871,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &29496193
 GameObject:
   m_ObjectHideFlags: 0
@@ -4473,6 +4477,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &162566747
 GameObject:
   m_ObjectHideFlags: 0
@@ -5284,6 +5290,7 @@ GameObject:
   - component: {fileID: 206545560}
   - component: {fileID: 206545559}
   - component: {fileID: 206545558}
+  - component: {fileID: 206545561}
   m_Layer: 0
   m_Name: SceneScript
   m_TagString: Untagged
@@ -5342,6 +5349,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &206545561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206545557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ce6d472ccbd90c44ada2f0c48e0f42d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _test: 0
+  _Options:
+  - _Goal: Get a Star
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Africa
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Asia
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Europe
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of North America
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of South America
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Oceania
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of an Enemy Capital
+    _Val: 0
+    _Path: []
+  - _Goal: Have Control of 8 Cities
+    _Val: 0
+    _Path: []
+  - _Goal: Have Control of 11 Cities
+    _Val: 0
+    _Path: []
+  - _Goal: Have Control of 18 Territories
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of 4 Cities in 1 Turn
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of 10 Territories in 1 Turn
+    _Val: 0
+    _Path: []
+  - _Goal: Stop Enemy Continent Bonus
+    _Val: 0
+    _Path: []
+  - _Goal: Take out an enemy
+    _Val: 0
+    _Path: []
+  - _Goal: Consolidate
+    _Val: 0
+    _Path: []
 --- !u!1 &212989505
 GameObject:
   m_ObjectHideFlags: 0
@@ -5566,6 +5635,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &214296108
 GameObject:
   m_ObjectHideFlags: 0
@@ -5929,6 +6000,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &222233996
 GameObject:
   m_ObjectHideFlags: 0
@@ -8335,6 +8408,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &301892928
 GameObject:
   m_ObjectHideFlags: 0
@@ -8708,6 +8783,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &307865153
 GameObject:
   m_ObjectHideFlags: 0
@@ -10494,6 +10571,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &341163959
 GameObject:
   m_ObjectHideFlags: 0
@@ -11492,6 +11571,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &355663170
 GameObject:
   m_ObjectHideFlags: 0
@@ -11771,6 +11852,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!114 &360765596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13506,6 +13589,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &413696365
 GameObject:
   m_ObjectHideFlags: 0
@@ -13787,6 +13872,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!114 &414071831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15456,6 +15543,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &451655746
 GameObject:
   m_ObjectHideFlags: 0
@@ -17443,6 +17532,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &502018467
 GameObject:
   m_ObjectHideFlags: 0
@@ -17879,6 +17970,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &510755366
 GameObject:
   m_ObjectHideFlags: 0
@@ -19843,6 +19936,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!114 &566525706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20220,6 +20315,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &570794772
 GameObject:
   m_ObjectHideFlags: 0
@@ -22235,6 +22332,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &616773072
 GameObject:
   m_ObjectHideFlags: 0
@@ -25150,7 +25249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -26859,6 +26958,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &752976307
 GameObject:
   m_ObjectHideFlags: 0
@@ -29666,6 +29767,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!114 &804335884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34646,6 +34749,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &961487849
 GameObject:
   m_ObjectHideFlags: 0
@@ -34868,6 +34973,7 @@ GameObject:
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   - component: {fileID: 963194231}
+  - component: {fileID: 963194233}
   - component: {fileID: 963194232}
   m_Layer: 0
   m_Name: Main Camera
@@ -35020,6 +35126,68 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &963194233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ce6d472ccbd90c44ada2f0c48e0f42d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _test: 0
+  _Options:
+  - _Goal: Get a Star
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Africa
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Asia
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Europe
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of North America
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of South America
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of Oceania
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of an Enemy Capital
+    _Val: 0
+    _Path: []
+  - _Goal: Have Control of 8 Cities
+    _Val: 0
+    _Path: []
+  - _Goal: Have Control of 11 Cities
+    _Val: 0
+    _Path: []
+  - _Goal: Have Control of 18 Territories
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of 4 Cities in 1 Turn
+    _Val: 0
+    _Path: []
+  - _Goal: Take Control of 10 Territories in 1 Turn
+    _Val: 0
+    _Path: []
+  - _Goal: Stop Enemy Continent Bonus
+    _Val: 0
+    _Path: []
+  - _Goal: Take out an enemy
+    _Val: 0
+    _Path: []
+  - _Goal: Consolidate
+    _Val: 0
+    _Path: []
 --- !u!1 &963916377
 GameObject:
   m_ObjectHideFlags: 0
@@ -36370,6 +36538,8 @@ MonoBehaviour:
   _Proxy: {fileID: 1775115194}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1018401028
 GameObject:
   m_ObjectHideFlags: 0
@@ -37213,6 +37383,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1054527219
 GameObject:
   m_ObjectHideFlags: 0
@@ -37856,6 +38028,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!114 &1065319274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38428,6 +38602,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1074015596
 GameObject:
   m_ObjectHideFlags: 0
@@ -40027,6 +40203,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1147428616
 GameObject:
   m_ObjectHideFlags: 0
@@ -41382,6 +41560,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1193878619
 GameObject:
   m_ObjectHideFlags: 0
@@ -41838,6 +42018,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1204397067
 GameObject:
   m_ObjectHideFlags: 0
@@ -44100,6 +44282,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1280094071
 GameObject:
   m_ObjectHideFlags: 0
@@ -45023,6 +45207,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1292886920
 GameObject:
   m_ObjectHideFlags: 0
@@ -47969,6 +48155,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1379905160
 GameObject:
   m_ObjectHideFlags: 0
@@ -50060,6 +50248,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1490402272
 GameObject:
   m_ObjectHideFlags: 0
@@ -50359,6 +50549,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1497499497
 GameObject:
   m_ObjectHideFlags: 0
@@ -50794,6 +50986,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1505103769
 GameObject:
   m_ObjectHideFlags: 0
@@ -55229,6 +55423,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1637073574
 GameObject:
   m_ObjectHideFlags: 0
@@ -57161,6 +57357,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1685796740
 GameObject:
   m_ObjectHideFlags: 0
@@ -57747,6 +57945,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1698880640
 GameObject:
   m_ObjectHideFlags: 0
@@ -58050,6 +58250,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1709701168
 GameObject:
   m_ObjectHideFlags: 0
@@ -59531,6 +59733,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1770329189
 GameObject:
   m_ObjectHideFlags: 0
@@ -61020,6 +61224,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1811180422
 GameObject:
   m_ObjectHideFlags: 0
@@ -62226,6 +62432,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1837310251
 GameObject:
   m_ObjectHideFlags: 0
@@ -62856,6 +63064,8 @@ MonoBehaviour:
   _Proxy: {fileID: 336518830}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1845753770
 GameObject:
   m_ObjectHideFlags: 0
@@ -63525,6 +63735,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1871956245
 GameObject:
   m_ObjectHideFlags: 0
@@ -63936,7 +64148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -64888,6 +65100,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &1921439935
 GameObject:
   m_ObjectHideFlags: 0
@@ -68448,6 +68662,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &2003799628
 GameObject:
   m_ObjectHideFlags: 0
@@ -71862,6 +72078,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 0
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &2113258198
 GameObject:
   m_ObjectHideFlags: 0
@@ -72359,6 +72577,8 @@ MonoBehaviour:
   _Proxy: {fileID: 0}
   _QuickAttacking: 0
   _IsBorderCountry: 1
+  _Gscore: 0
+  _Previous: {fileID: 0}
 --- !u!1 &2126302251
 GameObject:
   m_ObjectHideFlags: 0

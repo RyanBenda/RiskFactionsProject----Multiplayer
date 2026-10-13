@@ -50,7 +50,7 @@ public class CapitalPlacementComponent : MonoBehaviour
                 if (o.Country._IsBorderCountry)
                     o.val -= 0.5f;
 
-                o.val += 0.2f * o.Country._TroopsCount;
+                o.val += 0.3f * o.Country._TroopsCount;
                 
                 float temp = 0;
                 float temp2 = 0;

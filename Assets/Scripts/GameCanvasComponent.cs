@@ -130,7 +130,8 @@ public class GameCanvasComponent : NetworkBehaviour
                 _StarsDisplay.color = _CurArmy._TextColour;
                 _StarsDisplay.text = "Cards: " + cards.ToString();
 
-                p.CmdSetTurn(false);
+                if (!p._PermTurn)
+                    p.CmdSetTurn(false);
             }
         }
     }

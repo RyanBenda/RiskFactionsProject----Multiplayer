@@ -58,6 +58,10 @@ public class RiskFactionsRoomPlayer : NetworkRoomPlayer
             StartGameButton sgb = FindAnyObjectByType<StartGameButton>(FindObjectsInactive.Include);
             sgb.gameObject.SetActive(true);
             sgb._Button.enabled = true;
+
+            AddAIButton aab = FindAnyObjectByType<AddAIButton>(FindObjectsInactive.Include);
+            aab.gameObject.SetActive(true);
+            aab._Button.enabled = true;
         }
     }
 

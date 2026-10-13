@@ -61,6 +61,12 @@ public class CountryComponent : NetworkBehaviour
 
     public bool _IsBorderCountry = false;
 
+    //PathFinding
+    [HideInInspector]
+    public int _Gscore = 0;
+    [HideInInspector]
+    public CountryComponent _Previous;
+
     void OnCityAdded(bool old, bool _new)
     {
         if (_HasCity)
