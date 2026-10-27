@@ -637,7 +637,7 @@ public class GameCanvasComponent : NetworkBehaviour
 
         if (_CurrentState == TurnStates.CalculateTroops)
         {
-            if (_LocalPlayer._Army._ArmyName == _TurnOrder[_TurnIndex]._Army._ArmyName)
+            if (_LocalPlayer._Army._ArmyName == _TurnOrder[_TurnIndex]._Army._ArmyName || _LocalPlayer._PermTurn)
                 _StarTrade.gameObject.SetActive(true);
 
             _ProgressButtonText.text = "Calculate Troops";

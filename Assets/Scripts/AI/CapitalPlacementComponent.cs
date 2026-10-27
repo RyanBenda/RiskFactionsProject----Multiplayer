@@ -22,7 +22,7 @@ public class CapitalPlacementComponent : MonoBehaviour
         {
             _test = false;
             _Options.Clear();
-            foreach (CountryComponent c in GameCanvasComponent._GameInstance._CurArmy._ControlledCountries)
+            foreach (CountryComponent c in GameCanvasComponent._GameInstance._CurArmy._ControlledCountries) // Take into account who moves first in each continent
             {
                 CapitalPlacement o = new CapitalPlacement();
                 o.Country = c;
